@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { supabase } from '@/integrations/supabase/client';
+import { fromTable } from '@/lib/supabase-helpers';
 import { Search, Users as UsersIcon, Shield, GraduationCap, Briefcase } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Profile, AppRole } from '@/types/database';
@@ -37,8 +37,8 @@ export default function OrgUsers() {
   const fetchUsers = async () => {
     try {
       const [profilesResult, rolesResult] = await Promise.all([
-        supabase.from('profiles').select('*').eq('org_id', orgId).order('full_name'),
-        supabase.from('user_roles').select('*').eq('org_id', orgId),
+        fromTable('profiles').select('*').eq('org_id', orgId).order('full_name'),
+        fromTable('user_roles').select('*').eq('org_id', orgId),
       ]);
 
       if (profilesResult.error) throw profilesResult.error;

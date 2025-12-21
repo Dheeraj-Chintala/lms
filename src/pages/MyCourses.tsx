@@ -5,7 +5,7 @@ import AppLayout from '@/layouts/AppLayout';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { supabase } from '@/integrations/supabase/client';
+import { fromTable } from '@/lib/supabase-helpers';
 import { BookOpen, Clock, PlusCircle, Edit, Eye } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Course } from '@/types/database';
@@ -23,8 +23,7 @@ export default function MyCourses() {
 
   const fetchMyCourses = async () => {
     try {
-      const { data, error } = await supabase
-        .from('courses')
+      const { data, error } = await fromTable('courses')
         .select('*')
         .eq('instructor_id', user?.id)
         .order('created_at', { ascending: false });

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import AppLayout from '@/layouts/AppLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { supabase } from '@/integrations/supabase/client';
+import { fromTable } from '@/lib/supabase-helpers';
 import { BookOpen, Users, GraduationCap, TrendingUp } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -29,9 +29,9 @@ export default function OrgOverview() {
   const fetchOrgStats = async () => {
     try {
       const [usersResult, coursesResult, enrollmentsResult] = await Promise.all([
-        supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('org_id', orgId),
-        supabase.from('courses').select('status').eq('org_id', orgId),
-        supabase.from('enrollments').select('*', { count: 'exact', head: true }),
+        fromTable('profiles').select('*', { count: 'exact', head: true }).eq('org_id', orgId),
+        fromTable('courses').select('status').eq('org_id', orgId),
+        fromTable('enrollments').select('*', { count: 'exact', head: true }),
       ]);
 
       const courses = coursesResult.data || [];

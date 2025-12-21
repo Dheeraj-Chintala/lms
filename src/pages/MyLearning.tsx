@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { supabase } from '@/integrations/supabase/client';
+import { fromTable } from '@/lib/supabase-helpers';
 import { BookOpen, CheckCircle2, Clock, PlayCircle } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Course, Enrollment } from '@/types/database';
@@ -28,8 +28,7 @@ export default function MyLearning() {
 
   const fetchEnrolledCourses = async () => {
     try {
-      const { data, error } = await supabase
-        .from('enrollments')
+      const { data, error } = await fromTable('enrollments')
         .select(`
           *,
           course:courses(*)

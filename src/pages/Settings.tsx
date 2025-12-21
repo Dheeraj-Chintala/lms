@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { supabase } from '@/integrations/supabase/client';
+import { fromTable } from '@/lib/supabase-helpers';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, User, Bell, Shield } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -37,14 +37,13 @@ export default function Settings() {
 
     setIsLoading(true);
     try {
-      const { error } = await supabase
-        .from('profiles')
+      const { error } = await fromTable('profiles')
         .update({
           full_name: formData.full_name,
           bio: formData.bio,
           job_title: formData.job_title,
           department: formData.department,
-        })
+        } as any)
         .eq('id', profile.id);
 
       if (error) throw error;

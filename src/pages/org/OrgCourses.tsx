@@ -4,7 +4,7 @@ import AppLayout from '@/layouts/AppLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { supabase } from '@/integrations/supabase/client';
+import { fromTable } from '@/lib/supabase-helpers';
 import { BookOpen, Search, Clock, Eye } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Course } from '@/types/database';
@@ -31,8 +31,7 @@ export default function OrgCourses() {
 
   const fetchCourses = async () => {
     try {
-      const { data, error } = await supabase
-        .from('courses')
+      const { data, error } = await fromTable('courses')
         .select('*')
         .eq('org_id', orgId)
         .order('created_at', { ascending: false });
