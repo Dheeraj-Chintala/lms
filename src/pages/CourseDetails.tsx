@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { supabase } from '@/integrations/supabase/client';
+import { fromTable } from '@/lib/supabase-helpers';
 import { useToast } from '@/hooks/use-toast';
 import { 
   BookOpen, 
@@ -45,14 +45,13 @@ export default function CourseDetails() {
     setIsLoading(true);
     try {
       // Fetch course - RLS handles visibility
-      const { data: courseData, error: courseError } = await supabase
-        .from('courses')
+      const { data: courseData, error: courseError } = await fromTable('courses')
         .select('*')
         .eq('id', id)
         .maybeSingle();
 
       if (courseError) throw courseError;
-      setCourse(courseData);
+      setCourse(courseData as Course | null);
 
       if (!courseData) {
         setIsLoading(false);
@@ -61,37 +60,34 @@ export default function CourseDetails() {
 
       // Fetch enrollment status
       if (user) {
-        const { data: enrollmentData } = await supabase
-          .from('enrollments')
+        const { data: enrollmentData } = await fromTable('enrollments')
           .select('*')
           .eq('course_id', id)
           .eq('user_id', user.id)
           .maybeSingle();
         
-        setEnrollment(enrollmentData);
+        setEnrollment(enrollmentData as Enrollment | null);
       }
 
       // Fetch modules
-      const { data: modulesData, error: modulesError } = await supabase
-        .from('course_modules')
+      const { data: modulesData, error: modulesError } = await fromTable('course_modules')
         .select('*')
         .eq('course_id', id)
         .order('order_index', { ascending: true });
 
       if (modulesError) throw modulesError;
-      setModules(modulesData || []);
+      setModules((modulesData || []) as CourseModule[]);
 
       // Fetch lessons for all modules
       if (modulesData && modulesData.length > 0) {
-        const moduleIds = modulesData.map(m => m.id);
-        const { data: lessonsData, error: lessonsError } = await supabase
-          .from('lessons')
+        const moduleIds = (modulesData as CourseModule[]).map(m => m.id);
+        const { data: lessonsData, error: lessonsError } = await fromTable('lessons')
           .select('*')
           .in('module_id', moduleIds)
           .order('order_index', { ascending: true });
 
         if (lessonsError) throw lessonsError;
-        setLessons(lessonsData || []);
+        setLessons((lessonsData || []) as Lesson[]);
       }
     } catch (error) {
       console.error('Error fetching course:', error);
@@ -105,13 +101,12 @@ export default function CourseDetails() {
 
     setIsEnrolling(true);
     try {
-      const { error } = await supabase
-        .from('enrollments')
+      const { error } = await fromTable('enrollments')
         .insert({
           user_id: user.id,
           course_id: course.id,
           progress: 0,
-        });
+        } as any);
 
       if (error) throw error;
 

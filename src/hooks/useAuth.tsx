@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode, useMemo } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
+import { fromTable } from '@/lib/supabase-helpers';
 import type { Profile, UserRole, AppRole } from '@/types/database';
 
 // Role hierarchy for determining primary role (highest first)
@@ -85,8 +86,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const fetchUserData = async (userId: string) => {
     try {
       // Fetch profile from profiles table (RLS enforced)
-      const { data: profileData, error: profileError } = await supabase
-        .from('profiles')
+      const { data: profileData, error: profileError } = await fromTable('profiles')
         .select('*')
         .eq('user_id', userId)
         .maybeSingle();
@@ -94,15 +94,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (profileError) throw profileError;
       
       if (profileData) {
-        setProfile(profileData as Profile);
-        setOrgId(profileData.org_id);
+        const profile = profileData as Profile;
+        setProfile(profile);
+        setOrgId(profile.org_id);
 
         // Fetch roles from user_roles table (RLS enforced)
-        const { data: rolesData, error: rolesError } = await supabase
-          .from('user_roles')
+        const { data: rolesData, error: rolesError } = await fromTable('user_roles')
           .select('role')
           .eq('user_id', userId)
-          .eq('org_id', profileData.org_id);
+          .eq('org_id', profile.org_id);
 
         if (rolesError) throw rolesError;
         

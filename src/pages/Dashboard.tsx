@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import AppLayout from '@/layouts/AppLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { supabase } from '@/integrations/supabase/client';
+import { fromTable } from '@/lib/supabase-helpers';
 import { BookOpen, Users, GraduationCap, Clock, TrendingUp, Award, PlusCircle, Building2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Course, Enrollment } from '@/types/database';
@@ -48,9 +48,9 @@ export default function Dashboard() {
       if (isOrgAdmin) {
         // Org Admin: fetch org-wide stats
         const [coursesResult, usersResult, enrollmentsResult] = await Promise.all([
-          supabase.from('courses').select('*', { count: 'exact' }).eq('org_id', orgId),
-          supabase.from('profiles').select('*', { count: 'exact', head: true }).eq('org_id', orgId),
-          supabase.from('enrollments').select('*', { count: 'exact' }),
+          fromTable('courses').select('*', { count: 'exact' }).eq('org_id', orgId),
+          fromTable('profiles').select('*', { count: 'exact', head: true }).eq('org_id', orgId),
+          fromTable('enrollments').select('*', { count: 'exact' }),
         ]);
 
         statsData = {
@@ -64,8 +64,7 @@ export default function Dashboard() {
 
       } else if (isInstructor) {
         // Instructor: fetch my courses
-        const { data: myCourses, count: myCoursesCount } = await supabase
-          .from('courses')
+        const { data: myCourses, count: myCoursesCount } = await fromTable('courses')
           .select('*', { count: 'exact' })
           .order('created_at', { ascending: false });
 
@@ -76,8 +75,8 @@ export default function Dashboard() {
       } else {
         // Learner/Manager: fetch enrollments and available courses
         const [enrollmentsResult, coursesResult] = await Promise.all([
-          supabase.from('enrollments').select('*, course:courses(*)'),
-          supabase.from('courses').select('*', { count: 'exact' }).eq('status', 'published'),
+          fromTable('enrollments').select('*, course:courses(*)'),
+          fromTable('courses').select('*', { count: 'exact' }).eq('status', 'published'),
         ]);
 
         const userEnrollments = enrollmentsResult.data || [];

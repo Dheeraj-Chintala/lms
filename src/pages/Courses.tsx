@@ -6,7 +6,7 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { supabase } from '@/integrations/supabase/client';
+import { fromTable } from '@/lib/supabase-helpers';
 import { BookOpen, Clock, Search, Filter, Plus, GraduationCap } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
@@ -41,8 +41,7 @@ export default function Courses() {
 
   const fetchCourses = async () => {
     try {
-      const { data, error } = await supabase
-        .from('courses')
+      const { data, error } = await fromTable('courses')
         .select('*')
         .order('created_at', { ascending: false });
 
@@ -57,8 +56,7 @@ export default function Courses() {
 
   const fetchEnrollments = async () => {
     try {
-      const { data, error } = await supabase
-        .from('enrollments')
+      const { data, error } = await fromTable('enrollments')
         .select('*');
 
       if (error) throw error;
@@ -73,13 +71,12 @@ export default function Courses() {
 
     setEnrollingId(courseId);
     try {
-      const { error } = await supabase
-        .from('enrollments')
+      const { error } = await fromTable('enrollments')
         .insert({
           user_id: user.id,
           course_id: courseId,
           progress: 0,
-        });
+        } as any);
 
       if (error) throw error;
 
