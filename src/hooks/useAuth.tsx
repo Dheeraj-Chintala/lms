@@ -143,19 +143,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const hasRole = (role: AppRole) => roles.includes(role);
 
+  const value = useMemo(() => ({
+    user,
+    session,
+    profile,
+    roles,
+    primaryRole,
+    orgId,
+    isLoading,
+    signIn,
+    signOut,
+    hasRole,
+  }), [user, session, profile, roles, primaryRole, orgId, isLoading]);
+
   return (
-    <AuthContext.Provider value={{
-      user,
-      session,
-      profile,
-      roles,
-      primaryRole,
-      orgId,
-      isLoading,
-      signIn,
-      signOut,
-      hasRole,
-    }}>
+    <AuthContext.Provider value={value}>
       {children}
     </AuthContext.Provider>
   );
