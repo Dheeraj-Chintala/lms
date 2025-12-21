@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/integrations/supabase/client';
 import { Search, Users as UsersIcon, Shield, GraduationCap, Briefcase } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Profile, AppRole } from '@/types/database';

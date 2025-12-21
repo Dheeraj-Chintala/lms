@@ -5,7 +5,7 @@ import AppLayout from '@/layouts/AppLayout';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/integrations/supabase/client';
 import { BookOpen, Clock, PlusCircle, Edit, Eye } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Course } from '@/types/database';
