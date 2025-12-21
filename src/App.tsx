@@ -10,7 +10,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
-import Courses from "./pages/Courses";
+import BrowseCourses from "./pages/BrowseCourses";
 import MyLearning from "./pages/MyLearning";
 import MyCourses from "./pages/MyCourses";
 import Settings from "./pages/Settings";
@@ -49,7 +49,7 @@ const App = () => (
             {/* Learner/Manager Routes */}
             <Route path="/courses" element={
               <ProtectedRoute allowedRoles={['learner', 'manager']}>
-                <Courses />
+                <BrowseCourses />
               </ProtectedRoute>
             } />
             <Route path="/my-learning" element={
