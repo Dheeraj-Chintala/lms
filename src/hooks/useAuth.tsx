@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, ReactNode, useMemo } from 'react';
 import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/integrations/supabase/client';
 import type { Profile, UserRole, AppRole } from '@/types/database';
 
 // Role hierarchy for determining primary role (highest first)

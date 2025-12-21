@@ -4,7 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import AppLayout from '@/layouts/AppLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { supabase } from '@/lib/supabaseClient';
+import { supabase } from '@/integrations/supabase/client';
 import { BookOpen, Users, GraduationCap, Clock, TrendingUp, Award, PlusCircle, Building2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Course, Enrollment } from '@/types/database';
