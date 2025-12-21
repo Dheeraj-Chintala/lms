@@ -11,6 +11,7 @@ import Index from "./pages/Index";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import BrowseCourses from "./pages/BrowseCourses";
+import CourseDetails from "./pages/CourseDetails";
 import MyLearning from "./pages/MyLearning";
 import MyCourses from "./pages/MyCourses";
 import Settings from "./pages/Settings";
@@ -50,6 +51,11 @@ const App = () => (
             <Route path="/courses" element={
               <ProtectedRoute allowedRoles={['learner', 'manager']}>
                 <BrowseCourses />
+              </ProtectedRoute>
+            } />
+            <Route path="/courses/:id" element={
+              <ProtectedRoute>
+                <CourseDetails />
               </ProtectedRoute>
             } />
             <Route path="/my-learning" element={
