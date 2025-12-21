@@ -22,7 +22,7 @@ interface UserWithRoles extends Profile {
   roles: AppRole[];
 }
 
-export default function Users() {
+export default function OrgUsers() {
   const { orgId } = useAuth();
   const [users, setUsers] = useState<UserWithRoles[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -36,23 +36,16 @@ export default function Users() {
 
   const fetchUsers = async () => {
     try {
-      const { data: profilesData, error: profilesError } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('org_id', orgId)
-        .order('full_name');
+      const [profilesResult, rolesResult] = await Promise.all([
+        supabase.from('profiles').select('*').eq('org_id', orgId).order('full_name'),
+        supabase.from('user_roles').select('*').eq('org_id', orgId),
+      ]);
 
-      if (profilesError) throw profilesError;
+      if (profilesResult.error) throw profilesResult.error;
+      if (rolesResult.error) throw rolesResult.error;
 
-      const { data: rolesData, error: rolesError } = await supabase
-        .from('user_roles')
-        .select('*')
-        .eq('org_id', orgId);
-
-      if (rolesError) throw rolesError;
-
-      const usersWithRoles: UserWithRoles[] = (profilesData || []).map(profile => {
-        const userRoles = (rolesData || [])
+      const usersWithRoles: UserWithRoles[] = (profilesResult.data || []).map(profile => {
+        const userRoles = (rolesResult.data || [])
           .filter(r => r.user_id === profile.user_id)
           .map(r => r.role as AppRole);
         return { ...profile, roles: userRoles };
@@ -111,7 +104,7 @@ export default function Users() {
         <div>
           <h1 className="text-3xl font-display font-bold">Users</h1>
           <p className="text-muted-foreground mt-1">
-            View and manage organization members
+            View organization members (read-only)
           </p>
         </div>
 
@@ -127,7 +120,7 @@ export default function Users() {
         <div className="relative max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            placeholder="Search users by name, title, or department..."
+            placeholder="Search users..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="pl-10"

@@ -23,25 +23,72 @@ import {
   X,
   ChevronRight,
   PlusCircle,
+  Building2,
+  Library,
 } from 'lucide-react';
+import type { AppRole } from '@/types/database';
 
 interface NavItem {
   label: string;
   href: string;
   icon: ReactNode;
-  roles?: string[];
+  allowedRoles: AppRole[];
 }
 
-const navItems: NavItem[] = [
-  { label: 'Dashboard', href: '/dashboard', icon: <LayoutDashboard className="h-5 w-5" /> },
-  { label: 'Courses', href: '/courses', icon: <BookOpen className="h-5 w-5" /> },
-  { label: 'My Learning', href: '/my-learning', icon: <GraduationCap className="h-5 w-5" /> },
-  { label: 'Users', href: '/users', icon: <Users className="h-5 w-5" />, roles: ['org_admin'] },
-  { label: 'Create Course', href: '/courses/create', icon: <PlusCircle className="h-5 w-5" />, roles: ['instructor', 'content_creator'] },
+// Navigation items with role-based access
+const getNavItems = (): NavItem[] => [
+  { 
+    label: 'Dashboard', 
+    href: '/dashboard', 
+    icon: <LayoutDashboard className="h-5 w-5" />,
+    allowedRoles: ['learner', 'instructor', 'org_admin', 'manager', 'content_creator', 'super_admin'],
+  },
+  { 
+    label: 'My Learning', 
+    href: '/my-learning', 
+    icon: <GraduationCap className="h-5 w-5" />,
+    allowedRoles: ['learner', 'manager'],
+  },
+  { 
+    label: 'Browse Courses', 
+    href: '/courses', 
+    icon: <BookOpen className="h-5 w-5" />,
+    allowedRoles: ['learner', 'manager'],
+  },
+  { 
+    label: 'My Courses', 
+    href: '/my-courses', 
+    icon: <Library className="h-5 w-5" />,
+    allowedRoles: ['instructor', 'content_creator'],
+  },
+  { 
+    label: 'Create Course', 
+    href: '/courses/create', 
+    icon: <PlusCircle className="h-5 w-5" />,
+    allowedRoles: ['instructor', 'content_creator'],
+  },
+  { 
+    label: 'Org Overview', 
+    href: '/org/overview', 
+    icon: <Building2 className="h-5 w-5" />,
+    allowedRoles: ['org_admin'],
+  },
+  { 
+    label: 'Courses', 
+    href: '/org/courses', 
+    icon: <BookOpen className="h-5 w-5" />,
+    allowedRoles: ['org_admin'],
+  },
+  { 
+    label: 'Users', 
+    href: '/org/users', 
+    icon: <Users className="h-5 w-5" />,
+    allowedRoles: ['org_admin'],
+  },
 ];
 
 export default function AppLayout({ children }: { children: ReactNode }) {
-  const { profile, roles, signOut } = useAuth();
+  const { profile, roles, primaryRole, signOut } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -51,10 +98,10 @@ export default function AppLayout({ children }: { children: ReactNode }) {
     navigate('/login');
   };
 
-  const filteredNavItems = navItems.filter(item => {
-    if (!item.roles) return true;
-    return item.roles.some(role => roles.includes(role as any));
-  });
+  // Filter nav items based on user's roles
+  const filteredNavItems = getNavItems().filter(item => 
+    item.allowedRoles.some(role => roles.includes(role))
+  );
 
   const getInitials = (name: string | null) => {
     if (!name) return 'U';
@@ -62,10 +109,15 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   };
 
   const getRoleBadge = () => {
-    if (roles.includes('org_admin')) return 'Admin';
-    if (roles.includes('instructor')) return 'Instructor';
-    if (roles.includes('manager')) return 'Manager';
-    return 'Learner';
+    switch (primaryRole) {
+      case 'super_admin': return 'Super Admin';
+      case 'org_admin': return 'Admin';
+      case 'instructor': return 'Instructor';
+      case 'content_creator': return 'Content Creator';
+      case 'manager': return 'Manager';
+      case 'learner': return 'Learner';
+      default: return 'User';
+    }
   };
 
   return (
