@@ -1,14 +1,14 @@
 import { useEffect, useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import DashboardLayout from '@/components/layouts/DashboardLayout';
+import { useAuth } from '@/hooks/useAuth';
+import AppLayout from '@/layouts/AppLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabaseClient';
 import { Search, Users as UsersIcon, Shield, GraduationCap, Briefcase } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { Profile, UserRole, AppRole } from '@/types/database';
+import type { Profile, AppRole } from '@/types/database';
 import {
   Table,
   TableBody,
@@ -36,7 +36,6 @@ export default function Users() {
 
   const fetchUsers = async () => {
     try {
-      // Fetch profiles
       const { data: profilesData, error: profilesError } = await supabase
         .from('profiles')
         .select('*')
@@ -45,7 +44,6 @@ export default function Users() {
 
       if (profilesError) throw profilesError;
 
-      // Fetch roles for all users
       const { data: rolesData, error: rolesError } = await supabase
         .from('user_roles')
         .select('*')
@@ -53,7 +51,6 @@ export default function Users() {
 
       if (rolesError) throw rolesError;
 
-      // Combine profiles with roles
       const usersWithRoles: UserWithRoles[] = (profilesData || []).map(profile => {
         const userRoles = (rolesData || [])
           .filter(r => r.user_id === profile.user_id)
@@ -108,7 +105,7 @@ export default function Users() {
   };
 
   return (
-    <DashboardLayout>
+    <AppLayout>
       <div className="space-y-6 animate-fade-in">
         {/* Header */}
         <div>
@@ -234,7 +231,7 @@ export default function Users() {
           </CardContent>
         </Card>
       </div>
-    </DashboardLayout>
+    </AppLayout>
   );
 }
 

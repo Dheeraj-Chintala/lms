@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import DashboardLayout from '@/components/layouts/DashboardLayout';
+import { useAuth } from '@/hooks/useAuth';
+import AppLayout from '@/layouts/AppLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabaseClient';
 import { BookOpen, Users, GraduationCap, Clock, TrendingUp, Award } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Course, Enrollment } from '@/types/database';
@@ -19,7 +19,6 @@ export default function Dashboard() {
   const { profile, roles, orgId, hasRole } = useAuth();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [recentCourses, setRecentCourses] = useState<Course[]>([]);
-  const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const isOrgAdmin = hasRole('org_admin');
@@ -33,14 +32,12 @@ export default function Dashboard() {
 
   const fetchDashboardData = async () => {
     try {
-      // Fetch courses
       const { data: coursesData, count: coursesCount } = await supabase
         .from('courses')
         .select('*', { count: 'exact' })
         .order('created_at', { ascending: false })
         .limit(5);
 
-      // Fetch user's enrollments
       const { data: enrollmentsData, count: enrollmentsCount } = await supabase
         .from('enrollments')
         .select('*', { count: 'exact' });
@@ -53,7 +50,6 @@ export default function Dashboard() {
         completedCourses: completedCount,
       };
 
-      // Org admin specific stats
       if (isOrgAdmin && orgId) {
         const { count: usersCount } = await supabase
           .from('profiles')
@@ -66,7 +62,6 @@ export default function Dashboard() {
 
       setStats(statsData);
       setRecentCourses(coursesData || []);
-      setEnrollments(enrollmentsData || []);
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     } finally {
@@ -82,7 +77,7 @@ export default function Dashboard() {
   };
 
   return (
-    <DashboardLayout>
+    <AppLayout>
       <div className="space-y-8 animate-fade-in">
         {/* Header */}
         <div>
@@ -237,7 +232,7 @@ export default function Dashboard() {
           </Card>
         </div>
       </div>
-    </DashboardLayout>
+    </AppLayout>
   );
 }
 
