@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
-import DashboardLayout from '@/components/layouts/DashboardLayout';
+import { useAuth } from '@/hooks/useAuth';
+import AppLayout from '@/layouts/AppLayout';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabaseClient';
 import { BookOpen, CheckCircle2, Clock, PlayCircle } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Course, Enrollment } from '@/types/database';
@@ -49,7 +49,7 @@ export default function MyLearning() {
   const completed = enrolledCourses.filter(e => e.completed_at);
 
   return (
-    <DashboardLayout>
+    <AppLayout>
       <div className="space-y-6 animate-fade-in">
         {/* Header */}
         <div>
@@ -158,7 +158,7 @@ export default function MyLearning() {
           </TabsContent>
         </Tabs>
       </div>
-    </DashboardLayout>
+    </AppLayout>
   );
 }
 

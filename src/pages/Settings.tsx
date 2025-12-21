@@ -1,13 +1,13 @@
 import { useState } from 'react';
-import { useAuth } from '@/contexts/AuthContext';
-import DashboardLayout from '@/components/layouts/DashboardLayout';
+import { useAuth } from '@/hooks/useAuth';
+import AppLayout from '@/layouts/AppLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { supabase } from '@/integrations/supabase/client';
+import { supabase } from '@/lib/supabaseClient';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, User, Bell, Shield } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -70,7 +70,7 @@ export default function Settings() {
   };
 
   return (
-    <DashboardLayout>
+    <AppLayout>
       <div className="space-y-6 max-w-4xl animate-fade-in">
         {/* Header */}
         <div>
@@ -249,7 +249,7 @@ export default function Settings() {
           </TabsContent>
         </Tabs>
       </div>
-    </DashboardLayout>
+    </AppLayout>
   );
 }
 

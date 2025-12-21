@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
-import DashboardLayout from '@/components/layouts/DashboardLayout';
+import { useAuth } from '@/hooks/useAuth';
+import AppLayout from '@/layouts/AppLayout';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { supabase } from '@/integrations/supabase/client';
-import { BookOpen, Clock, Users, Search, Filter, Plus, GraduationCap } from 'lucide-react';
+import { supabase } from '@/lib/supabaseClient';
+import { BookOpen, Clock, Search, Filter, Plus, GraduationCap } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
 import type { Course, Enrollment } from '@/types/database';
@@ -120,7 +120,7 @@ export default function Courses() {
   };
 
   return (
-    <DashboardLayout>
+    <AppLayout>
       <div className="space-y-6 animate-fade-in">
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -285,6 +285,6 @@ export default function Courses() {
           </Card>
         )}
       </div>
-    </DashboardLayout>
+    </AppLayout>
   );
 }

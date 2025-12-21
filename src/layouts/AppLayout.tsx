@@ -1,6 +1,6 @@
 import { ReactNode, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
+import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -40,7 +40,7 @@ const navItems: NavItem[] = [
   { label: 'Create Course', href: '/courses/create', icon: <PlusCircle className="h-5 w-5" />, roles: ['instructor', 'content_creator'] },
 ];
 
-export default function DashboardLayout({ children }: { children: ReactNode }) {
+export default function AppLayout({ children }: { children: ReactNode }) {
   const { profile, roles, signOut } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
