@@ -7,8 +7,9 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { fromTable } from '@/lib/supabase-helpers';
-import { BookOpen, CheckCircle2, Clock, PlayCircle } from 'lucide-react';
+import { BookOpen, Calendar, CheckCircle2, Clock, PlayCircle } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { format } from 'date-fns';
 import type { Course, Enrollment, LessonProgress } from '@/types/database';
 
 interface EnrolledCourse extends Enrollment {
@@ -20,6 +21,7 @@ interface CourseProgress {
   totalLessons: number;
   completedLessons: number;
   progressPercent: number;
+  firstIncompleteLessonId: string | null;
 }
 
 export default function MyLearning() {
@@ -65,10 +67,11 @@ export default function MyLearning() {
             modulesByCourse[m.course_id].push(m.id);
           });
 
-          // Fetch lessons
+          // Fetch lessons with order
           const { data: lessonsData } = await fromTable('lessons')
-            .select('id, module_id')
-            .in('module_id', moduleIds);
+            .select('id, module_id, order_index')
+            .in('module_id', moduleIds)
+            .order('order_index', { ascending: true });
 
           // Fetch user's lesson progress
           const { data: progressData } = await fromTable('lesson_progress')
@@ -76,20 +79,14 @@ export default function MyLearning() {
             .eq('user_id', user.id);
 
           // Build progress map
-          const lessonToModule: Record<string, string> = {};
-          const lessonsByCourse: Record<string, string[]> = {};
+          const lessonsByCourse: Record<string, { id: string; module_id: string; order_index: number }[]> = {};
           
           if (lessonsData) {
-            lessonsData.forEach((lesson: any) => {
-              lessonToModule[lesson.id] = lesson.module_id;
-            });
-            
-            // Map lessons to courses
+            // Map lessons to courses (maintaining order)
             courseIds.forEach(courseId => {
               const courseModuleIds = modulesByCourse[courseId] || [];
               lessonsByCourse[courseId] = (lessonsData as any[])
-                .filter(l => courseModuleIds.includes(l.module_id))
-                .map(l => l.id);
+                .filter(l => courseModuleIds.includes(l.module_id));
             });
           }
 
@@ -99,17 +96,22 @@ export default function MyLearning() {
               .map(p => p.lesson_id)
           );
 
-          // Calculate progress for each course
+          // Calculate progress for each course and find first incomplete lesson
           const progressMap: Record<string, CourseProgress> = {};
           courseIds.forEach(courseId => {
             const courseLessons = lessonsByCourse[courseId] || [];
-            const completedCount = courseLessons.filter(id => completedLessonIds.has(id)).length;
+            const completedCount = courseLessons.filter(l => completedLessonIds.has(l.id)).length;
             const totalCount = courseLessons.length;
+            
+            // Find first incomplete lesson (in order)
+            const firstIncomplete = courseLessons.find(l => !completedLessonIds.has(l.id));
+            
             progressMap[courseId] = {
               courseId,
               totalLessons: totalCount,
               completedLessons: completedCount,
               progressPercent: totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0,
+              firstIncompleteLessonId: firstIncomplete?.id || null,
             };
           });
           setCourseProgress(progressMap);
@@ -259,6 +261,11 @@ function EnrolledCourseCard({
   const course = enrollment.course;
   const displayProgress = progress?.progressPercent ?? 0;
   
+  // Build resume URL - go to first incomplete lesson if available
+  const resumeUrl = progress?.firstIncompleteLessonId 
+    ? `/courses/${course.id}/learn?lesson=${progress.firstIncompleteLessonId}`
+    : `/courses/${course.id}/learn`;
+  
   return (
     <Card className="overflow-hidden hover:shadow-md transition-shadow">
       <div className="flex flex-col sm:flex-row">
@@ -279,9 +286,17 @@ function EnrolledCourseCard({
               <h3 className="font-display font-semibold text-lg mb-1">
                 {course.title}
               </h3>
-              <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
+              <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
                 {course.description || 'No description available'}
               </p>
+              
+              {/* Enrollment Date */}
+              <div className="flex items-center gap-1 text-xs text-muted-foreground mb-3">
+                <Calendar className="h-3 w-3" />
+                <span>Enrolled {format(new Date(enrollment.enrolled_at), 'MMM d, yyyy')}</span>
+              </div>
+              
+              {/* Progress */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
                   <span className="text-muted-foreground">
@@ -292,12 +307,12 @@ function EnrolledCourseCard({
                 <Progress value={displayProgress} className="h-2" />
               </div>
             </div>
-            <div className="sm:ml-4">
+            <div className="sm:ml-4 flex flex-col gap-2">
               <Button 
                 asChild 
                 className={isCompleted ? 'bg-success hover:bg-success/90' : 'bg-gradient-primary hover:opacity-90'}
               >
-                <Link to={`/courses/${course.id}/learn`}>
+                <Link to={resumeUrl}>
                   {isCompleted ? (
                     <>
                       <CheckCircle2 className="mr-2 h-4 w-4" />
@@ -306,7 +321,7 @@ function EnrolledCourseCard({
                   ) : (
                     <>
                       <PlayCircle className="mr-2 h-4 w-4" />
-                      Continue
+                      Resume
                     </>
                   )}
                 </Link>

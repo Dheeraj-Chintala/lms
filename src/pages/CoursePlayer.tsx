@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { fromTable } from '@/lib/supabase-helpers';
 import { Button } from '@/components/ui/button';
@@ -32,6 +32,8 @@ import type { Course, CourseModule, Lesson, LessonProgress } from '@/types/datab
 
 export default function CoursePlayer() {
   const { courseId, lessonId } = useParams<{ courseId: string; lessonId?: string }>();
+  const [searchParams] = useSearchParams();
+  const lessonFromQuery = searchParams.get('lesson');
   const { user } = useAuth();
   const { toast } = useToast();
   
@@ -54,15 +56,22 @@ export default function CoursePlayer() {
   }, [courseId, user]);
 
   useEffect(() => {
-    // Set current lesson when lessonId changes or lessons load
-    if (lessonId && lessons.length > 0) {
-      const lesson = lessons.find(l => l.id === lessonId);
-      setCurrentLesson(lesson || null);
-    } else if (lessons.length > 0 && !currentLesson) {
-      // Default to first lesson
+    // Set current lesson from URL param, query string, or default to first
+    const targetLessonId = lessonId || lessonFromQuery;
+    
+    if (targetLessonId && lessons.length > 0) {
+      const lesson = lessons.find(l => l.id === targetLessonId);
+      if (lesson) {
+        setCurrentLesson(lesson);
+        return;
+      }
+    }
+    
+    // Default to first lesson if no target or target not found
+    if (lessons.length > 0 && !currentLesson) {
       setCurrentLesson(lessons[0]);
     }
-  }, [lessonId, lessons]);
+  }, [lessonId, lessonFromQuery, lessons]);
 
   const fetchCourseData = async () => {
     setIsLoading(true);
