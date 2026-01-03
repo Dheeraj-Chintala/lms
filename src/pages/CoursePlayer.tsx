@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { fromTable } from '@/lib/supabase-helpers';
 import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useToast } from '@/hooks/use-toast';
@@ -40,6 +41,11 @@ export default function CoursePlayer() {
   const [currentLesson, setCurrentLesson] = useState<Lesson | null>(null);
   const [lessonProgress, setLessonProgress] = useState<Record<string, LessonProgress>>({});
   const [isLoading, setIsLoading] = useState(true);
+
+  // Calculate progress dynamically
+  const completedLessons = Object.values(lessonProgress).filter(p => p.completed).length;
+  const totalLessons = lessons.length;
+  const progressPercent = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
 
   useEffect(() => {
     if (courseId) {
@@ -288,7 +294,7 @@ export default function CoursePlayer() {
         {/* Course Sidebar */}
         <Sidebar className="border-r">
           <SidebarContent>
-            {/* Course Header */}
+            {/* Course Header with Progress */}
             <div className="p-4 border-b">
               <Link 
                 to={`/courses/${courseId}`}
@@ -297,7 +303,16 @@ export default function CoursePlayer() {
                 <ArrowLeft className="mr-2 h-4 w-4" />
                 Back to Course
               </Link>
-              <h2 className="font-display font-semibold text-lg line-clamp-2">{course.title}</h2>
+              <h2 className="font-display font-semibold text-lg line-clamp-2 mb-3">{course.title}</h2>
+              
+              {/* Progress Bar */}
+              <div className="space-y-1">
+                <div className="flex items-center justify-between text-xs">
+                  <span className="text-muted-foreground">{completedLessons}/{totalLessons} lessons</span>
+                  <span className="font-medium text-primary">{progressPercent}%</span>
+                </div>
+                <Progress value={progressPercent} className="h-1.5" />
+              </div>
             </div>
 
             {/* Modules & Lessons */}

@@ -9,15 +9,23 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { fromTable } from '@/lib/supabase-helpers';
 import { BookOpen, CheckCircle2, Clock, PlayCircle } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import type { Course, Enrollment } from '@/types/database';
+import type { Course, Enrollment, LessonProgress } from '@/types/database';
 
 interface EnrolledCourse extends Enrollment {
   course: Course;
 }
 
+interface CourseProgress {
+  courseId: string;
+  totalLessons: number;
+  completedLessons: number;
+  progressPercent: number;
+}
+
 export default function MyLearning() {
   const { user } = useAuth();
   const [enrolledCourses, setEnrolledCourses] = useState<EnrolledCourse[]>([]);
+  const [courseProgress, setCourseProgress] = useState<Record<string, CourseProgress>>({});
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -28,15 +36,85 @@ export default function MyLearning() {
 
   const fetchEnrolledCourses = async () => {
     try {
-      const { data, error } = await fromTable('enrollments')
+      // Fetch enrollments with courses
+      const { data: enrollmentsData, error: enrollmentsError } = await fromTable('enrollments')
         .select(`
           *,
           course:courses(*)
         `)
         .order('enrolled_at', { ascending: false });
 
-      if (error) throw error;
-      setEnrolledCourses((data || []) as EnrolledCourse[]);
+      if (enrollmentsError) throw enrollmentsError;
+      const enrollments = (enrollmentsData || []) as EnrolledCourse[];
+      setEnrolledCourses(enrollments);
+
+      // Fetch progress for each course
+      if (enrollments.length > 0 && user) {
+        const courseIds = enrollments.map(e => e.course.id);
+        
+        // Fetch all lessons for enrolled courses
+        const { data: modulesData } = await fromTable('course_modules')
+          .select('id, course_id')
+          .in('course_id', courseIds);
+
+        if (modulesData && modulesData.length > 0) {
+          const moduleIds = modulesData.map((m: any) => m.id);
+          const modulesByCourse: Record<string, string[]> = {};
+          modulesData.forEach((m: any) => {
+            if (!modulesByCourse[m.course_id]) modulesByCourse[m.course_id] = [];
+            modulesByCourse[m.course_id].push(m.id);
+          });
+
+          // Fetch lessons
+          const { data: lessonsData } = await fromTable('lessons')
+            .select('id, module_id')
+            .in('module_id', moduleIds);
+
+          // Fetch user's lesson progress
+          const { data: progressData } = await fromTable('lesson_progress')
+            .select('lesson_id, completed')
+            .eq('user_id', user.id);
+
+          // Build progress map
+          const lessonToModule: Record<string, string> = {};
+          const lessonsByCourse: Record<string, string[]> = {};
+          
+          if (lessonsData) {
+            lessonsData.forEach((lesson: any) => {
+              lessonToModule[lesson.id] = lesson.module_id;
+            });
+            
+            // Map lessons to courses
+            courseIds.forEach(courseId => {
+              const courseModuleIds = modulesByCourse[courseId] || [];
+              lessonsByCourse[courseId] = (lessonsData as any[])
+                .filter(l => courseModuleIds.includes(l.module_id))
+                .map(l => l.id);
+            });
+          }
+
+          const completedLessonIds = new Set(
+            (progressData as LessonProgress[] || [])
+              .filter(p => p.completed)
+              .map(p => p.lesson_id)
+          );
+
+          // Calculate progress for each course
+          const progressMap: Record<string, CourseProgress> = {};
+          courseIds.forEach(courseId => {
+            const courseLessons = lessonsByCourse[courseId] || [];
+            const completedCount = courseLessons.filter(id => completedLessonIds.has(id)).length;
+            const totalCount = courseLessons.length;
+            progressMap[courseId] = {
+              courseId,
+              totalLessons: totalCount,
+              completedLessons: completedCount,
+              progressPercent: totalCount > 0 ? Math.round((completedCount / totalCount) * 100) : 0,
+            };
+          });
+          setCourseProgress(progressMap);
+        }
+      }
     } catch (error) {
       console.error('Error fetching enrolled courses:', error);
     } finally {
@@ -44,8 +122,14 @@ export default function MyLearning() {
     }
   };
 
-  const inProgress = enrolledCourses.filter(e => !e.completed_at);
-  const completed = enrolledCourses.filter(e => e.completed_at);
+  const inProgress = enrolledCourses.filter(e => {
+    const progress = courseProgress[e.course.id];
+    return !progress || progress.progressPercent < 100;
+  });
+  const completed = enrolledCourses.filter(e => {
+    const progress = courseProgress[e.course.id];
+    return progress && progress.progressPercent === 100;
+  });
 
   return (
     <AppLayout>
@@ -116,7 +200,8 @@ export default function MyLearning() {
                 {inProgress.map(enrollment => (
                   <EnrolledCourseCard 
                     key={enrollment.id} 
-                    enrollment={enrollment} 
+                    enrollment={enrollment}
+                    progress={courseProgress[enrollment.course.id]}
                   />
                 ))}
               </div>
@@ -143,6 +228,7 @@ export default function MyLearning() {
                   <EnrolledCourseCard 
                     key={enrollment.id} 
                     enrollment={enrollment}
+                    progress={courseProgress[enrollment.course.id]}
                     isCompleted
                   />
                 ))}
@@ -162,13 +248,16 @@ export default function MyLearning() {
 }
 
 function EnrolledCourseCard({ 
-  enrollment, 
+  enrollment,
+  progress,
   isCompleted = false 
 }: { 
   enrollment: EnrolledCourse;
+  progress?: CourseProgress;
   isCompleted?: boolean;
 }) {
   const course = enrollment.course;
+  const displayProgress = progress?.progressPercent ?? 0;
   
   return (
     <Card className="overflow-hidden hover:shadow-md transition-shadow">
@@ -195,10 +284,12 @@ function EnrolledCourseCard({
               </p>
               <div className="space-y-2">
                 <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Progress</span>
-                  <span className="font-medium">{enrollment.progress}%</span>
+                  <span className="text-muted-foreground">
+                    {progress ? `${progress.completedLessons}/${progress.totalLessons} lessons` : 'Progress'}
+                  </span>
+                  <span className="font-medium">{displayProgress}%</span>
                 </div>
-                <Progress value={enrollment.progress} className="h-2" />
+                <Progress value={displayProgress} className="h-2" />
               </div>
             </div>
             <div className="sm:ml-4">
@@ -206,7 +297,7 @@ function EnrolledCourseCard({
                 asChild 
                 className={isCompleted ? 'bg-success hover:bg-success/90' : 'bg-gradient-primary hover:opacity-90'}
               >
-                <Link to={`/courses/${course.id}`}>
+                <Link to={`/courses/${course.id}/learn`}>
                   {isCompleted ? (
                     <>
                       <CheckCircle2 className="mr-2 h-4 w-4" />
