@@ -1,10 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { fromTable } from '@/lib/supabase-helpers';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useToast } from '@/hooks/use-toast';
 import { 
   Sidebar, 
   SidebarContent, 
@@ -26,16 +27,18 @@ import {
   PlayCircle,
   Menu
 } from 'lucide-react';
-import type { Course, CourseModule, Lesson } from '@/types/database';
+import type { Course, CourseModule, Lesson, LessonProgress } from '@/types/database';
 
 export default function CoursePlayer() {
   const { courseId, lessonId } = useParams<{ courseId: string; lessonId?: string }>();
   const { user } = useAuth();
+  const { toast } = useToast();
   
   const [course, setCourse] = useState<Course | null>(null);
   const [modules, setModules] = useState<CourseModule[]>([]);
   const [lessons, setLessons] = useState<Lesson[]>([]);
   const [currentLesson, setCurrentLesson] = useState<Lesson | null>(null);
+  const [lessonProgress, setLessonProgress] = useState<Record<string, LessonProgress>>({});
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -90,7 +93,25 @@ export default function CoursePlayer() {
           .order('order_index', { ascending: true });
 
         if (lessonsError) throw lessonsError;
-        setLessons((lessonsData || []) as Lesson[]);
+        const fetchedLessons = (lessonsData || []) as Lesson[];
+        setLessons(fetchedLessons);
+
+        // Fetch user's lesson progress for these lessons
+        if (user && fetchedLessons.length > 0) {
+          const lessonIds = fetchedLessons.map(l => l.id);
+          const { data: progressData } = await fromTable('lesson_progress')
+            .select('*')
+            .eq('user_id', user.id)
+            .in('lesson_id', lessonIds);
+
+          if (progressData) {
+            const progressMap: Record<string, LessonProgress> = {};
+            (progressData as LessonProgress[]).forEach(p => {
+              progressMap[p.lesson_id] = p;
+            });
+            setLessonProgress(progressMap);
+          }
+        }
       }
     } catch (error) {
       console.error('Error fetching course data:', error);
@@ -98,6 +119,102 @@ export default function CoursePlayer() {
       setIsLoading(false);
     }
   };
+
+  // Upsert lesson progress when opening a lesson
+  const trackLessonOpen = useCallback(async (lessonId: string) => {
+    if (!user) return;
+
+    try {
+      const { error } = await fromTable('lesson_progress')
+        .upsert({
+          user_id: user.id,
+          lesson_id: lessonId,
+          time_spent: lessonProgress[lessonId]?.time_spent || 0,
+          last_position: lessonProgress[lessonId]?.last_position || 0,
+          completed: lessonProgress[lessonId]?.completed || false,
+        } as any, {
+          onConflict: 'user_id,lesson_id',
+        });
+
+      if (error) {
+        console.error('Error tracking lesson open:', error);
+      }
+    } catch (error) {
+      console.error('Error tracking lesson open:', error);
+    }
+  }, [user, lessonProgress]);
+
+  // Update progress (position, time spent)
+  const updateProgress = useCallback(async (
+    lessonId: string, 
+    updates: { last_position?: number; time_spent?: number }
+  ) => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await fromTable('lesson_progress')
+        .upsert({
+          user_id: user.id,
+          lesson_id: lessonId,
+          ...updates,
+        } as any, {
+          onConflict: 'user_id,lesson_id',
+        })
+        .select()
+        .maybeSingle();
+
+      if (error) {
+        console.error('Error updating progress:', error);
+        return;
+      }
+
+      if (data) {
+        setLessonProgress(prev => ({
+          ...prev,
+          [lessonId]: data as LessonProgress,
+        }));
+      }
+    } catch (error) {
+      console.error('Error updating progress:', error);
+    }
+  }, [user]);
+
+  // Mark lesson as complete
+  const markLessonComplete = useCallback(async (lessonId: string) => {
+    if (!user) return;
+
+    try {
+      const { data, error } = await fromTable('lesson_progress')
+        .upsert({
+          user_id: user.id,
+          lesson_id: lessonId,
+          completed: true,
+          completed_at: new Date().toISOString(),
+        } as any, {
+          onConflict: 'user_id,lesson_id',
+        })
+        .select()
+        .maybeSingle();
+
+      if (error) {
+        console.error('Error marking lesson complete:', error);
+        return;
+      }
+
+      if (data) {
+        setLessonProgress(prev => ({
+          ...prev,
+          [lessonId]: data as LessonProgress,
+        }));
+        toast({
+          title: 'Lesson completed!',
+          description: 'Your progress has been saved.',
+        });
+      }
+    } catch (error) {
+      console.error('Error marking lesson complete:', error);
+    }
+  }, [user, toast]);
 
   const getLessonsForModule = (moduleId: string) => {
     return lessons.filter(l => l.module_id === moduleId);
@@ -204,18 +321,26 @@ export default function CoursePlayer() {
                           moduleLessons.map((lesson) => {
                             const LessonIcon = getLessonIcon(lesson.lesson_type);
                             const isActive = currentLesson?.id === lesson.id;
+                            const isCompleted = lessonProgress[lesson.id]?.completed;
 
                             return (
                               <SidebarMenuItem key={lesson.id}>
                                 <SidebarMenuButton
-                                  onClick={() => setCurrentLesson(lesson)}
+                                  onClick={() => {
+                                    setCurrentLesson(lesson);
+                                    trackLessonOpen(lesson.id);
+                                  }}
                                   className={`w-full justify-start px-4 py-2 ${
                                     isActive 
                                       ? 'bg-primary/10 text-primary font-medium' 
                                       : 'hover:bg-muted/50'
                                   }`}
                                 >
-                                  <LessonIcon className="h-4 w-4 mr-2 shrink-0" />
+                                  {isCompleted ? (
+                                    <CheckCircle className="h-4 w-4 mr-2 shrink-0 text-success" />
+                                  ) : (
+                                    <LessonIcon className="h-4 w-4 mr-2 shrink-0" />
+                                  )}
                                   <span className="truncate">{lesson.title}</span>
                                 </SidebarMenuButton>
                               </SidebarMenuItem>
@@ -253,7 +378,12 @@ export default function CoursePlayer() {
           {/* Lesson Content */}
           <div className="flex-1 overflow-auto">
             {currentLesson ? (
-              <LessonViewer lesson={currentLesson} />
+              <LessonViewer 
+                lesson={currentLesson} 
+                progress={lessonProgress[currentLesson.id]}
+                onUpdateProgress={(updates) => updateProgress(currentLesson.id, updates)}
+                onMarkComplete={() => markLessonComplete(currentLesson.id)}
+              />
             ) : (
               <div className="h-full flex items-center justify-center text-muted-foreground">
                 <div className="text-center">
@@ -269,9 +399,55 @@ export default function CoursePlayer() {
   );
 }
 
+interface LessonViewerProps {
+  lesson: Lesson;
+  progress?: LessonProgress;
+  onUpdateProgress: (updates: { last_position?: number; time_spent?: number }) => void;
+  onMarkComplete: () => void;
+}
+
 // Lesson Viewer Component
-function LessonViewer({ lesson }: { lesson: Lesson }) {
+function LessonViewer({ lesson, progress, onUpdateProgress, onMarkComplete }: LessonViewerProps) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const timeSpentRef = useRef(0);
+  const startTimeRef = useRef(Date.now());
   const content = lesson.content as Record<string, unknown> | null;
+
+  // Track time spent
+  useEffect(() => {
+    startTimeRef.current = Date.now();
+    timeSpentRef.current = progress?.time_spent || 0;
+
+    return () => {
+      // Save time spent when leaving lesson
+      const additionalTime = Math.floor((Date.now() - startTimeRef.current) / 1000);
+      const totalTime = timeSpentRef.current + additionalTime;
+      onUpdateProgress({ time_spent: totalTime });
+    };
+  }, [lesson.id]);
+
+  // Set initial video position
+  useEffect(() => {
+    if (videoRef.current && progress?.last_position) {
+      videoRef.current.currentTime = progress.last_position;
+    }
+  }, [progress?.last_position, lesson.id]);
+
+  const handleVideoTimeUpdate = () => {
+    if (videoRef.current) {
+      const currentTime = Math.floor(videoRef.current.currentTime);
+      // Update position every 10 seconds
+      if (currentTime % 10 === 0 && currentTime > 0) {
+        onUpdateProgress({ last_position: currentTime });
+      }
+    }
+  };
+
+  const handleVideoEnded = () => {
+    if (!progress?.completed) {
+      onMarkComplete();
+    }
+  };
 
   if (lesson.lesson_type === 'video') {
     const videoUrl = content?.url as string | undefined;
@@ -283,10 +459,13 @@ function LessonViewer({ lesson }: { lesson: Lesson }) {
           <div className="aspect-video bg-black rounded-lg overflow-hidden mb-6">
             {videoUrl ? (
               <video 
+                ref={videoRef}
                 src={videoUrl} 
                 controls 
                 className="w-full h-full"
                 poster={content?.thumbnail as string | undefined}
+                onTimeUpdate={handleVideoTimeUpdate}
+                onEnded={handleVideoEnded}
               >
                 Your browser does not support the video tag.
               </video>
@@ -302,7 +481,20 @@ function LessonViewer({ lesson }: { lesson: Lesson }) {
 
           {/* Lesson Info */}
           <div className="space-y-4">
-            <h2 className="text-2xl font-display font-bold">{lesson.title}</h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-2xl font-display font-bold">{lesson.title}</h2>
+              {progress?.completed ? (
+                <span className="flex items-center gap-1 text-success text-sm">
+                  <CheckCircle className="h-4 w-4" />
+                  Completed
+                </span>
+              ) : (
+                <Button size="sm" variant="outline" onClick={onMarkComplete}>
+                  <CheckCircle className="h-4 w-4 mr-1" />
+                  Mark Complete
+                </Button>
+              )}
+            </div>
             <p className="text-sm text-muted-foreground">
               Duration: {lesson.duration} minutes
             </p>
@@ -321,7 +513,20 @@ function LessonViewer({ lesson }: { lesson: Lesson }) {
     return (
       <div className="p-6">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-2xl font-display font-bold mb-6">{lesson.title}</h2>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-display font-bold">{lesson.title}</h2>
+            {progress?.completed ? (
+              <span className="flex items-center gap-1 text-success text-sm">
+                <CheckCircle className="h-4 w-4" />
+                Completed
+              </span>
+            ) : (
+              <Button size="sm" variant="outline" onClick={onMarkComplete}>
+                <CheckCircle className="h-4 w-4 mr-1" />
+                Mark Complete
+              </Button>
+            )}
+          </div>
           
           {textContent ? (
             <div 
@@ -343,7 +548,20 @@ function LessonViewer({ lesson }: { lesson: Lesson }) {
   return (
     <div className="p-6">
       <div className="max-w-3xl mx-auto">
-        <h2 className="text-2xl font-display font-bold mb-4">{lesson.title}</h2>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-2xl font-display font-bold">{lesson.title}</h2>
+          {progress?.completed ? (
+            <span className="flex items-center gap-1 text-success text-sm">
+              <CheckCircle className="h-4 w-4" />
+              Completed
+            </span>
+          ) : (
+            <Button size="sm" variant="outline" onClick={onMarkComplete}>
+              <CheckCircle className="h-4 w-4 mr-1" />
+              Mark Complete
+            </Button>
+          )}
+        </div>
         <p className="text-muted-foreground mb-4">
           Lesson type: <span className="capitalize">{lesson.lesson_type}</span>
         </p>
