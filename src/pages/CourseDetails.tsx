@@ -108,18 +108,38 @@ export default function CourseDetails() {
           progress: 0,
         } as any);
 
-      if (error) throw error;
+      if (error) {
+        // Handle duplicate enrollment (unique constraint violation)
+        if (error.code === '23505') {
+          toast({
+            title: 'Already enrolled',
+            description: 'You are already enrolled in this course.',
+          });
+          await fetchCourseData();
+          return;
+        }
+        // Handle RLS policy violation
+        if (error.code === '42501') {
+          toast({
+            title: 'Permission denied',
+            description: 'You do not have permission to enroll in this course.',
+            variant: 'destructive',
+          });
+          return;
+        }
+        throw error;
+      }
 
       toast({
         title: 'Enrolled successfully!',
         description: 'You now have full access to this course.',
       });
 
-      fetchCourseData();
+      await fetchCourseData();
     } catch (error: any) {
       toast({
         title: 'Enrollment failed',
-        description: error.message,
+        description: error.message || 'An unexpected error occurred.',
         variant: 'destructive',
       });
     } finally {
