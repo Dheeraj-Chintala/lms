@@ -292,6 +292,12 @@ export default function CourseDetails() {
                   <p className="text-sm text-muted-foreground text-center">
                     Progress: {enrollment?.progress || 0}%
                   </p>
+                  <Button asChild className="w-full bg-gradient-primary hover:opacity-90">
+                    <Link to={`/courses/${course.id}/learn`}>
+                      <PlayCircle className="mr-2 h-4 w-4" />
+                      Start Learning
+                    </Link>
+                  </Button>
                 </div>
               ) : (
                 <Button 
