@@ -44,7 +44,7 @@ export default function CourseDetails() {
   const fetchCourseData = async () => {
     setIsLoading(true);
     try {
-      // Fetch course - RLS handles visibility
+      // Step 1: Fetch course - RLS handles visibility
       const { data: courseData, error: courseError } = await fromTable('courses')
         .select('*')
         .eq('id', id)
@@ -58,7 +58,8 @@ export default function CourseDetails() {
         return;
       }
 
-      // Fetch enrollment status
+      // Step 2: Fetch user's enrollment
+      let userEnrollment: Enrollment | null = null;
       if (user) {
         const { data: enrollmentData } = await fromTable('enrollments')
           .select('*')
@@ -66,10 +67,11 @@ export default function CourseDetails() {
           .eq('user_id', user.id)
           .maybeSingle();
         
-        setEnrollment(enrollmentData as Enrollment | null);
+        userEnrollment = enrollmentData as Enrollment | null;
+        setEnrollment(userEnrollment);
       }
 
-      // Fetch modules
+      // Step 3: Fetch modules - RLS handles visibility
       const { data: modulesData, error: modulesError } = await fromTable('course_modules')
         .select('*')
         .eq('course_id', id)
@@ -78,16 +80,27 @@ export default function CourseDetails() {
       if (modulesError) throw modulesError;
       setModules((modulesData || []) as CourseModule[]);
 
-      // Fetch lessons for all modules
+      // Step 4: Fetch lessons based on enrollment status
       if (modulesData && modulesData.length > 0) {
         const moduleIds = (modulesData as CourseModule[]).map(m => m.id);
-        const { data: lessonsData, error: lessonsError } = await fromTable('lessons')
+        
+        // Build query - let Supabase/RLS decide visibility
+        let lessonsQuery = fromTable('lessons')
           .select('*')
           .in('module_id', moduleIds)
           .order('order_index', { ascending: true });
 
+        // If not enrolled, only request preview lessons
+        if (!userEnrollment) {
+          lessonsQuery = lessonsQuery.eq('is_preview', true);
+        }
+
+        const { data: lessonsData, error: lessonsError } = await lessonsQuery;
+
         if (lessonsError) throw lessonsError;
         setLessons((lessonsData || []) as Lesson[]);
+      } else {
+        setLessons([]);
       }
     } catch (error) {
       console.error('Error fetching course:', error);
@@ -151,9 +164,6 @@ export default function CourseDetails() {
     return lessons.filter(l => l.module_id === moduleId);
   };
 
-  const canViewLesson = (lesson: Lesson) => {
-    return isEnrolled || lesson.is_preview;
-  };
 
   const getLessonIcon = (type: string) => {
     switch (type) {
@@ -306,8 +316,7 @@ export default function CourseDetails() {
               <Accordion type="multiple" className="w-full">
                 {modules.map((module, index) => {
                   const moduleLessons = getLessonsForModule(module.id);
-                  const visibleLessons = moduleLessons.filter(canViewLesson);
-                  const lockedCount = moduleLessons.length - visibleLessons.length;
+                  const hasLessons = moduleLessons.length > 0;
 
                   return (
                     <AccordionItem key={module.id} value={module.id}>
@@ -319,9 +328,12 @@ export default function CourseDetails() {
                           <div>
                             <p className="font-medium">{module.title}</p>
                             <p className="text-sm text-muted-foreground">
-                              {moduleLessons.length} lessons
-                              {lockedCount > 0 && !isEnrolled && (
-                                <span className="ml-2">• {lockedCount} locked</span>
+                              {hasLessons ? (
+                                <>
+                                  {moduleLessons.length} {isEnrolled ? 'lessons' : 'preview lessons'}
+                                </>
+                              ) : (
+                                !isEnrolled && <span className="flex items-center gap-1"><Lock className="h-3 w-3" /> Enroll to access</span>
                               )}
                             </p>
                           </div>
@@ -329,43 +341,45 @@ export default function CourseDetails() {
                       </AccordionTrigger>
                       <AccordionContent>
                         <div className="space-y-2 pl-11">
-                          {moduleLessons.map(lesson => {
-                            const canView = canViewLesson(lesson);
-                            const LessonIcon = getLessonIcon(lesson.lesson_type);
+                          {hasLessons ? (
+                            moduleLessons.map(lesson => {
+                              const LessonIcon = getLessonIcon(lesson.lesson_type);
 
-                            return (
-                              <div 
-                                key={lesson.id}
-                                className={`flex items-center justify-between p-3 rounded-lg border ${
-                                  canView 
-                                    ? 'bg-background hover:bg-muted/50 cursor-pointer' 
-                                    : 'bg-muted/30 opacity-60'
-                                }`}
-                              >
-                                <div className="flex items-center gap-3">
-                                  <LessonIcon className="h-4 w-4 text-muted-foreground" />
-                                  <div>
-                                    <p className={`text-sm font-medium ${!canView && 'text-muted-foreground'}`}>
-                                      {lesson.title}
-                                    </p>
-                                    <p className="text-xs text-muted-foreground">
-                                      {lesson.duration} min • {lesson.lesson_type}
-                                    </p>
+                              return (
+                                <div 
+                                  key={lesson.id}
+                                  className="flex items-center justify-between p-3 rounded-lg border bg-background hover:bg-muted/50 cursor-pointer"
+                                >
+                                  <div className="flex items-center gap-3">
+                                    <LessonIcon className="h-4 w-4 text-muted-foreground" />
+                                    <div>
+                                      <p className="text-sm font-medium">
+                                        {lesson.title}
+                                      </p>
+                                      <p className="text-xs text-muted-foreground">
+                                        {lesson.duration} min • {lesson.lesson_type}
+                                      </p>
+                                    </div>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    {lesson.is_preview && !isEnrolled && (
+                                      <Badge variant="secondary" className="text-xs">
+                                        Preview
+                                      </Badge>
+                                    )}
                                   </div>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                  {lesson.is_preview && !isEnrolled && (
-                                    <Badge variant="secondary" className="text-xs">
-                                      Preview
-                                    </Badge>
-                                  )}
-                                  {!canView && (
-                                    <Lock className="h-4 w-4 text-muted-foreground" />
-                                  )}
-                                </div>
+                              );
+                            })
+                          ) : (
+                            <div className="flex items-center gap-3 p-4 rounded-lg border bg-muted/30 text-muted-foreground">
+                              <Lock className="h-5 w-5" />
+                              <div>
+                                <p className="text-sm font-medium">Content locked</p>
+                                <p className="text-xs">Enroll in this course to access all lessons</p>
                               </div>
-                            );
-                          })}
+                            </div>
+                          )}
                         </div>
                       </AccordionContent>
                     </AccordionItem>
