@@ -23,6 +23,11 @@ import OrgOverview from "./pages/org/OrgOverview";
 import OrgCourses from "./pages/org/OrgCourses";
 import OrgUsers from "./pages/org/OrgUsers";
 
+// Instructor Pages
+import InstructorDashboard from "./pages/instructor/InstructorDashboard";
+import InstructorCourses from "./pages/instructor/InstructorCourses";
+import CreateCourse from "./pages/instructor/CreateCourse";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -74,6 +79,21 @@ const App = () => (
             <Route path="/my-courses" element={
               <ProtectedRoute allowedRoles={['instructor', 'content_creator']}>
                 <MyCourses />
+              </ProtectedRoute>
+            } />
+            <Route path="/instructor/dashboard" element={
+              <ProtectedRoute allowedRoles={['instructor', 'content_creator']}>
+                <InstructorDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/instructor/courses" element={
+              <ProtectedRoute allowedRoles={['instructor', 'content_creator']}>
+                <InstructorCourses />
+              </ProtectedRoute>
+            } />
+            <Route path="/instructor/courses/create" element={
+              <ProtectedRoute allowedRoles={['instructor', 'content_creator']}>
+                <CreateCourse />
               </ProtectedRoute>
             } />
 

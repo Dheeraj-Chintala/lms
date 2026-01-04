@@ -36,7 +36,7 @@ export default function Login() {
       return '/org/overview';
     }
     if (userRoles.includes('instructor') || userRoles.includes('content_creator')) {
-      return '/dashboard'; // Instructor dashboard
+      return '/instructor/dashboard';
     }
     // Default for learner/manager
     return '/dashboard';
