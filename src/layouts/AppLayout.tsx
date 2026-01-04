@@ -41,7 +41,13 @@ const getNavItems = (): NavItem[] => [
     label: 'Dashboard', 
     href: '/dashboard', 
     icon: <LayoutDashboard className="h-5 w-5" />,
-    allowedRoles: ['learner', 'instructor', 'org_admin', 'manager', 'content_creator', 'super_admin'],
+    allowedRoles: ['learner', 'manager'],
+  },
+  { 
+    label: 'Dashboard', 
+    href: '/instructor/dashboard', 
+    icon: <LayoutDashboard className="h-5 w-5" />,
+    allowedRoles: ['instructor', 'content_creator'],
   },
   { 
     label: 'My Learning', 
@@ -57,13 +63,13 @@ const getNavItems = (): NavItem[] => [
   },
   { 
     label: 'My Courses', 
-    href: '/my-courses', 
+    href: '/instructor/courses', 
     icon: <Library className="h-5 w-5" />,
     allowedRoles: ['instructor', 'content_creator'],
   },
   { 
     label: 'Create Course', 
-    href: '/courses/create', 
+    href: '/instructor/courses/create', 
     icon: <PlusCircle className="h-5 w-5" />,
     allowedRoles: ['instructor', 'content_creator'],
   },
