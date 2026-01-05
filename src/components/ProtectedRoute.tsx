@@ -8,6 +8,26 @@ interface ProtectedRouteProps {
   allowedRoles?: AppRole[];
 }
 
+// Role hierarchy for redirect priority
+const ROLE_PRIORITY: { role: AppRole; path: string }[] = [
+  { role: 'super_admin', path: '/org/overview' },
+  { role: 'org_admin', path: '/org/overview' },
+  { role: 'instructor', path: '/instructor/dashboard' },
+  { role: 'content_creator', path: '/instructor/dashboard' },
+  { role: 'manager', path: '/dashboard' },
+  { role: 'learner', path: '/dashboard' },
+  { role: 'guest', path: '/courses' },
+];
+
+function getDefaultPathForRoles(userRoles: AppRole[]): string {
+  for (const { role, path } of ROLE_PRIORITY) {
+    if (userRoles.includes(role)) {
+      return path;
+    }
+  }
+  return '/dashboard';
+}
+
 export default function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) {
   const { user, isLoading, roles } = useAuth();
   const location = useLocation();
@@ -27,10 +47,13 @@ export default function ProtectedRoute({ children, allowedRoles }: ProtectedRout
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
+  // Check role-based access if allowedRoles specified
   if (allowedRoles && allowedRoles.length > 0) {
     const hasRequiredRole = allowedRoles.some(role => roles.includes(role));
     if (!hasRequiredRole) {
-      return <Navigate to="/dashboard" replace />;
+      // Redirect to appropriate dashboard based on user's actual roles
+      const redirectPath = getDefaultPathForRoles(roles);
+      return <Navigate to={redirectPath} replace />;
     }
   }
 
