@@ -26,6 +26,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
   hasRole: (role: AppRole) => boolean;
+  hasAnyRole: (roles: AppRole[]) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -47,7 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return role;
       }
     }
-    return roles[0]; // Fallback to first role if none match priority
+    return roles[0];
   }, [roles]);
 
   useEffect(() => {
@@ -142,6 +143,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const hasRole = (role: AppRole) => roles.includes(role);
+  
+  const hasAnyRole = (checkRoles: AppRole[]) => 
+    checkRoles.some(role => roles.includes(role));
 
   const value = useMemo(() => ({
     user,
@@ -154,6 +158,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     signIn,
     signOut,
     hasRole,
+    hasAnyRole,
   }), [user, session, profile, roles, primaryRole, orgId, isLoading]);
 
   return (

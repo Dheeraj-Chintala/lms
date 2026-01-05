@@ -77,19 +77,19 @@ const getNavItems = (): NavItem[] => [
     label: 'Org Overview', 
     href: '/org/overview', 
     icon: <Building2 className="h-5 w-5" />,
-    allowedRoles: ['org_admin'],
+    allowedRoles: ['org_admin', 'super_admin'],
   },
   { 
     label: 'Courses', 
     href: '/org/courses', 
     icon: <BookOpen className="h-5 w-5" />,
-    allowedRoles: ['org_admin'],
+    allowedRoles: ['org_admin', 'super_admin'],
   },
   { 
     label: 'Users', 
     href: '/org/users', 
     icon: <Users className="h-5 w-5" />,
-    allowedRoles: ['org_admin'],
+    allowedRoles: ['org_admin', 'super_admin'],
   },
 ];
 

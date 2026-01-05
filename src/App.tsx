@@ -99,17 +99,17 @@ const App = () => (
 
             {/* Org Admin Routes (Read-only) */}
             <Route path="/org/overview" element={
-              <ProtectedRoute allowedRoles={['org_admin']}>
+              <ProtectedRoute allowedRoles={['org_admin', 'super_admin']}>
                 <OrgOverview />
               </ProtectedRoute>
             } />
             <Route path="/org/courses" element={
-              <ProtectedRoute allowedRoles={['org_admin']}>
+              <ProtectedRoute allowedRoles={['org_admin', 'super_admin']}>
                 <OrgCourses />
               </ProtectedRoute>
             } />
             <Route path="/org/users" element={
-              <ProtectedRoute allowedRoles={['org_admin']}>
+              <ProtectedRoute allowedRoles={['org_admin', 'super_admin']}>
                 <OrgUsers />
               </ProtectedRoute>
             } />
