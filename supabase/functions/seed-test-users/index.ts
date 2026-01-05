@@ -37,6 +37,12 @@ const testUsers: TestUser[] = [
     fullName: 'Bob Manager',
     role: 'manager',
   },
+  {
+    email: 'tester@demo.com',
+    password: 'tester123',
+    fullName: 'rica tester',
+    role: 'tester'
+  },
 ]
 
 Deno.serve(async (req) => {
