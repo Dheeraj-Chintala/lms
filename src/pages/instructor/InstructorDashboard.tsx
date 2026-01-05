@@ -32,6 +32,18 @@ export default function InstructorDashboard() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
+      // Verify user has instructor role
+      const { data: instructorRole } = await fromTable('user_roles')
+        .select('id')
+        .eq('user_id', user.id)
+        .in('role', ['instructor', 'content_creator', 'org_admin', 'super_admin'])
+        .maybeSingle();
+
+      if (!instructorRole) {
+        setIsLoading(false);
+        return;
+      }
+
       // Fetch instructor's courses
       const { data: coursesData, error: coursesError } = await fromTable('courses')
         .select('*')
