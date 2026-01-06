@@ -94,7 +94,7 @@ export default function CoursePlayer() {
       const { data: modulesData, error: modulesError } = await fromTable('course_modules')
         .select('*')
         .eq('course_id', courseId)
-        .order('order_index', { ascending: true });
+        .order('sort_order', { ascending: true });
 
       if (modulesError) throw modulesError;
       setModules((modulesData || []) as CourseModule[]);
@@ -105,7 +105,7 @@ export default function CoursePlayer() {
         const { data: lessonsData, error: lessonsError } = await fromTable('lessons')
           .select('*')
           .in('module_id', moduleIds)
-          .order('order_index', { ascending: true });
+          .order('sort_order', { ascending: true });
 
         if (lessonsError) throw lessonsError;
         const fetchedLessons = (lessonsData || []) as Lesson[];
@@ -343,7 +343,7 @@ export default function CoursePlayer() {
                       <SidebarMenu>
                         {moduleLessons.length > 0 ? (
                           moduleLessons.map((lesson) => {
-                            const LessonIcon = getLessonIcon(lesson.lesson_type);
+                            const LessonIcon = getLessonIcon(lesson.content_type);
                             const isActive = currentLesson?.id === lesson.id;
                             const isCompleted = lessonProgress[lesson.id]?.completed;
 
@@ -473,7 +473,7 @@ function LessonViewer({ lesson, progress, onUpdateProgress, onMarkComplete }: Le
     }
   };
 
-  if (lesson.lesson_type === 'video') {
+  if (lesson.content_type === 'video') {
     const videoUrl = content?.url as string | undefined;
     
     return (
@@ -531,7 +531,7 @@ function LessonViewer({ lesson, progress, onUpdateProgress, onMarkComplete }: Le
     );
   }
 
-  if (lesson.lesson_type === 'text') {
+  if (lesson.content_type === 'text') {
     const textContent = content?.body as string | undefined;
     
     return (
@@ -587,7 +587,7 @@ function LessonViewer({ lesson, progress, onUpdateProgress, onMarkComplete }: Le
           )}
         </div>
         <p className="text-muted-foreground mb-4">
-          Lesson type: <span className="capitalize">{lesson.lesson_type}</span>
+          Lesson type: <span className="capitalize">{lesson.content_type}</span>
         </p>
         <p className="text-sm text-muted-foreground">
           Duration: {lesson.duration} minutes

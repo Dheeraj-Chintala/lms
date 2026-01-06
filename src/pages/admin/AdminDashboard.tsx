@@ -275,10 +275,10 @@ export default function AdminDashboard() {
                 description="View and manage all users" 
               />
               <QuickAction 
-                href="/admin/reports" 
+                href="/org/overview" 
                 icon={<TrendingUp className="h-5 w-5" />} 
-                title="View Reports" 
-                description="Analytics and progress reports" 
+                title="Organization Overview" 
+                description="View org stats and analytics" 
               />
             </div>
           </CardContent>

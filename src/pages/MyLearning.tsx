@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import AppLayout from '@/layouts/AppLayout';
@@ -249,15 +249,14 @@ export default function MyLearning() {
   );
 }
 
-function EnrolledCourseCard({ 
-  enrollment,
-  progress,
-  isCompleted = false 
-}: { 
-  enrollment: EnrolledCourse;
-  progress?: CourseProgress;
-  isCompleted?: boolean;
-}) {
+const EnrolledCourseCard = React.forwardRef<
+  HTMLDivElement,
+  { 
+    enrollment: EnrolledCourse;
+    progress?: CourseProgress;
+    isCompleted?: boolean;
+  }
+>(({ enrollment, progress, isCompleted = false }, ref) => {
   const course = enrollment.course;
   const displayProgress = progress?.progressPercent ?? 0;
   
@@ -332,7 +331,9 @@ function EnrolledCourseCard({
       </div>
     </Card>
   );
-}
+});
+
+EnrolledCourseCard.displayName = 'EnrolledCourseCard';
 
 function CourseListSkeleton() {
   return (
