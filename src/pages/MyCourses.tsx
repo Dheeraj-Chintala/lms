@@ -6,7 +6,7 @@ import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { fromTable } from '@/lib/supabase-helpers';
-import { BookOpen, Clock, PlusCircle, Edit, Eye } from 'lucide-react';
+import { BookOpen, Clock, PlusCircle, Edit } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Course } from '@/types/database';
 
@@ -37,7 +37,7 @@ export default function MyCourses() {
     }
   };
 
-  const statusColors = {
+  const statusColors: Record<string, string> = {
     draft: 'bg-warning/10 text-warning border-warning/20',
     published: 'bg-success/10 text-success border-success/20',
     archived: 'bg-muted text-muted-foreground border-muted',
@@ -86,7 +86,7 @@ export default function MyCourses() {
                     <BookOpen className="h-12 w-12 text-primary-foreground/80" />
                   )}
                   <div className="absolute top-3 right-3">
-                    <Badge variant="outline" className={`${statusColors[course.status]} backdrop-blur-sm`}>
+                    <Badge variant="outline" className={`${statusColors[course.status] || ''} backdrop-blur-sm`}>
                       {course.status}
                     </Badge>
                   </div>
@@ -101,11 +101,11 @@ export default function MyCourses() {
                   <div className="flex items-center gap-4 mt-3 text-sm text-muted-foreground">
                     <div className="flex items-center gap-1">
                       <Clock className="h-4 w-4" />
-                      <span>{course.estimated_duration || 0}h</span>
+                      <span>{course.duration || 'N/A'}</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <Eye className="h-4 w-4" />
-                      <span>{course.visibility.replace('_', ' ')}</span>
+                      <BookOpen className="h-4 w-4" />
+                      <span>{course.category || 'General'}</span>
                     </div>
                   </div>
                 </CardContent>
