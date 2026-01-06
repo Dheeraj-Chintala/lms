@@ -10,7 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { fromTable } from '@/lib/supabase-helpers';
-import { ArrowLeft, Loader2, Save, Send, Trash2 } from 'lucide-react';
+import { ArrowLeft, Loader2, Save, Send, Trash2, Layers } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   AlertDialog,
@@ -210,38 +210,46 @@ export default function EditCourse() {
         </Link>
 
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-4 flex-wrap">
           <div>
             <h1 className="text-3xl font-display font-bold">Edit Course</h1>
             <p className="text-muted-foreground mt-1">
               Update your course details.
             </p>
           </div>
-          <AlertDialog>
-            <AlertDialogTrigger asChild>
-              <Button variant="outline" className="text-destructive hover:text-destructive">
-                <Trash2 className="h-4 w-4 mr-2" />
-                Delete
-              </Button>
-            </AlertDialogTrigger>
-            <AlertDialogContent>
-              <AlertDialogHeader>
-                <AlertDialogTitle>Delete Course</AlertDialogTitle>
-                <AlertDialogDescription>
-                  Are you sure you want to delete this course? This action cannot be undone.
-                </AlertDialogDescription>
-              </AlertDialogHeader>
-              <AlertDialogFooter>
-                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                <AlertDialogAction
-                  onClick={handleDelete}
-                  className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                >
-                  {isDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Delete'}
-                </AlertDialogAction>
-              </AlertDialogFooter>
-            </AlertDialogContent>
-          </AlertDialog>
+          <div className="flex gap-2">
+            <Button asChild variant="outline">
+              <Link to={`/instructor/courses/${id}/content`}>
+                <Layers className="h-4 w-4 mr-2" />
+                Manage Content
+              </Link>
+            </Button>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <Button variant="outline" className="text-destructive hover:text-destructive">
+                  <Trash2 className="h-4 w-4 mr-2" />
+                  Delete
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Delete Course</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Are you sure you want to delete this course? This action cannot be undone.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Cancel</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleDelete}
+                    className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                  >
+                    {isDeleting ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Delete'}
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          </div>
         </div>
 
         {/* Form */}

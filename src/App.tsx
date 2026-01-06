@@ -28,6 +28,7 @@ import InstructorDashboard from "./pages/instructor/InstructorDashboard";
 import InstructorCourses from "./pages/instructor/InstructorCourses";
 import CreateCourse from "./pages/instructor/CreateCourse";
 import EditCourse from "./pages/instructor/EditCourse";
+import CourseContentBuilder from "./pages/instructor/CourseContentBuilder";
 
 // Admin Pages
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -114,6 +115,11 @@ const App = () => (
             <Route path="/instructor/courses/:id/edit" element={
               <ProtectedRoute allowedRoles={['instructor', 'content_creator']}>
                 <EditCourse />
+              </ProtectedRoute>
+            } />
+            <Route path="/instructor/courses/:id/content" element={
+              <ProtectedRoute allowedRoles={['instructor', 'content_creator']}>
+                <CourseContentBuilder />
               </ProtectedRoute>
             } />
 
