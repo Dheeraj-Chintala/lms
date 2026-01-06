@@ -27,6 +27,16 @@ import OrgUsers from "./pages/org/OrgUsers";
 import InstructorDashboard from "./pages/instructor/InstructorDashboard";
 import InstructorCourses from "./pages/instructor/InstructorCourses";
 import CreateCourse from "./pages/instructor/CreateCourse";
+import EditCourse from "./pages/instructor/EditCourse";
+
+// Admin Pages
+import AdminDashboard from "./pages/admin/AdminDashboard";
+
+// Manager Pages
+import ManagerDashboard from "./pages/manager/ManagerDashboard";
+
+// Student Pages
+import StudentDashboard from "./pages/student/StudentDashboard";
 
 const queryClient = new QueryClient();
 
@@ -53,7 +63,12 @@ const App = () => (
               </ProtectedRoute>
             } />
 
-            {/* Learner/Manager Routes */}
+            {/* Student Routes */}
+            <Route path="/student/dashboard" element={
+              <ProtectedRoute allowedRoles={['learner']}>
+                <StudentDashboard />
+              </ProtectedRoute>
+            } />
             <Route path="/courses" element={
               <ProtectedRoute allowedRoles={['learner', 'manager']}>
                 <BrowseCourses />
@@ -96,8 +111,37 @@ const App = () => (
                 <CreateCourse />
               </ProtectedRoute>
             } />
+            <Route path="/instructor/courses/:id/edit" element={
+              <ProtectedRoute allowedRoles={['instructor', 'content_creator']}>
+                <EditCourse />
+              </ProtectedRoute>
+            } />
 
-            {/* Org Admin Routes (Read-only) */}
+            {/* Admin Routes */}
+            <Route path="/admin/dashboard" element={
+              <ProtectedRoute allowedRoles={['org_admin', 'super_admin']}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/courses" element={
+              <ProtectedRoute allowedRoles={['org_admin', 'super_admin']}>
+                <OrgCourses />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/users" element={
+              <ProtectedRoute allowedRoles={['org_admin', 'super_admin']}>
+                <OrgUsers />
+              </ProtectedRoute>
+            } />
+
+            {/* Manager Routes */}
+            <Route path="/manager/dashboard" element={
+              <ProtectedRoute allowedRoles={['manager']}>
+                <ManagerDashboard />
+              </ProtectedRoute>
+            } />
+
+            {/* Legacy Org Admin Routes */}
             <Route path="/org/overview" element={
               <ProtectedRoute allowedRoles={['org_admin', 'super_admin']}>
                 <OrgOverview />

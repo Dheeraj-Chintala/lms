@@ -37,29 +37,31 @@ interface NavItem {
 
 // Navigation items with role-based access
 const getNavItems = (): NavItem[] => [
+  // Student/Learner navigation
   { 
     label: 'Dashboard', 
-    href: '/dashboard', 
+    href: '/student/dashboard', 
     icon: <LayoutDashboard className="h-5 w-5" />,
-    allowedRoles: ['learner', 'manager'],
-  },
-  { 
-    label: 'Dashboard', 
-    href: '/instructor/dashboard', 
-    icon: <LayoutDashboard className="h-5 w-5" />,
-    allowedRoles: ['instructor', 'content_creator'],
+    allowedRoles: ['learner'],
   },
   { 
     label: 'My Learning', 
     href: '/my-learning', 
     icon: <GraduationCap className="h-5 w-5" />,
-    allowedRoles: ['learner', 'manager'],
+    allowedRoles: ['learner'],
   },
   { 
     label: 'Browse Courses', 
     href: '/courses', 
     icon: <BookOpen className="h-5 w-5" />,
-    allowedRoles: ['learner', 'manager'],
+    allowedRoles: ['learner'],
+  },
+  // Instructor navigation
+  { 
+    label: 'Dashboard', 
+    href: '/instructor/dashboard', 
+    icon: <LayoutDashboard className="h-5 w-5" />,
+    allowedRoles: ['instructor', 'content_creator'],
   },
   { 
     label: 'My Courses', 
@@ -73,23 +75,43 @@ const getNavItems = (): NavItem[] => [
     icon: <PlusCircle className="h-5 w-5" />,
     allowedRoles: ['instructor', 'content_creator'],
   },
+  // Admin navigation
   { 
-    label: 'Org Overview', 
-    href: '/org/overview', 
-    icon: <Building2 className="h-5 w-5" />,
+    label: 'Dashboard', 
+    href: '/admin/dashboard', 
+    icon: <LayoutDashboard className="h-5 w-5" />,
     allowedRoles: ['org_admin', 'super_admin'],
   },
   { 
     label: 'Courses', 
-    href: '/org/courses', 
+    href: '/admin/courses', 
     icon: <BookOpen className="h-5 w-5" />,
     allowedRoles: ['org_admin', 'super_admin'],
   },
   { 
     label: 'Users', 
-    href: '/org/users', 
+    href: '/admin/users', 
     icon: <Users className="h-5 w-5" />,
     allowedRoles: ['org_admin', 'super_admin'],
+  },
+  // Manager navigation
+  { 
+    label: 'Dashboard', 
+    href: '/manager/dashboard', 
+    icon: <LayoutDashboard className="h-5 w-5" />,
+    allowedRoles: ['manager'],
+  },
+  { 
+    label: 'Browse Courses', 
+    href: '/courses', 
+    icon: <BookOpen className="h-5 w-5" />,
+    allowedRoles: ['manager'],
+  },
+  { 
+    label: 'My Learning', 
+    href: '/my-learning', 
+    icon: <GraduationCap className="h-5 w-5" />,
+    allowedRoles: ['manager'],
   },
 ];
 
