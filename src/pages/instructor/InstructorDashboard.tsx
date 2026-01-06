@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import AppLayout from '@/layouts/AppLayout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { BookOpen, Users, PlusCircle, TrendingUp, Clock, BarChart3 } from 'lucide-react';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { BookOpen, PlusCircle, FileText, CheckCircle } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { fromTable } from '@/lib/supabase-helpers';
 import type { Course } from '@/types/database';
@@ -14,7 +13,6 @@ interface InstructorStats {
   totalCourses: number;
   publishedCourses: number;
   draftCourses: number;
-  totalEnrollments: number;
 }
 
 export default function InstructorDashboard() {
@@ -59,21 +57,10 @@ export default function InstructorDashboard() {
       const published = instructorCourses.filter(c => c.status === 'published').length;
       const drafts = instructorCourses.filter(c => c.status === 'draft').length;
 
-      // Fetch enrollments for instructor's courses
-      let totalEnrollments = 0;
-      if (instructorCourses.length > 0) {
-        const courseIds = instructorCourses.map(c => c.id);
-        const { count } = await fromTable('enrollments')
-          .select('*', { count: 'exact', head: true })
-          .in('course_id', courseIds);
-        totalEnrollments = count || 0;
-      }
-
       setStats({
         totalCourses: instructorCourses.length,
         publishedCourses: published,
         draftCourses: drafts,
-        totalEnrollments,
       });
     } catch (error) {
       console.error('Error fetching instructor data:', error);
@@ -91,119 +78,104 @@ export default function InstructorDashboard() {
 
   return (
     <AppLayout>
-      <div className="space-y-8 animate-fade-in">
+      <div className="space-y-6 animate-fade-in">
         {/* Header */}
         <div>
-          <h1 className="text-3xl font-display font-bold">
+          <h1 className="text-2xl font-semibold text-foreground">
             {getGreeting()}, {profile?.full_name?.split(' ')[0] || 'Instructor'}!
           </h1>
-          <p className="text-muted-foreground mt-1">
+          <p className="text-muted-foreground text-sm mt-1">
             Manage your courses and track student progress.
           </p>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid gap-4 md:grid-cols-4">
+        {/* Stats Cards - Three in a row */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <StatCard 
-            title="Total Courses" 
+            title="My Courses" 
             value={stats?.totalCourses} 
             icon={<BookOpen className="h-5 w-5" />}
-            description="Courses created"
             isLoading={isLoading}
           />
           <StatCard 
             title="Published" 
             value={stats?.publishedCourses} 
-            icon={<TrendingUp className="h-5 w-5" />}
-            description="Live courses"
+            icon={<CheckCircle className="h-5 w-5" />}
             isLoading={isLoading}
           />
           <StatCard 
             title="Drafts" 
             value={stats?.draftCourses} 
-            icon={<Clock className="h-5 w-5" />}
-            description="In progress"
-            isLoading={isLoading}
-          />
-          <StatCard 
-            title="Enrollments" 
-            value={stats?.totalEnrollments} 
-            icon={<Users className="h-5 w-5" />}
-            description="Total students"
+            icon={<FileText className="h-5 w-5" />}
             isLoading={isLoading}
           />
         </div>
 
-        {/* Main Content Grid */}
-        <div className="grid gap-6 lg:grid-cols-2">
-          {/* My Courses */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg font-display">My Courses</CardTitle>
-              <CardDescription>Courses you've created</CardDescription>
+        {/* Main Content Grid - Two cards side by side */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* My Courses Card */}
+          <Card className="bg-card border border-border rounded-xl shadow-sm">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-semibold text-foreground">My Courses</CardTitle>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pt-0">
               {isLoading ? (
                 <div className="space-y-3">
                   {[1, 2, 3].map(i => (
-                    <Skeleton key={i} className="h-16 w-full" />
+                    <Skeleton key={i} className="h-14 w-full rounded-lg" />
                   ))}
                 </div>
               ) : courses.length > 0 ? (
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {courses.slice(0, 5).map(course => (
                     <CourseListItem key={course.id} course={course} />
                   ))}
                   {courses.length > 5 && (
-                    <Button asChild variant="ghost" className="w-full">
-                      <Link to="/instructor/courses">View all courses</Link>
-                    </Button>
+                    <Link 
+                      to="/instructor/courses" 
+                      className="block text-center text-sm text-primary hover:underline pt-2"
+                    >
+                      View all courses →
+                    </Link>
                   )}
                 </div>
               ) : (
-                <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center text-muted-foreground mb-4">
-                    <BookOpen className="h-8 w-8" />
+                <div className="flex flex-col items-center justify-center py-8 text-center">
+                  <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center text-muted-foreground mb-3">
+                    <BookOpen className="h-6 w-6" />
                   </div>
-                  <p className="font-medium mb-2">No courses yet</p>
-                  <p className="text-sm text-muted-foreground mb-4">
+                  <p className="text-sm font-medium text-foreground mb-1">No courses yet</p>
+                  <p className="text-xs text-muted-foreground mb-4">
                     Create your first course to get started
                   </p>
-                  <Button asChild className="bg-gradient-primary hover:opacity-90">
-                    <Link to="/instructor/courses/create">
-                      <PlusCircle className="mr-2 h-4 w-4" />
-                      Create Course
-                    </Link>
-                  </Button>
+                  <Link
+                    to="/instructor/courses/create"
+                    className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary-foreground bg-primary rounded-lg hover:bg-primary/90 transition-colors"
+                  >
+                    <PlusCircle className="h-4 w-4" />
+                    Create Course
+                  </Link>
                 </div>
               )}
             </CardContent>
           </Card>
 
-          {/* Quick Actions */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="text-lg font-display">Quick Actions</CardTitle>
-              <CardDescription>Manage your content</CardDescription>
+          {/* Quick Actions Card */}
+          <Card className="bg-card border border-border rounded-xl shadow-sm">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base font-semibold text-foreground">Quick Actions</CardTitle>
             </CardHeader>
-            <CardContent className="grid gap-3">
-              <QuickAction 
+            <CardContent className="pt-0 space-y-3">
+              <QuickActionButton 
                 href="/instructor/courses/create" 
                 icon={<PlusCircle className="h-5 w-5" />} 
-                title="Create New Course" 
-                description="Build a new learning experience" 
+                title="Create Course" 
               />
-              <QuickAction 
+              <QuickActionButton 
                 href="/instructor/courses" 
                 icon={<BookOpen className="h-5 w-5" />} 
-                title="Manage Courses" 
-                description="View and edit your courses" 
-              />
-              <QuickAction 
-                href="/instructor/analytics" 
-                icon={<BarChart3 className="h-5 w-5" />} 
-                title="Analytics" 
-                description="Track student progress" 
+                title="My Courses" 
+                subtitle="View and edit your courses"
               />
             </CardContent>
           </Card>
@@ -213,27 +185,25 @@ export default function InstructorDashboard() {
   );
 }
 
-function StatCard({ title, value, icon, description, isLoading }: { 
+function StatCard({ title, value, icon, isLoading }: { 
   title: string; 
   value: number | undefined; 
   icon: React.ReactNode;
-  description: string;
   isLoading: boolean;
 }) {
   return (
-    <Card>
-      <CardContent className="p-6">
+    <Card className="bg-card border border-border rounded-xl shadow-sm">
+      <CardContent className="p-5">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-sm text-muted-foreground">{title}</p>
+            <p className="text-sm font-medium text-muted-foreground">{title}</p>
             {isLoading ? (
-              <Skeleton className="h-8 w-16 mt-1" />
+              <Skeleton className="h-8 w-12 mt-1" />
             ) : (
-              <p className="text-2xl font-display font-bold mt-1">{value ?? 0}</p>
+              <p className="text-3xl font-bold text-foreground mt-1">{value ?? 0}</p>
             )}
-            <p className="text-xs text-muted-foreground mt-1">{description}</p>
           </div>
-          <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+          <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
             {icon}
           </div>
         </div>
@@ -243,47 +213,51 @@ function StatCard({ title, value, icon, description, isLoading }: {
 }
 
 function CourseListItem({ course }: { course: Course }) {
-  const statusColors = {
-    draft: 'bg-warning/10 text-warning',
-    published: 'bg-success/10 text-success',
-    archived: 'bg-muted text-muted-foreground',
+  const statusConfig = {
+    draft: { label: 'Draft', className: 'bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400' },
+    published: { label: 'Published', className: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' },
+    archived: { label: 'Archived', className: 'bg-muted text-muted-foreground' },
   };
 
+  const status = statusConfig[course.status] || statusConfig.draft;
+
   return (
-    <div className="flex items-center gap-4 p-3 rounded-lg hover:bg-secondary/50 transition-colors">
-      <div className="w-12 h-12 rounded-lg bg-gradient-primary flex items-center justify-center flex-shrink-0">
-        <BookOpen className="h-5 w-5 text-primary-foreground" />
+    <div className="flex items-center gap-3 p-3 rounded-lg bg-secondary/30 hover:bg-secondary/50 transition-colors">
+      <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+        <BookOpen className="h-5 w-5 text-primary" />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="font-medium truncate">{course.title}</p>
-        <p className="text-sm text-muted-foreground truncate">
+        <p className="text-sm font-medium text-foreground truncate">{course.title}</p>
+        <p className="text-xs text-muted-foreground truncate">
           {course.category || 'Uncategorized'}
         </p>
       </div>
-      <span className={`text-xs px-2 py-1 rounded-full ${statusColors[course.status]}`}>
-        {course.status}
+      <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${status.className}`}>
+        {status.label}
       </span>
     </div>
   );
 }
 
-function QuickAction({ href, icon, title, description }: { 
+function QuickActionButton({ href, icon, title, subtitle }: { 
   href: string; 
   icon: React.ReactNode; 
-  title: string; 
-  description: string;
+  title: string;
+  subtitle?: string;
 }) {
   return (
     <Link
       to={href}
-      className="flex items-center gap-4 p-3 rounded-lg border border-border hover:border-primary/50 hover:bg-primary/5 transition-all group"
+      className="flex items-center gap-3 p-3 rounded-lg bg-secondary/30 hover:bg-secondary/50 transition-colors group"
     >
-      <div className="h-10 w-10 rounded-lg bg-secondary flex items-center justify-center text-muted-foreground group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+      <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
         {icon}
       </div>
       <div>
-        <p className="font-medium group-hover:text-primary transition-colors">{title}</p>
-        <p className="text-sm text-muted-foreground">{description}</p>
+        <p className="text-sm font-medium text-foreground">{title}</p>
+        {subtitle && (
+          <p className="text-xs text-muted-foreground">{subtitle}</p>
+        )}
       </div>
     </Link>
   );
