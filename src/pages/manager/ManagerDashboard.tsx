@@ -321,24 +321,18 @@ export default function ManagerDashboard() {
             <CardTitle className="text-lg font-display">Quick Actions</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="grid gap-3 md:grid-cols-3">
+            <div className="grid gap-3 md:grid-cols-2">
               <QuickAction 
-                href="/manager/courses" 
+                href="/courses" 
                 icon={<BookOpen className="h-5 w-5" />} 
-                title="All Courses" 
-                description="View and manage courses" 
+                title="Browse Courses" 
+                description="View available courses" 
               />
               <QuickAction 
-                href="/manager/instructors" 
-                icon={<Users className="h-5 w-5" />} 
-                title="Manage Instructors" 
-                description="Assign and monitor instructors" 
-              />
-              <QuickAction 
-                href="/manager/reports" 
+                href="/my-learning" 
                 icon={<TrendingUp className="h-5 w-5" />} 
-                title="Generate Reports" 
-                description="View analytics and reports" 
+                title="My Learning" 
+                description="Track your progress" 
               />
             </div>
           </CardContent>
