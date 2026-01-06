@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { fromTable } from '@/lib/supabase-helpers';
-import { BookOpen, Search, Clock, Eye } from 'lucide-react';
+import { BookOpen, Search, Clock } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Course } from '@/types/database';
 import {
@@ -56,11 +56,6 @@ export default function OrgCourses() {
     archived: 'bg-muted text-muted-foreground border-muted',
   };
 
-  const visibilityColors = {
-    public: 'bg-info/10 text-info border-info/20',
-    org_only: 'bg-primary/10 text-primary border-primary/20',
-    private: 'bg-muted text-muted-foreground border-muted',
-  };
 
   return (
     <AppLayout>
@@ -107,7 +102,6 @@ export default function OrgCourses() {
                       <TableHead>Course</TableHead>
                       <TableHead>Category</TableHead>
                       <TableHead>Status</TableHead>
-                      <TableHead>Visibility</TableHead>
                       <TableHead>Duration</TableHead>
                     </TableRow>
                   </TableHeader>
@@ -133,20 +127,14 @@ export default function OrgCourses() {
                           </span>
                         </TableCell>
                         <TableCell>
-                          <Badge variant="outline" className={statusColors[course.status]}>
-                            {course.status}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <Badge variant="outline" className={visibilityColors[course.visibility]}>
-                            <Eye className="h-3 w-3 mr-1" />
-                            {course.visibility.replace('_', ' ')}
+                          <Badge variant="outline" className={statusColors[course.status] || 'bg-muted text-muted-foreground border-muted'}>
+                            {course.status || 'draft'}
                           </Badge>
                         </TableCell>
                         <TableCell>
                           <div className="flex items-center gap-1 text-muted-foreground">
                             <Clock className="h-4 w-4" />
-                            <span>{course.estimated_duration || 0}h</span>
+                            <span>{course.duration || '—'}</span>
                           </div>
                         </TableCell>
                       </TableRow>
