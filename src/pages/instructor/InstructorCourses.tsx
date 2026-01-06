@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { fromTable } from '@/lib/supabase-helpers';
 import { useToast } from '@/hooks/use-toast';
-import { BookOpen, PlusCircle, Pencil, Trash2, Eye, Loader2 } from 'lucide-react';
+import { BookOpen, PlusCircle, Pencil, Trash2, Eye, Loader2, Layers } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   AlertDialog,
@@ -153,7 +153,7 @@ export default function InstructorCourses() {
             <span className="text-xs">{course.duration}</span>
           )}
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
           <Button
             size="sm"
             variant="outline"
@@ -173,6 +173,12 @@ export default function InstructorCourses() {
                 Publish
               </>
             )}
+          </Button>
+          <Button size="sm" variant="outline" asChild>
+            <Link to={`/instructor/courses/${course.id}/content`}>
+              <Layers className="h-4 w-4 mr-1" />
+              Content
+            </Link>
           </Button>
           <Button size="sm" variant="outline" asChild>
             <Link to={`/instructor/courses/${course.id}/edit`}>
