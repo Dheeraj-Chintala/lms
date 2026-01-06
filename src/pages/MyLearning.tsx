@@ -69,9 +69,9 @@ export default function MyLearning() {
 
           // Fetch lessons with order
           const { data: lessonsData } = await fromTable('lessons')
-            .select('id, module_id, order_index')
+            .select('id, module_id, sort_order')
             .in('module_id', moduleIds)
-            .order('order_index', { ascending: true });
+            .order('sort_order', { ascending: true });
 
           // Fetch user's lesson progress
           const { data: progressData } = await fromTable('lesson_progress')
@@ -79,7 +79,7 @@ export default function MyLearning() {
             .eq('user_id', user.id);
 
           // Build progress map
-          const lessonsByCourse: Record<string, { id: string; module_id: string; order_index: number }[]> = {};
+          const lessonsByCourse: Record<string, { id: string; module_id: string; sort_order: number }[]> = {};
           
           if (lessonsData) {
             // Map lessons to courses (maintaining order)

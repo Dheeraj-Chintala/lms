@@ -110,10 +110,10 @@ export default function Courses() {
     return matchesSearch && matchesStatus;
   });
 
-  const difficultyColors = {
-    beginner: 'bg-success/10 text-success border-success/20',
-    intermediate: 'bg-warning/10 text-warning border-warning/20',
-    advanced: 'bg-destructive/10 text-destructive border-destructive/20',
+  const statusColors: Record<string, string> = {
+    draft: 'bg-warning/10 text-warning border-warning/20',
+    published: 'bg-success/10 text-success border-success/20',
+    archived: 'bg-muted text-muted-foreground border-muted',
   };
 
   return (
@@ -195,32 +195,22 @@ export default function Courses() {
                     <BookOpen className="h-12 w-12 text-primary-foreground/80" />
                   )}
                   <div className="absolute top-3 right-3 flex gap-2">
-                    {course.status !== 'published' && (
-                      <Badge variant="secondary" className="bg-background/90 backdrop-blur-sm">
-                        {course.status}
-                      </Badge>
-                    )}
-                    {course.is_free && (
-                      <Badge className="bg-success text-success-foreground">Free</Badge>
-                    )}
+                    <Badge variant="outline" className={`${statusColors[course.status] || ''} bg-background/90 backdrop-blur-sm`}>
+                      {course.status}
+                    </Badge>
                   </div>
                 </div>
                 <CardContent className="p-4">
-                  <div className="flex items-start justify-between gap-2 mb-2">
-                    <h3 className="font-display font-semibold line-clamp-1 group-hover:text-primary transition-colors">
-                      {course.title}
-                    </h3>
-                    <Badge variant="outline" className={difficultyColors[course.difficulty]}>
-                      {course.difficulty}
-                    </Badge>
-                  </div>
+                  <h3 className="font-display font-semibold line-clamp-1 group-hover:text-primary transition-colors mb-2">
+                    {course.title}
+                  </h3>
                   <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
                     {course.description || 'No description available'}
                   </p>
                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
                     <div className="flex items-center gap-1">
                       <Clock className="h-4 w-4" />
-                      <span>{course.estimated_duration || 0}h</span>
+                      <span>{course.duration || 'N/A'}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <GraduationCap className="h-4 w-4" />
