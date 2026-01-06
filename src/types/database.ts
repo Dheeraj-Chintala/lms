@@ -10,13 +10,15 @@ export type AppRole =
 export type CourseStatus = 'draft' | 'published' | 'archived';
 export type CourseVisibility = 'public' | 'org_only' | 'private';
 export type DifficultyLevel = 'beginner' | 'intermediate' | 'advanced';
-export type LessonType = 'video' | 'text' | 'quiz' | 'assignment' | 'scorm' | 'external';
+export type LessonType = 'video' | 'text' | 'quiz' | 'file';
 
 export interface Organization {
   id: string;
   name: string;
   slug: string;
+  logo_url: string | null;
   created_at: string;
+  updated_at: string;
 }
 
 export interface Profile {
@@ -25,11 +27,11 @@ export interface Profile {
   org_id: string;
   full_name: string | null;
   avatar_url: string | null;
-  bio: string | null;
-  job_title: string | null;
-  department: string | null;
-  timezone: string;
-  is_active: boolean;
+  bio?: string | null;
+  job_title?: string | null;
+  department?: string | null;
+  timezone?: string;
+  is_active?: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -50,14 +52,16 @@ export interface Course {
   thumbnail_url: string | null;
   instructor_id: string;
   status: CourseStatus;
-  visibility: CourseVisibility;
-  difficulty: DifficultyLevel;
   category: string | null;
-  estimated_duration: number;
-  price: number;
-  is_free: boolean;
-  published_at: string | null;
-  deleted_at: string | null;
+  duration: string | null;
+  // Optional fields for compatibility with existing pages
+  visibility?: CourseVisibility;
+  difficulty?: DifficultyLevel;
+  estimated_duration?: number;
+  price?: number;
+  is_free?: boolean;
+  published_at?: string | null;
+  deleted_at?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -67,7 +71,8 @@ export interface CourseModule {
   course_id: string;
   title: string;
   description: string | null;
-  order_index: number;
+  sort_order: number;
+  order_index?: number;
   created_at: string;
   updated_at: string;
 }
@@ -76,11 +81,15 @@ export interface Lesson {
   id: string;
   module_id: string;
   title: string;
-  lesson_type: LessonType;
-  content: Record<string, unknown> | null;
-  duration: number;
-  order_index: number;
-  is_preview: boolean;
+  content_type: LessonType;
+  content_url: string | null;
+  content_text: string | null;
+  content?: Record<string, unknown> | null;
+  duration: number | null;
+  sort_order: number;
+  order_index?: number;
+  lesson_type?: LessonType;
+  is_preview?: boolean;
   created_at: string;
   updated_at: string;
 }
@@ -100,12 +109,16 @@ export interface LessonProgress {
   lesson_id: string;
   completed: boolean;
   completed_at: string | null;
-  time_spent: number;
-  last_position: number;
+  time_spent?: number;
+  last_position?: number;
   created_at: string;
-  updated_at: string;
+  updated_at?: string;
 }
 
 export interface CourseWithInstructor extends Course {
   instructor?: Profile;
+}
+
+export interface EnrollmentWithCourse extends Enrollment {
+  course?: Course;
 }
