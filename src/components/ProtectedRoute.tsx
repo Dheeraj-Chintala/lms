@@ -6,17 +6,22 @@ import type { AppRole } from '@/types/database';
 interface ProtectedRouteProps {
   children: React.ReactNode;
   allowedRoles?: AppRole[];
+  requiredPermission?: string;
 }
 
 // Role hierarchy for redirect priority
 const ROLE_PRIORITY: { role: AppRole; path: string }[] = [
-  { role: 'super_admin', path: '/org/overview' },
-  { role: 'org_admin', path: '/org/overview' },
-  { role: 'instructor', path: '/instructor/dashboard' },
-  { role: 'content_creator', path: '/instructor/dashboard' },
-  { role: 'manager', path: '/dashboard' },
-  { role: 'learner', path: '/dashboard' },
-  { role: 'guest', path: '/courses' },
+  { role: 'super_admin', path: '/admin/dashboard' },
+  { role: 'admin', path: '/admin/dashboard' },
+  { role: 'sub_admin', path: '/admin/dashboard' },
+  { role: 'trainer', path: '/instructor/dashboard' },
+  { role: 'mentor', path: '/instructor/dashboard' },
+  { role: 'corporate_hr', path: '/manager/dashboard' },
+  { role: 'super_distributor', path: '/dashboard' },
+  { role: 'franchise', path: '/dashboard' },
+  { role: 'distributor', path: '/dashboard' },
+  { role: 'affiliate', path: '/dashboard' },
+  { role: 'student', path: '/dashboard' },
 ];
 
 function getDefaultPathForRoles(userRoles: AppRole[]): string {

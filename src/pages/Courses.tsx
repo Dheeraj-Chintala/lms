@@ -29,8 +29,8 @@ export default function Courses() {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [enrollingId, setEnrollingId] = useState<string | null>(null);
 
-  const isInstructor = hasRole('instructor');
-  const isOrgAdmin = hasRole('org_admin');
+  const isTrainer = hasRole('trainer') || hasRole('mentor');
+  const isAdmin = hasRole('super_admin') || hasRole('admin') || hasRole('sub_admin');
 
   useEffect(() => {
     fetchCourses();
@@ -124,14 +124,14 @@ export default function Courses() {
           <div>
             <h1 className="text-3xl font-display font-bold">Courses</h1>
             <p className="text-muted-foreground mt-1">
-              {isInstructor 
+              {isTrainer 
                 ? 'Manage your courses or explore others'
                 : 'Explore and enroll in available courses'}
             </p>
           </div>
-          {isInstructor && (
+          {isTrainer && (
             <Button asChild className="bg-gradient-primary hover:opacity-90">
-              <Link to="/courses/create">
+              <Link to="/instructor/courses/create">
                 <Plus className="mr-2 h-4 w-4" />
                 Create Course
               </Link>
@@ -150,7 +150,7 @@ export default function Courses() {
               className="pl-10"
             />
           </div>
-          {(isInstructor || isOrgAdmin) && (
+          {(isTrainer || isAdmin) && (
             <Select value={statusFilter} onValueChange={setStatusFilter}>
               <SelectTrigger className="w-full sm:w-[180px]">
                 <Filter className="mr-2 h-4 w-4" />
@@ -227,7 +227,7 @@ export default function Courses() {
                     </Button>
                   ) : course.instructor_id === user?.id ? (
                     <Button asChild variant="outline" className="w-full">
-                      <Link to={`/courses/${course.id}/edit`}>
+                      <Link to={`/instructor/courses/${course.id}/edit`}>
                         Edit Course
                       </Link>
                     </Button>
@@ -260,9 +260,9 @@ export default function Courses() {
                   ? 'Try adjusting your search or filters'
                   : 'Courses will appear here once they are created and published.'}
               </p>
-              {isInstructor && (
+              {isTrainer && (
                 <Button asChild className="bg-gradient-primary hover:opacity-90">
-                  <Link to="/courses/create">
+                  <Link to="/instructor/courses/create">
                     <Plus className="mr-2 h-4 w-4" />
                     Create Your First Course
                   </Link>
