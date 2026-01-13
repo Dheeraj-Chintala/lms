@@ -86,6 +86,11 @@ export interface UserCustomRole {
   created_at: string;
 }
 
+// Course types
+export type CourseType = 'free' | 'paid' | 'demo';
+export type EnrollmentType = 'open' | 'batch' | 'approval';
+export type BatchStatus = 'upcoming' | 'enrolling' | 'active' | 'completed' | 'cancelled';
+
 export interface Course {
   id: string;
   org_id: string;
@@ -99,10 +104,81 @@ export interface Course {
   visibility?: CourseVisibility;
   difficulty?: DifficultyLevel;
   estimated_duration?: number;
+  estimated_hours?: number;
   price?: number;
+  currency?: string;
+  course_type?: CourseType;
   is_free?: boolean;
+  is_featured?: boolean;
+  max_students?: number;
+  enrollment_type?: EnrollmentType;
+  access_days?: number | null;
   published_at?: string | null;
   deleted_at?: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CoursePrerequisite {
+  id: string;
+  course_id: string;
+  prerequisite_course_id: string;
+  is_required: boolean;
+  created_at: string;
+  prerequisite_course?: Course;
+}
+
+export interface CourseBundle {
+  id: string;
+  org_id: string;
+  created_by: string;
+  title: string;
+  description: string | null;
+  thumbnail_url: string | null;
+  price: number;
+  currency: string;
+  discount_percent: number;
+  is_active: boolean;
+  valid_from: string | null;
+  valid_until: string | null;
+  created_at: string;
+  updated_at: string;
+  courses?: Course[];
+}
+
+export interface BundleCourse {
+  id: string;
+  bundle_id: string;
+  course_id: string;
+  sort_order: number;
+  created_at: string;
+  course?: Course;
+}
+
+export interface CourseBatch {
+  id: string;
+  course_id: string;
+  title: string;
+  description: string | null;
+  batch_code: string | null;
+  max_students: number | null;
+  enrollment_start: string;
+  enrollment_end: string;
+  course_start: string;
+  course_end: string | null;
+  status: BatchStatus;
+  created_at: string;
+  updated_at: string;
+  enrollment_count?: number;
+}
+
+export interface CourseAccessRule {
+  id: string;
+  course_id: string;
+  rule_type: 'role' | 'department' | 'completion' | 'date' | 'custom';
+  rule_value: Record<string, unknown>;
+  is_required: boolean;
+  priority: number;
   created_at: string;
   updated_at: string;
 }
