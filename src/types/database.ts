@@ -156,6 +156,161 @@ export interface LessonProgress {
   updated_at?: string;
 }
 
+// Notification types
+export type NotificationType = 'info' | 'success' | 'warning' | 'course' | 'certificate';
+
+export interface Notification {
+  id: string;
+  user_id: string;
+  title: string;
+  message: string;
+  type: NotificationType;
+  is_read: boolean;
+  link: string | null;
+  created_at: string;
+}
+
+// Certificate types
+export interface Certificate {
+  id: string;
+  user_id: string;
+  course_id: string;
+  enrollment_id: string | null;
+  certificate_number: string;
+  issued_at: string;
+  expires_at: string | null;
+  pdf_url: string | null;
+  created_at: string;
+  course?: Course;
+}
+
+// Discussion forum types
+export interface DiscussionTopic {
+  id: string;
+  course_id: string;
+  user_id: string;
+  title: string;
+  content: string;
+  is_pinned: boolean;
+  is_locked: boolean;
+  reply_count: number;
+  last_reply_at: string | null;
+  created_at: string;
+  updated_at: string;
+  author?: Profile;
+}
+
+export interface DiscussionReply {
+  id: string;
+  topic_id: string;
+  user_id: string;
+  content: string;
+  is_solution: boolean;
+  created_at: string;
+  updated_at: string;
+  author?: Profile;
+}
+
+// Doubt types
+export type DoubtStatus = 'open' | 'answered' | 'resolved';
+export type DoubtPriority = 'low' | 'normal' | 'high';
+
+export interface Doubt {
+  id: string;
+  course_id: string;
+  lesson_id: string | null;
+  user_id: string;
+  title: string;
+  description: string;
+  status: DoubtStatus;
+  priority: DoubtPriority;
+  assigned_to: string | null;
+  resolved_at: string | null;
+  created_at: string;
+  updated_at: string;
+  author?: Profile;
+  lesson?: Lesson;
+}
+
+export interface DoubtResponse {
+  id: string;
+  doubt_id: string;
+  user_id: string;
+  content: string;
+  is_solution: boolean;
+  created_at: string;
+  author?: Profile;
+}
+
+// Poll types
+export interface Poll {
+  id: string;
+  course_id: string;
+  created_by: string;
+  title: string;
+  description: string | null;
+  is_active: boolean;
+  ends_at: string | null;
+  created_at: string;
+  options?: PollOption[];
+  user_vote?: PollVote;
+}
+
+export interface PollOption {
+  id: string;
+  poll_id: string;
+  option_text: string;
+  vote_count: number;
+  sort_order: number;
+}
+
+export interface PollVote {
+  id: string;
+  poll_id: string;
+  option_id: string;
+  user_id: string;
+  created_at: string;
+}
+
+// Course rating types
+export interface CourseRating {
+  id: string;
+  course_id: string;
+  user_id: string;
+  rating: number;
+  review: string | null;
+  is_public: boolean;
+  created_at: string;
+  updated_at: string;
+  author?: Profile;
+}
+
+// Mentor chat types
+export type ChatSessionStatus = 'active' | 'closed';
+
+export interface MentorChatSession {
+  id: string;
+  student_id: string;
+  mentor_id: string;
+  course_id: string | null;
+  status: ChatSessionStatus;
+  created_at: string;
+  closed_at: string | null;
+  mentor?: Profile;
+  student?: Profile;
+  course?: Course;
+}
+
+export interface MentorChatMessage {
+  id: string;
+  session_id: string;
+  sender_id: string;
+  message: string;
+  is_read: boolean;
+  created_at: string;
+  sender?: Profile;
+}
+
 export interface CourseWithInstructor extends Course {
   instructor?: Profile;
 }
