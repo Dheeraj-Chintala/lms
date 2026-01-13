@@ -66,12 +66,12 @@ const App = () => (
 
             {/* Student Routes */}
             <Route path="/student/dashboard" element={
-              <ProtectedRoute allowedRoles={['learner']}>
+              <ProtectedRoute allowedRoles={['student']}>
                 <StudentDashboard />
               </ProtectedRoute>
             } />
             <Route path="/courses" element={
-              <ProtectedRoute allowedRoles={['learner', 'manager']}>
+              <ProtectedRoute allowedRoles={['student', 'corporate_hr', 'franchise', 'distributor', 'super_distributor', 'affiliate']}>
                 <BrowseCourses />
               </ProtectedRoute>
             } />
@@ -86,80 +86,80 @@ const App = () => (
               </ProtectedRoute>
             } />
             <Route path="/my-learning" element={
-              <ProtectedRoute allowedRoles={['learner', 'manager']}>
+              <ProtectedRoute allowedRoles={['student', 'corporate_hr']}>
                 <MyLearning />
               </ProtectedRoute>
             } />
 
-            {/* Instructor Routes */}
+            {/* Trainer/Mentor Routes */}
             <Route path="/my-courses" element={
-              <ProtectedRoute allowedRoles={['instructor', 'content_creator']}>
+              <ProtectedRoute allowedRoles={['trainer', 'mentor']}>
                 <MyCourses />
               </ProtectedRoute>
             } />
             <Route path="/instructor/dashboard" element={
-              <ProtectedRoute allowedRoles={['instructor', 'content_creator']}>
+              <ProtectedRoute allowedRoles={['trainer', 'mentor']}>
                 <InstructorDashboard />
               </ProtectedRoute>
             } />
             <Route path="/instructor/courses" element={
-              <ProtectedRoute allowedRoles={['instructor', 'content_creator']}>
+              <ProtectedRoute allowedRoles={['trainer', 'mentor']}>
                 <InstructorCourses />
               </ProtectedRoute>
             } />
             <Route path="/instructor/courses/create" element={
-              <ProtectedRoute allowedRoles={['instructor', 'content_creator']}>
+              <ProtectedRoute allowedRoles={['trainer']}>
                 <CreateCourse />
               </ProtectedRoute>
             } />
             <Route path="/instructor/courses/:id/edit" element={
-              <ProtectedRoute allowedRoles={['instructor', 'content_creator']}>
+              <ProtectedRoute allowedRoles={['trainer', 'mentor']}>
                 <EditCourse />
               </ProtectedRoute>
             } />
             <Route path="/instructor/courses/:id/content" element={
-              <ProtectedRoute allowedRoles={['instructor', 'content_creator']}>
+              <ProtectedRoute allowedRoles={['trainer', 'mentor']}>
                 <CourseContentBuilder />
               </ProtectedRoute>
             } />
 
             {/* Admin Routes */}
             <Route path="/admin/dashboard" element={
-              <ProtectedRoute allowedRoles={['org_admin', 'super_admin']}>
+              <ProtectedRoute allowedRoles={['super_admin', 'admin', 'sub_admin']}>
                 <AdminDashboard />
               </ProtectedRoute>
             } />
             <Route path="/admin/courses" element={
-              <ProtectedRoute allowedRoles={['org_admin', 'super_admin']}>
+              <ProtectedRoute allowedRoles={['super_admin', 'admin', 'sub_admin']}>
                 <OrgCourses />
               </ProtectedRoute>
             } />
             <Route path="/admin/users" element={
-              <ProtectedRoute allowedRoles={['org_admin', 'super_admin']}>
+              <ProtectedRoute allowedRoles={['super_admin', 'admin', 'sub_admin']}>
                 <OrgUsers />
               </ProtectedRoute>
             } />
 
-            {/* Manager Routes */}
+            {/* Corporate HR / Manager Routes */}
             <Route path="/manager/dashboard" element={
-              <ProtectedRoute allowedRoles={['manager']}>
+              <ProtectedRoute allowedRoles={['corporate_hr']}>
                 <ManagerDashboard />
               </ProtectedRoute>
             } />
 
-            {/* Legacy Org Admin Routes */}
+            {/* Legacy Org Admin Routes (redirect to admin routes) */}
             <Route path="/org/overview" element={
-              <ProtectedRoute allowedRoles={['org_admin', 'super_admin']}>
+              <ProtectedRoute allowedRoles={['super_admin', 'admin']}>
                 <OrgOverview />
               </ProtectedRoute>
             } />
             <Route path="/org/courses" element={
-              <ProtectedRoute allowedRoles={['org_admin', 'super_admin']}>
+              <ProtectedRoute allowedRoles={['super_admin', 'admin']}>
                 <OrgCourses />
               </ProtectedRoute>
             } />
             <Route path="/org/users" element={
-              <ProtectedRoute allowedRoles={['org_admin', 'super_admin']}>
+              <ProtectedRoute allowedRoles={['super_admin', 'admin']}>
                 <OrgUsers />
               </ProtectedRoute>
             } />

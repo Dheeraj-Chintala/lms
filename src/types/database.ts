@@ -1,11 +1,15 @@
 export type AppRole = 
   | 'super_admin'
-  | 'org_admin'
-  | 'instructor'
-  | 'content_creator'
-  | 'manager'
-  | 'learner'
-  | 'guest';
+  | 'admin'
+  | 'sub_admin'
+  | 'trainer'
+  | 'mentor'
+  | 'student'
+  | 'franchise'
+  | 'distributor'
+  | 'super_distributor'
+  | 'affiliate'
+  | 'corporate_hr';
 
 export type CourseStatus = 'draft' | 'published' | 'archived';
 export type CourseVisibility = 'public' | 'org_only' | 'private';
@@ -44,6 +48,44 @@ export interface UserRole {
   created_at: string;
 }
 
+export interface Permission {
+  id: string;
+  name: string;
+  description: string | null;
+  category: string;
+  created_at: string;
+}
+
+export interface RolePermission {
+  id: string;
+  role: AppRole;
+  permission_id: string;
+  created_at: string;
+}
+
+export interface CustomRole {
+  id: string;
+  org_id: string;
+  name: string;
+  description: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CustomRolePermission {
+  id: string;
+  custom_role_id: string;
+  permission_id: string;
+  created_at: string;
+}
+
+export interface UserCustomRole {
+  id: string;
+  user_id: string;
+  custom_role_id: string;
+  created_at: string;
+}
+
 export interface Course {
   id: string;
   org_id: string;
@@ -54,7 +96,6 @@ export interface Course {
   status: CourseStatus;
   category: string | null;
   duration: string | null;
-  // Optional fields for compatibility with existing pages
   visibility?: CourseVisibility;
   difficulty?: DifficultyLevel;
   estimated_duration?: number;
@@ -122,3 +163,32 @@ export interface CourseWithInstructor extends Course {
 export interface EnrollmentWithCourse extends Enrollment {
   course?: Course;
 }
+
+// Role display helpers
+export const ROLE_LABELS: Record<AppRole, string> = {
+  super_admin: 'Super Admin',
+  admin: 'Admin',
+  sub_admin: 'Sub Admin',
+  trainer: 'Trainer',
+  mentor: 'Mentor',
+  student: 'Student',
+  franchise: 'Franchise',
+  distributor: 'Distributor',
+  super_distributor: 'Super Distributor',
+  affiliate: 'Affiliate',
+  corporate_hr: 'Corporate HR',
+};
+
+export const ALL_ROLES: AppRole[] = [
+  'super_admin',
+  'admin',
+  'sub_admin',
+  'trainer',
+  'mentor',
+  'student',
+  'franchise',
+  'distributor',
+  'super_distributor',
+  'affiliate',
+  'corporate_hr',
+];

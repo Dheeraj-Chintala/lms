@@ -6,9 +6,10 @@ import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { fromTable } from '@/lib/supabase-helpers';
-import { Search, Users as UsersIcon, Shield, GraduationCap, Briefcase } from 'lucide-react';
+import { Search, Users as UsersIcon, Shield, GraduationCap, Briefcase, Building, Network } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import type { Profile, AppRole } from '@/types/database';
+import { ROLE_LABELS } from '@/types/database';
 import {
   Table,
   TableBody,
@@ -72,29 +73,37 @@ export default function OrgUsers() {
 
   const roleIcons: Record<AppRole, React.ReactNode> = {
     super_admin: <Shield className="h-3 w-3" />,
-    org_admin: <Shield className="h-3 w-3" />,
-    instructor: <GraduationCap className="h-3 w-3" />,
-    content_creator: <GraduationCap className="h-3 w-3" />,
-    manager: <Briefcase className="h-3 w-3" />,
-    learner: <UsersIcon className="h-3 w-3" />,
-    guest: <UsersIcon className="h-3 w-3" />,
+    admin: <Shield className="h-3 w-3" />,
+    sub_admin: <Shield className="h-3 w-3" />,
+    trainer: <GraduationCap className="h-3 w-3" />,
+    mentor: <GraduationCap className="h-3 w-3" />,
+    student: <UsersIcon className="h-3 w-3" />,
+    corporate_hr: <Briefcase className="h-3 w-3" />,
+    franchise: <Building className="h-3 w-3" />,
+    distributor: <Network className="h-3 w-3" />,
+    super_distributor: <Network className="h-3 w-3" />,
+    affiliate: <UsersIcon className="h-3 w-3" />,
   };
 
   const roleColors: Record<AppRole, string> = {
     super_admin: 'bg-destructive/10 text-destructive border-destructive/20',
-    org_admin: 'bg-primary/10 text-primary border-primary/20',
-    instructor: 'bg-accent/10 text-accent border-accent/20',
-    content_creator: 'bg-accent/10 text-accent border-accent/20',
-    manager: 'bg-warning/10 text-warning border-warning/20',
-    learner: 'bg-muted text-muted-foreground border-muted',
-    guest: 'bg-muted text-muted-foreground border-muted',
+    admin: 'bg-primary/10 text-primary border-primary/20',
+    sub_admin: 'bg-primary/10 text-primary border-primary/20',
+    trainer: 'bg-accent/10 text-accent border-accent/20',
+    mentor: 'bg-accent/10 text-accent border-accent/20',
+    student: 'bg-muted text-muted-foreground border-muted',
+    corporate_hr: 'bg-warning/10 text-warning border-warning/20',
+    franchise: 'bg-success/10 text-success border-success/20',
+    distributor: 'bg-info/10 text-info border-info/20',
+    super_distributor: 'bg-info/10 text-info border-info/20',
+    affiliate: 'bg-muted text-muted-foreground border-muted',
   };
 
   const stats = {
     total: users.length,
-    admins: users.filter(u => u.roles.includes('org_admin')).length,
-    instructors: users.filter(u => u.roles.includes('instructor')).length,
-    learners: users.filter(u => u.roles.includes('learner')).length,
+    admins: users.filter(u => u.roles.some(r => ['super_admin', 'admin', 'sub_admin'].includes(r))).length,
+    trainers: users.filter(u => u.roles.some(r => ['trainer', 'mentor'].includes(r))).length,
+    students: users.filter(u => u.roles.includes('student')).length,
   };
 
   return (
@@ -112,8 +121,8 @@ export default function OrgUsers() {
         <div className="grid gap-4 md:grid-cols-4">
           <StatCard title="Total Users" value={stats.total} icon={<UsersIcon className="h-5 w-5" />} />
           <StatCard title="Admins" value={stats.admins} icon={<Shield className="h-5 w-5" />} />
-          <StatCard title="Instructors" value={stats.instructors} icon={<GraduationCap className="h-5 w-5" />} />
-          <StatCard title="Learners" value={stats.learners} icon={<UsersIcon className="h-5 w-5" />} />
+          <StatCard title="Trainers" value={stats.trainers} icon={<GraduationCap className="h-5 w-5" />} />
+          <StatCard title="Students" value={stats.students} icon={<UsersIcon className="h-5 w-5" />} />
         </div>
 
         {/* Search */}
@@ -187,10 +196,10 @@ export default function OrgUsers() {
                               <Badge 
                                 key={role} 
                                 variant="outline" 
-                                className={`gap-1 ${roleColors[role]}`}
+                                className={`gap-1 ${roleColors[role] || 'bg-muted'}`}
                               >
                                 {roleIcons[role]}
-                                {role.replace('_', ' ')}
+                                {ROLE_LABELS[role]}
                               </Badge>
                             ))}
                           </div>

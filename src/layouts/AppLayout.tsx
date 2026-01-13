@@ -25,8 +25,10 @@ import {
   PlusCircle,
   Building2,
   Library,
+  Shield,
 } from 'lucide-react';
 import type { AppRole } from '@/types/database';
+import { ROLE_LABELS } from '@/types/database';
 
 interface NavItem {
   label: string;
@@ -37,81 +39,100 @@ interface NavItem {
 
 // Navigation items with role-based access
 const getNavItems = (): NavItem[] => [
-  // Student/Learner navigation
+  // Student navigation
   { 
     label: 'Dashboard', 
     href: '/student/dashboard', 
     icon: <LayoutDashboard className="h-5 w-5" />,
-    allowedRoles: ['learner'],
+    allowedRoles: ['student'],
   },
   { 
     label: 'My Learning', 
     href: '/my-learning', 
     icon: <GraduationCap className="h-5 w-5" />,
-    allowedRoles: ['learner'],
+    allowedRoles: ['student'],
   },
   { 
     label: 'Browse Courses', 
     href: '/courses', 
     icon: <BookOpen className="h-5 w-5" />,
-    allowedRoles: ['learner'],
+    allowedRoles: ['student'],
   },
-  // Instructor navigation
+  // Trainer/Mentor navigation
   { 
     label: 'Dashboard', 
     href: '/instructor/dashboard', 
     icon: <LayoutDashboard className="h-5 w-5" />,
-    allowedRoles: ['instructor', 'content_creator'],
+    allowedRoles: ['trainer', 'mentor'],
   },
   { 
     label: 'My Courses', 
     href: '/instructor/courses', 
     icon: <Library className="h-5 w-5" />,
-    allowedRoles: ['instructor', 'content_creator'],
+    allowedRoles: ['trainer', 'mentor'],
   },
   { 
     label: 'Create Course', 
     href: '/instructor/courses/create', 
     icon: <PlusCircle className="h-5 w-5" />,
-    allowedRoles: ['instructor', 'content_creator'],
+    allowedRoles: ['trainer'],
   },
   // Admin navigation
   { 
     label: 'Dashboard', 
     href: '/admin/dashboard', 
     icon: <LayoutDashboard className="h-5 w-5" />,
-    allowedRoles: ['org_admin', 'super_admin'],
+    allowedRoles: ['super_admin', 'admin', 'sub_admin'],
   },
   { 
     label: 'Courses', 
     href: '/admin/courses', 
     icon: <BookOpen className="h-5 w-5" />,
-    allowedRoles: ['org_admin', 'super_admin'],
+    allowedRoles: ['super_admin', 'admin', 'sub_admin'],
   },
   { 
     label: 'Users', 
     href: '/admin/users', 
     icon: <Users className="h-5 w-5" />,
-    allowedRoles: ['org_admin', 'super_admin'],
+    allowedRoles: ['super_admin', 'admin', 'sub_admin'],
   },
-  // Manager navigation
+  { 
+    label: 'Roles & Permissions', 
+    href: '/admin/roles', 
+    icon: <Shield className="h-5 w-5" />,
+    allowedRoles: ['super_admin'],
+  },
+  // Corporate HR / Manager navigation
   { 
     label: 'Dashboard', 
     href: '/manager/dashboard', 
     icon: <LayoutDashboard className="h-5 w-5" />,
-    allowedRoles: ['manager'],
+    allowedRoles: ['corporate_hr'],
   },
   { 
     label: 'Browse Courses', 
     href: '/courses', 
     icon: <BookOpen className="h-5 w-5" />,
-    allowedRoles: ['manager'],
+    allowedRoles: ['corporate_hr'],
   },
   { 
     label: 'My Learning', 
     href: '/my-learning', 
     icon: <GraduationCap className="h-5 w-5" />,
-    allowedRoles: ['manager'],
+    allowedRoles: ['corporate_hr'],
+  },
+  // Distribution network navigation
+  { 
+    label: 'Dashboard', 
+    href: '/dashboard', 
+    icon: <LayoutDashboard className="h-5 w-5" />,
+    allowedRoles: ['franchise', 'distributor', 'super_distributor', 'affiliate'],
+  },
+  { 
+    label: 'Browse Courses', 
+    href: '/courses', 
+    icon: <BookOpen className="h-5 w-5" />,
+    allowedRoles: ['franchise', 'distributor', 'super_distributor', 'affiliate'],
   },
 ];
 
@@ -137,15 +158,7 @@ export default function AppLayout({ children }: { children: ReactNode }) {
   };
 
   const getRoleBadge = () => {
-    switch (primaryRole) {
-      case 'super_admin': return 'Super Admin';
-      case 'org_admin': return 'Admin';
-      case 'instructor': return 'Instructor';
-      case 'content_creator': return 'Content Creator';
-      case 'manager': return 'Manager';
-      case 'learner': return 'Learner';
-      default: return 'User';
-    }
+    return primaryRole ? ROLE_LABELS[primaryRole] : 'User';
   };
 
   return (

@@ -26,9 +26,9 @@ export default function Dashboard() {
   const [enrollments, setEnrollments] = useState<Enrollment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  const isOrgAdmin = hasRole('org_admin');
-  const isInstructor = hasRole('instructor') || hasRole('content_creator');
-  const isLearner = hasRole('learner') || hasRole('manager');
+  const isAdmin = hasRole('super_admin') || hasRole('admin') || hasRole('sub_admin');
+  const isTrainer = hasRole('trainer') || hasRole('mentor');
+  const isLearner = hasRole('student') || hasRole('corporate_hr');
 
   useEffect(() => {
     if (orgId) {
@@ -45,8 +45,8 @@ export default function Dashboard() {
         inProgressCourses: 0,
       };
 
-      if (isOrgAdmin) {
-        // Org Admin: fetch org-wide stats
+      if (isAdmin) {
+        // Admin: fetch org-wide stats
         const [coursesResult, usersResult, enrollmentsResult] = await Promise.all([
           fromTable('courses').select('*', { count: 'exact' }).eq('org_id', orgId),
           fromTable('profiles').select('*', { count: 'exact', head: true }).eq('org_id', orgId),
@@ -62,8 +62,8 @@ export default function Dashboard() {
 
         setRecentCourses(coursesResult.data?.slice(0, 5) || []);
 
-      } else if (isInstructor) {
-        // Instructor: fetch my courses
+      } else if (isTrainer) {
+        // Trainer: fetch my courses
         const { data: myCourses, count: myCoursesCount } = await fromTable('courses')
           .select('*', { count: 'exact' })
           .order('created_at', { ascending: false });
@@ -73,7 +73,7 @@ export default function Dashboard() {
         setRecentCourses(myCourses?.slice(0, 5) || []);
 
       } else {
-        // Learner/Manager: fetch enrollments and available courses
+        // Learner/Other: fetch enrollments and available courses
         const [enrollmentsResult, coursesResult] = await Promise.all([
           fromTable('enrollments').select('*, course:courses(*)'),
           fromTable('courses').select('*', { count: 'exact' }).eq('status', 'published'),
@@ -117,29 +117,29 @@ export default function Dashboard() {
             {getGreeting()}, {profile?.full_name?.split(' ')[0] || 'there'}!
           </h1>
           <p className="text-muted-foreground mt-1">
-            {isOrgAdmin 
+            {isAdmin 
               ? "Here's an overview of your organization."
-              : isInstructor
+              : isTrainer
               ? "Manage your courses and create new content."
               : "Continue your learning journey."}
           </p>
         </div>
 
         {/* Role-based Dashboard Content */}
-        {isOrgAdmin ? (
-          <OrgAdminDashboard stats={stats} recentCourses={recentCourses} isLoading={isLoading} />
-        ) : isInstructor ? (
-          <InstructorDashboard stats={stats} recentCourses={recentCourses} isLoading={isLoading} />
+        {isAdmin ? (
+          <AdminDashboardContent stats={stats} recentCourses={recentCourses} isLoading={isLoading} />
+        ) : isTrainer ? (
+          <TrainerDashboardContent stats={stats} recentCourses={recentCourses} isLoading={isLoading} />
         ) : (
-          <LearnerDashboard stats={stats} recentCourses={recentCourses} enrollments={enrollments} isLoading={isLoading} />
+          <LearnerDashboardContent stats={stats} recentCourses={recentCourses} enrollments={enrollments} isLoading={isLoading} />
         )}
       </div>
     </AppLayout>
   );
 }
 
-// ==================== ORG ADMIN DASHBOARD ====================
-function OrgAdminDashboard({ stats, recentCourses, isLoading }: { stats: DashboardStats | null; recentCourses: Course[]; isLoading: boolean }) {
+// ==================== ADMIN DASHBOARD ====================
+function AdminDashboardContent({ stats, recentCourses, isLoading }: { stats: DashboardStats | null; recentCourses: Course[]; isLoading: boolean }) {
   return (
     <>
       {/* Stats */}
@@ -177,9 +177,9 @@ function OrgAdminDashboard({ stats, recentCourses, isLoading }: { stats: Dashboa
             <CardDescription>Manage your organization</CardDescription>
           </CardHeader>
           <CardContent className="grid gap-3">
-            <QuickAction href="/org/overview" icon={<Building2 className="h-5 w-5" />} title="Org Overview" description="View organization statistics" />
-            <QuickAction href="/org/courses" icon={<BookOpen className="h-5 w-5" />} title="All Courses" description="Browse and manage courses" />
-            <QuickAction href="/org/users" icon={<Users className="h-5 w-5" />} title="Users" description="View organization members" />
+            <QuickAction href="/admin/dashboard" icon={<Building2 className="h-5 w-5" />} title="Admin Dashboard" description="View organization statistics" />
+            <QuickAction href="/admin/courses" icon={<BookOpen className="h-5 w-5" />} title="All Courses" description="Browse and manage courses" />
+            <QuickAction href="/admin/users" icon={<Users className="h-5 w-5" />} title="Users" description="View organization members" />
           </CardContent>
         </Card>
       </div>
@@ -187,8 +187,8 @@ function OrgAdminDashboard({ stats, recentCourses, isLoading }: { stats: Dashboa
   );
 }
 
-// ==================== INSTRUCTOR DASHBOARD ====================
-function InstructorDashboard({ stats, recentCourses, isLoading }: { stats: DashboardStats | null; recentCourses: Course[]; isLoading: boolean }) {
+// ==================== TRAINER DASHBOARD ====================
+function TrainerDashboardContent({ stats, recentCourses, isLoading }: { stats: DashboardStats | null; recentCourses: Course[]; isLoading: boolean }) {
   const draftCourses = recentCourses.filter(c => c.status === 'draft').length;
   const publishedCourses = recentCourses.filter(c => c.status === 'published').length;
 
@@ -223,7 +223,7 @@ function InstructorDashboard({ stats, recentCourses, isLoading }: { stats: Dashb
                 title="No courses yet"
                 action={
                   <Button asChild className="bg-gradient-primary hover:opacity-90">
-                    <Link to="/courses/create">
+                    <Link to="/instructor/courses/create">
                       <PlusCircle className="mr-2 h-4 w-4" />
                       Create Your First Course
                     </Link>
@@ -240,8 +240,8 @@ function InstructorDashboard({ stats, recentCourses, isLoading }: { stats: Dashb
             <CardDescription>Create and manage content</CardDescription>
           </CardHeader>
           <CardContent className="grid gap-3">
-            <QuickAction href="/courses/create" icon={<PlusCircle className="h-5 w-5" />} title="Create Course" description="Build a new learning experience" />
-            <QuickAction href="/my-courses" icon={<BookOpen className="h-5 w-5" />} title="My Courses" description="View and edit your courses" />
+            <QuickAction href="/instructor/courses/create" icon={<PlusCircle className="h-5 w-5" />} title="Create Course" description="Build a new learning experience" />
+            <QuickAction href="/instructor/courses" icon={<BookOpen className="h-5 w-5" />} title="My Courses" description="View and edit your courses" />
           </CardContent>
         </Card>
       </div>
@@ -250,7 +250,7 @@ function InstructorDashboard({ stats, recentCourses, isLoading }: { stats: Dashb
 }
 
 // ==================== LEARNER DASHBOARD ====================
-function LearnerDashboard({ stats, recentCourses, enrollments, isLoading }: { stats: DashboardStats | null; recentCourses: Course[]; enrollments: Enrollment[]; isLoading: boolean }) {
+function LearnerDashboardContent({ stats, recentCourses, enrollments, isLoading }: { stats: DashboardStats | null; recentCourses: Course[]; enrollments: Enrollment[]; isLoading: boolean }) {
   return (
     <>
       {/* Stats */}
