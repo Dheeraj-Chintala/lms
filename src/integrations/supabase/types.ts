@@ -14,6 +14,336 @@ export type Database = {
   }
   public: {
     Tables: {
+      assessment_answers: {
+        Row: {
+          answered_at: string | null
+          auto_graded: boolean | null
+          created_at: string
+          file_url: string | null
+          graded_at: string | null
+          graded_by: string | null
+          grader_feedback: string | null
+          id: string
+          is_correct: boolean | null
+          marks_obtained: number | null
+          question_id: string
+          selected_option_id: string | null
+          selected_option_ids: string[] | null
+          submission_id: string
+          text_answer: string | null
+          time_spent_seconds: number | null
+          updated_at: string
+        }
+        Insert: {
+          answered_at?: string | null
+          auto_graded?: boolean | null
+          created_at?: string
+          file_url?: string | null
+          graded_at?: string | null
+          graded_by?: string | null
+          grader_feedback?: string | null
+          id?: string
+          is_correct?: boolean | null
+          marks_obtained?: number | null
+          question_id: string
+          selected_option_id?: string | null
+          selected_option_ids?: string[] | null
+          submission_id: string
+          text_answer?: string | null
+          time_spent_seconds?: number | null
+          updated_at?: string
+        }
+        Update: {
+          answered_at?: string | null
+          auto_graded?: boolean | null
+          created_at?: string
+          file_url?: string | null
+          graded_at?: string | null
+          graded_by?: string | null
+          grader_feedback?: string | null
+          id?: string
+          is_correct?: boolean | null
+          marks_obtained?: number | null
+          question_id?: string
+          selected_option_id?: string | null
+          selected_option_ids?: string[] | null
+          submission_id?: string
+          text_answer?: string | null
+          time_spent_seconds?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assessment_answers_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "assessment_questions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assessment_answers_selected_option_id_fkey"
+            columns: ["selected_option_id"]
+            isOneToOne: false
+            referencedRelation: "question_options"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assessment_answers_submission_id_fkey"
+            columns: ["submission_id"]
+            isOneToOne: false
+            referencedRelation: "assessment_submissions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      assessment_questions: {
+        Row: {
+          allowed_file_types: string[] | null
+          assessment_id: string
+          auto_gradable: boolean
+          case_study_content: string | null
+          created_at: string
+          explanation: string | null
+          grading_rubric: string | null
+          id: string
+          is_required: boolean
+          marks: number
+          max_file_size_mb: number | null
+          question_media_url: string | null
+          question_text: string
+          question_type: Database["public"]["Enums"]["question_type"]
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          allowed_file_types?: string[] | null
+          assessment_id: string
+          auto_gradable?: boolean
+          case_study_content?: string | null
+          created_at?: string
+          explanation?: string | null
+          grading_rubric?: string | null
+          id?: string
+          is_required?: boolean
+          marks?: number
+          max_file_size_mb?: number | null
+          question_media_url?: string | null
+          question_text: string
+          question_type?: Database["public"]["Enums"]["question_type"]
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          allowed_file_types?: string[] | null
+          assessment_id?: string
+          auto_gradable?: boolean
+          case_study_content?: string | null
+          created_at?: string
+          explanation?: string | null
+          grading_rubric?: string | null
+          id?: string
+          is_required?: boolean
+          marks?: number
+          max_file_size_mb?: number | null
+          question_media_url?: string | null
+          question_text?: string
+          question_type?: Database["public"]["Enums"]["question_type"]
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assessment_questions_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "assessments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      assessment_submissions: {
+        Row: {
+          assessment_id: string
+          attempt_number: number
+          auto_graded_at: string | null
+          created_at: string
+          graded_by: string | null
+          grader_comments: string | null
+          id: string
+          manually_graded_at: string | null
+          passed: boolean | null
+          percentage: number | null
+          question_order: string[] | null
+          started_at: string
+          status: Database["public"]["Enums"]["submission_status"]
+          submitted_at: string | null
+          time_spent_seconds: number | null
+          total_score: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          assessment_id: string
+          attempt_number?: number
+          auto_graded_at?: string | null
+          created_at?: string
+          graded_by?: string | null
+          grader_comments?: string | null
+          id?: string
+          manually_graded_at?: string | null
+          passed?: boolean | null
+          percentage?: number | null
+          question_order?: string[] | null
+          started_at?: string
+          status?: Database["public"]["Enums"]["submission_status"]
+          submitted_at?: string | null
+          time_spent_seconds?: number | null
+          total_score?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          assessment_id?: string
+          attempt_number?: number
+          auto_graded_at?: string | null
+          created_at?: string
+          graded_by?: string | null
+          grader_comments?: string | null
+          id?: string
+          manually_graded_at?: string | null
+          passed?: boolean | null
+          percentage?: number | null
+          question_order?: string[] | null
+          started_at?: string
+          status?: Database["public"]["Enums"]["submission_status"]
+          submitted_at?: string | null
+          time_spent_seconds?: number | null
+          total_score?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assessment_submissions_assessment_id_fkey"
+            columns: ["assessment_id"]
+            isOneToOne: false
+            referencedRelation: "assessments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      assessments: {
+        Row: {
+          allow_resume: boolean
+          assessment_type: string
+          course_id: string
+          created_at: string
+          created_by: string
+          description: string | null
+          duration_minutes: number | null
+          end_time: string | null
+          id: string
+          instructions: string | null
+          lesson_id: string | null
+          max_attempts: number
+          module_id: string | null
+          negative_mark_value: number | null
+          negative_marking: boolean
+          passing_marks: number
+          questions_per_attempt: number | null
+          randomize_options: boolean
+          randomize_questions: boolean
+          retake_delay_hours: number | null
+          show_correct_answers: boolean
+          show_score_immediately: boolean
+          start_time: string | null
+          status: Database["public"]["Enums"]["assessment_status"]
+          title: string
+          total_marks: number
+          updated_at: string
+        }
+        Insert: {
+          allow_resume?: boolean
+          assessment_type?: string
+          course_id: string
+          created_at?: string
+          created_by: string
+          description?: string | null
+          duration_minutes?: number | null
+          end_time?: string | null
+          id?: string
+          instructions?: string | null
+          lesson_id?: string | null
+          max_attempts?: number
+          module_id?: string | null
+          negative_mark_value?: number | null
+          negative_marking?: boolean
+          passing_marks?: number
+          questions_per_attempt?: number | null
+          randomize_options?: boolean
+          randomize_questions?: boolean
+          retake_delay_hours?: number | null
+          show_correct_answers?: boolean
+          show_score_immediately?: boolean
+          start_time?: string | null
+          status?: Database["public"]["Enums"]["assessment_status"]
+          title: string
+          total_marks?: number
+          updated_at?: string
+        }
+        Update: {
+          allow_resume?: boolean
+          assessment_type?: string
+          course_id?: string
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          duration_minutes?: number | null
+          end_time?: string | null
+          id?: string
+          instructions?: string | null
+          lesson_id?: string | null
+          max_attempts?: number
+          module_id?: string | null
+          negative_mark_value?: number | null
+          negative_marking?: boolean
+          passing_marks?: number
+          questions_per_attempt?: number | null
+          randomize_options?: boolean
+          randomize_questions?: boolean
+          retake_delay_hours?: number | null
+          show_correct_answers?: boolean
+          show_score_immediately?: boolean
+          start_time?: string | null
+          status?: Database["public"]["Enums"]["assessment_status"]
+          title?: string
+          total_marks?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "assessments_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assessments_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "assessments_module_id_fkey"
+            columns: ["module_id"]
+            isOneToOne: false
+            referencedRelation: "course_modules"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bundle_courses: {
         Row: {
           bundle_id: string
@@ -1193,6 +1523,145 @@ export type Database = {
           },
         ]
       }
+      question_bank: {
+        Row: {
+          category: string | null
+          course_id: string | null
+          created_at: string
+          created_by: string
+          difficulty: string | null
+          explanation: string | null
+          id: string
+          org_id: string
+          question_media_url: string | null
+          question_text: string
+          question_type: Database["public"]["Enums"]["question_type"]
+          tags: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          category?: string | null
+          course_id?: string | null
+          created_at?: string
+          created_by: string
+          difficulty?: string | null
+          explanation?: string | null
+          id?: string
+          org_id: string
+          question_media_url?: string | null
+          question_text: string
+          question_type?: Database["public"]["Enums"]["question_type"]
+          tags?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          category?: string | null
+          course_id?: string | null
+          created_at?: string
+          created_by?: string
+          difficulty?: string | null
+          explanation?: string | null
+          id?: string
+          org_id?: string
+          question_media_url?: string | null
+          question_text?: string
+          question_type?: Database["public"]["Enums"]["question_type"]
+          tags?: string[] | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "question_bank_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "question_bank_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      question_bank_options: {
+        Row: {
+          created_at: string
+          id: string
+          is_correct: boolean
+          option_media_url: string | null
+          option_text: string
+          question_bank_id: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_correct?: boolean
+          option_media_url?: string | null
+          option_text: string
+          question_bank_id: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_correct?: boolean
+          option_media_url?: string | null
+          option_text?: string
+          question_bank_id?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "question_bank_options_question_bank_id_fkey"
+            columns: ["question_bank_id"]
+            isOneToOne: false
+            referencedRelation: "question_bank"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      question_options: {
+        Row: {
+          created_at: string
+          id: string
+          is_correct: boolean
+          option_media_url: string | null
+          option_text: string
+          question_id: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_correct?: boolean
+          option_media_url?: string | null
+          option_text: string
+          question_id: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_correct?: boolean
+          option_media_url?: string | null
+          option_text?: string
+          question_id?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "question_options_question_id_fkey"
+            columns: ["question_id"]
+            isOneToOne: false
+            referencedRelation: "assessment_questions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       role_permissions: {
         Row: {
           created_at: string
@@ -1288,6 +1757,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      auto_grade_submission: {
+        Args: { submission_uuid: string }
+        Returns: undefined
+      }
       check_course_access: {
         Args: { _course_id: string; _user_id: string }
         Returns: boolean
@@ -1326,6 +1799,19 @@ export type Database = {
         | "super_distributor"
         | "affiliate"
         | "corporate_hr"
+      assessment_status: "draft" | "published" | "closed" | "archived"
+      question_type:
+        | "mcq"
+        | "descriptive"
+        | "case_study"
+        | "file_upload"
+        | "true_false"
+        | "fill_blank"
+      submission_status:
+        | "in_progress"
+        | "submitted"
+        | "graded"
+        | "retake_allowed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1465,6 +1951,21 @@ export const Constants = {
         "super_distributor",
         "affiliate",
         "corporate_hr",
+      ],
+      assessment_status: ["draft", "published", "closed", "archived"],
+      question_type: [
+        "mcq",
+        "descriptive",
+        "case_study",
+        "file_upload",
+        "true_false",
+        "fill_blank",
+      ],
+      submission_status: [
+        "in_progress",
+        "submitted",
+        "graded",
+        "retake_allowed",
       ],
     },
   },

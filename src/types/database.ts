@@ -395,6 +395,145 @@ export interface EnrollmentWithCourse extends Enrollment {
   course?: Course;
 }
 
+// Assessment types
+export type QuestionType = 'mcq' | 'descriptive' | 'case_study' | 'file_upload' | 'true_false' | 'fill_blank';
+export type AssessmentStatus = 'draft' | 'published' | 'closed' | 'archived';
+export type SubmissionStatus = 'in_progress' | 'submitted' | 'graded' | 'retake_allowed';
+export type AssessmentType = 'quiz' | 'exam' | 'assignment' | 'case_study';
+
+export interface Assessment {
+  id: string;
+  course_id: string;
+  module_id: string | null;
+  lesson_id: string | null;
+  title: string;
+  description: string | null;
+  assessment_type: AssessmentType;
+  status: AssessmentStatus;
+  duration_minutes: number | null;
+  start_time: string | null;
+  end_time: string | null;
+  total_marks: number;
+  passing_marks: number;
+  negative_marking: boolean;
+  negative_mark_value: number;
+  randomize_questions: boolean;
+  randomize_options: boolean;
+  questions_per_attempt: number | null;
+  show_correct_answers: boolean;
+  show_score_immediately: boolean;
+  max_attempts: number;
+  retake_delay_hours: number;
+  allow_resume: boolean;
+  instructions: string | null;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+  questions?: AssessmentQuestion[];
+  course?: Course;
+}
+
+export interface AssessmentQuestion {
+  id: string;
+  assessment_id: string;
+  question_type: QuestionType;
+  question_text: string;
+  question_media_url: string | null;
+  explanation: string | null;
+  marks: number;
+  sort_order: number;
+  case_study_content: string | null;
+  allowed_file_types: string[] | null;
+  max_file_size_mb: number;
+  auto_gradable: boolean;
+  grading_rubric: string | null;
+  is_required: boolean;
+  created_at: string;
+  updated_at: string;
+  options?: QuestionOption[];
+}
+
+export interface QuestionOption {
+  id: string;
+  question_id: string;
+  option_text: string;
+  option_media_url: string | null;
+  is_correct: boolean;
+  sort_order: number;
+  created_at: string;
+}
+
+export interface AssessmentSubmission {
+  id: string;
+  assessment_id: string;
+  user_id: string;
+  attempt_number: number;
+  status: SubmissionStatus;
+  started_at: string;
+  submitted_at: string | null;
+  time_spent_seconds: number;
+  total_score: number | null;
+  percentage: number | null;
+  passed: boolean | null;
+  auto_graded_at: string | null;
+  manually_graded_at: string | null;
+  graded_by: string | null;
+  grader_comments: string | null;
+  question_order: string[] | null;
+  created_at: string;
+  updated_at: string;
+  assessment?: Assessment;
+  answers?: AssessmentAnswer[];
+}
+
+export interface AssessmentAnswer {
+  id: string;
+  submission_id: string;
+  question_id: string;
+  selected_option_id: string | null;
+  selected_option_ids: string[] | null;
+  text_answer: string | null;
+  file_url: string | null;
+  marks_obtained: number | null;
+  is_correct: boolean | null;
+  auto_graded: boolean;
+  grader_feedback: string | null;
+  graded_at: string | null;
+  graded_by: string | null;
+  answered_at: string;
+  time_spent_seconds: number;
+  created_at: string;
+  updated_at: string;
+  question?: AssessmentQuestion;
+}
+
+export interface QuestionBank {
+  id: string;
+  org_id: string;
+  course_id: string | null;
+  category: string | null;
+  tags: string[] | null;
+  question_type: QuestionType;
+  question_text: string;
+  question_media_url: string | null;
+  explanation: string | null;
+  difficulty: 'easy' | 'medium' | 'hard';
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+  options?: QuestionBankOption[];
+}
+
+export interface QuestionBankOption {
+  id: string;
+  question_bank_id: string;
+  option_text: string;
+  option_media_url: string | null;
+  is_correct: boolean;
+  sort_order: number;
+  created_at: string;
+}
+
 // Role display helpers
 export const ROLE_LABELS: Record<AppRole, string> = {
   super_admin: 'Super Admin',
