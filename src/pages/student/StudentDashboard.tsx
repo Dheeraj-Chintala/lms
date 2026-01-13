@@ -222,28 +222,6 @@ export default function StudentDashboard() {
 
         {/* Certificates Section */}
         <CertificatesSection />
-            <CardContent>
-              <div className="space-y-3">
-                {completedEnrollments.slice(0, 5).map((enrollment: any) => (
-                  <div key={enrollment.id} className="flex items-center gap-4 p-3 rounded-lg bg-success/5 border border-success/20">
-                    <div className="w-10 h-10 rounded-lg bg-success/10 flex items-center justify-center flex-shrink-0">
-                      <Award className="h-5 w-5 text-success" />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium truncate">{enrollment.course?.title}</p>
-                      <p className="text-sm text-muted-foreground">
-                        Completed {new Date(enrollment.completed_at).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <Badge variant="outline" className="bg-success/10 text-success border-success/20">
-                      Completed
-                    </Badge>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
 
         {/* Empty State */}
         {enrollments.length === 0 && !isLoading && (
