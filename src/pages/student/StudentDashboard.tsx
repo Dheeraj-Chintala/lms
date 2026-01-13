@@ -13,9 +13,14 @@ import {
   Clock, 
   Award,
   Play,
-  ChevronRight
+  ChevronRight,
+  Bell
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { NotificationsPanel } from '@/components/student/NotificationsPanel';
+import { CertificatesSection } from '@/components/student/CertificatesSection';
+import { ResumeCard } from '@/components/student/ResumeCard';
+import { MentorChat } from '@/components/student/MentorChat';
 import type { Course, Enrollment } from '@/types/database';
 
 interface StudentStats {
@@ -89,15 +94,21 @@ export default function StudentDashboard() {
   return (
     <AppLayout>
       <div className="space-y-8 animate-fade-in">
-        {/* Header */}
-        <div>
-          <h1 className="text-3xl font-display font-bold">
-            {getGreeting()}, {profile?.full_name?.split(' ')[0] || 'Student'}!
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            Continue your learning journey.
-          </p>
+        {/* Header with Notifications */}
+        <div className="flex items-start justify-between">
+          <div>
+            <h1 className="text-3xl font-display font-bold">
+              {getGreeting()}, {profile?.full_name?.split(' ')[0] || 'Student'}!
+            </h1>
+            <p className="text-muted-foreground mt-1">
+              Continue your learning journey.
+            </p>
+          </div>
+          <NotificationsPanel />
         </div>
+
+        {/* Resume Last Lesson */}
+        <ResumeCard />
 
         {/* Stats Grid */}
         <div className="grid gap-4 md:grid-cols-4">
@@ -209,6 +220,31 @@ export default function StudentDashboard() {
           </Card>
         )}
 
+        {/* Certificates Section */}
+        <CertificatesSection />
+            <CardContent>
+              <div className="space-y-3">
+                {completedEnrollments.slice(0, 5).map((enrollment: any) => (
+                  <div key={enrollment.id} className="flex items-center gap-4 p-3 rounded-lg bg-success/5 border border-success/20">
+                    <div className="w-10 h-10 rounded-lg bg-success/10 flex items-center justify-center flex-shrink-0">
+                      <Award className="h-5 w-5 text-success" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium truncate">{enrollment.course?.title}</p>
+                      <p className="text-sm text-muted-foreground">
+                        Completed {new Date(enrollment.completed_at).toLocaleDateString()}
+                      </p>
+                    </div>
+                    <Badge variant="outline" className="bg-success/10 text-success border-success/20">
+                      Completed
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
         {/* Empty State */}
         {enrollments.length === 0 && !isLoading && (
           <Card className="p-12">
@@ -229,6 +265,9 @@ export default function StudentDashboard() {
             </div>
           </Card>
         )}
+
+        {/* Mentor Chat Widget */}
+        <MentorChat />
       </div>
     </AppLayout>
   );
