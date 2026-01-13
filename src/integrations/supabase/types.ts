@@ -14,6 +14,80 @@ export type Database = {
   }
   public: {
     Tables: {
+      bundle_courses: {
+        Row: {
+          bundle_id: string
+          course_id: string
+          created_at: string
+          id: string
+          sort_order: number
+        }
+        Insert: {
+          bundle_id: string
+          course_id: string
+          created_at?: string
+          id?: string
+          sort_order?: number
+        }
+        Update: {
+          bundle_id?: string
+          course_id?: string
+          created_at?: string
+          id?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bundle_courses_bundle_id_fkey"
+            columns: ["bundle_id"]
+            isOneToOne: false
+            referencedRelation: "course_bundles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bundle_courses_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      bundle_purchases: {
+        Row: {
+          amount_paid: number | null
+          bundle_id: string
+          expires_at: string | null
+          id: string
+          purchased_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_paid?: number | null
+          bundle_id: string
+          expires_at?: string | null
+          id?: string
+          purchased_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_paid?: number | null
+          bundle_id?: string
+          expires_at?: string | null
+          id?: string
+          purchased_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bundle_purchases_bundle_id_fkey"
+            columns: ["bundle_id"]
+            isOneToOne: false
+            referencedRelation: "course_bundles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       certificates: {
         Row: {
           certificate_number: string
@@ -65,6 +139,162 @@ export type Database = {
           },
         ]
       }
+      course_access_rules: {
+        Row: {
+          course_id: string
+          created_at: string
+          id: string
+          is_required: boolean
+          priority: number | null
+          rule_type: string
+          rule_value: Json
+          updated_at: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          id?: string
+          is_required?: boolean
+          priority?: number | null
+          rule_type: string
+          rule_value: Json
+          updated_at?: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          id?: string
+          is_required?: boolean
+          priority?: number | null
+          rule_type?: string
+          rule_value?: Json
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_access_rules_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      course_batches: {
+        Row: {
+          batch_code: string | null
+          course_end: string | null
+          course_id: string
+          course_start: string
+          created_at: string
+          description: string | null
+          enrollment_end: string
+          enrollment_start: string
+          id: string
+          max_students: number | null
+          status: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          batch_code?: string | null
+          course_end?: string | null
+          course_id: string
+          course_start: string
+          created_at?: string
+          description?: string | null
+          enrollment_end: string
+          enrollment_start: string
+          id?: string
+          max_students?: number | null
+          status?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          batch_code?: string | null
+          course_end?: string | null
+          course_id?: string
+          course_start?: string
+          created_at?: string
+          description?: string | null
+          enrollment_end?: string
+          enrollment_start?: string
+          id?: string
+          max_students?: number | null
+          status?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_batches_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      course_bundles: {
+        Row: {
+          created_at: string
+          created_by: string
+          currency: string | null
+          description: string | null
+          discount_percent: number | null
+          id: string
+          is_active: boolean
+          org_id: string
+          price: number | null
+          thumbnail_url: string | null
+          title: string
+          updated_at: string
+          valid_from: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          currency?: string | null
+          description?: string | null
+          discount_percent?: number | null
+          id?: string
+          is_active?: boolean
+          org_id: string
+          price?: number | null
+          thumbnail_url?: string | null
+          title: string
+          updated_at?: string
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          currency?: string | null
+          description?: string | null
+          discount_percent?: number | null
+          id?: string
+          is_active?: boolean
+          org_id?: string
+          price?: number | null
+          thumbnail_url?: string | null
+          title?: string
+          updated_at?: string
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_bundles_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       course_modules: {
         Row: {
           course_id: string
@@ -97,6 +327,45 @@ export type Database = {
           {
             foreignKeyName: "course_modules_course_id_fkey"
             columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      course_prerequisites: {
+        Row: {
+          course_id: string
+          created_at: string
+          id: string
+          is_required: boolean
+          prerequisite_course_id: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          id?: string
+          is_required?: boolean
+          prerequisite_course_id: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          id?: string
+          is_required?: boolean
+          prerequisite_course_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_prerequisites_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "course_prerequisites_prerequisite_course_id_fkey"
+            columns: ["prerequisite_course_id"]
             isOneToOne: false
             referencedRelation: "courses"
             referencedColumns: ["id"]
@@ -146,39 +415,69 @@ export type Database = {
       }
       courses: {
         Row: {
+          access_days: number | null
           category: string | null
+          course_type: string
           created_at: string
+          currency: string | null
           description: string | null
+          difficulty: string | null
           duration: string | null
+          enrollment_type: string | null
+          estimated_hours: number | null
           id: string
           instructor_id: string
+          is_featured: boolean | null
+          max_students: number | null
           org_id: string
+          price: number | null
+          published_at: string | null
           status: string
           thumbnail_url: string | null
           title: string
           updated_at: string
         }
         Insert: {
+          access_days?: number | null
           category?: string | null
+          course_type?: string
           created_at?: string
+          currency?: string | null
           description?: string | null
+          difficulty?: string | null
           duration?: string | null
+          enrollment_type?: string | null
+          estimated_hours?: number | null
           id?: string
           instructor_id: string
+          is_featured?: boolean | null
+          max_students?: number | null
           org_id: string
+          price?: number | null
+          published_at?: string | null
           status?: string
           thumbnail_url?: string | null
           title: string
           updated_at?: string
         }
         Update: {
+          access_days?: number | null
           category?: string | null
+          course_type?: string
           created_at?: string
+          currency?: string | null
           description?: string | null
+          difficulty?: string | null
           duration?: string | null
+          enrollment_type?: string | null
+          estimated_hours?: number | null
           id?: string
           instructor_id?: string
+          is_featured?: boolean | null
+          max_students?: number | null
           org_id?: string
+          price?: number | null
+          published_at?: string | null
           status?: string
           thumbnail_url?: string | null
           title?: string
@@ -450,30 +749,46 @@ export type Database = {
       }
       enrollments: {
         Row: {
+          access_revoked: boolean | null
+          batch_id: string | null
           completed_at: string | null
           course_id: string
           enrolled_at: string
+          expires_at: string | null
           id: string
           progress: number
           user_id: string
         }
         Insert: {
+          access_revoked?: boolean | null
+          batch_id?: string | null
           completed_at?: string | null
           course_id: string
           enrolled_at?: string
+          expires_at?: string | null
           id?: string
           progress?: number
           user_id: string
         }
         Update: {
+          access_revoked?: boolean | null
+          batch_id?: string | null
           completed_at?: string | null
           course_id?: string
           enrolled_at?: string
+          expires_at?: string | null
           id?: string
           progress?: number
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "enrollments_batch_id_fkey"
+            columns: ["batch_id"]
+            isOneToOne: false
+            referencedRelation: "course_batches"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "enrollments_course_id_fkey"
             columns: ["course_id"]
@@ -973,6 +1288,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      check_course_access: {
+        Args: { _course_id: string; _user_id: string }
+        Returns: boolean
+      }
+      check_course_prerequisites: {
+        Args: { _course_id: string; _user_id: string }
+        Returns: boolean
+      }
       get_user_org_id: { Args: { _user_id: string }; Returns: string }
       has_any_permission: {
         Args: { _permissions: string[]; _user_id: string }
