@@ -39,6 +39,10 @@ import ManagerDashboard from "./pages/manager/ManagerDashboard";
 // Student Pages
 import StudentDashboard from "./pages/student/StudentDashboard";
 
+// Certificate Pages
+import VerifyCertificate from "./pages/VerifyCertificate";
+import AdminCertificates from "./pages/admin/AdminCertificates";
+
 const queryClient = new QueryClient();
 
 const App = () => (

@@ -1,43 +1,64 @@
-import { useEffect, useState } from 'react';
-import { Award, Download, ExternalLink, Calendar } from 'lucide-react';
+import { useEffect, useState, useRef } from 'react';
+import { Award, Download, ExternalLink, Calendar, Eye, FileText } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { fromTable } from '@/lib/supabase-helpers';
 import { useAuth } from '@/hooks/useAuth';
-import { format } from 'date-fns';
-import type { Certificate, Course } from '@/types/database';
+import { formatCertificateDate, getCertificateTypeLabel } from '@/lib/certificate-utils';
+import { CertificateTemplate } from '@/components/certificates/CertificateTemplate';
+import { LorTemplate } from '@/components/certificates/LorTemplate';
+import type { Certificate, LetterOfRecommendation } from '@/types/certificate';
+import type { Course } from '@/types/database';
 
 interface CertificateWithCourse extends Certificate {
+  course?: Course;
+}
+
+interface LorWithCourse extends LetterOfRecommendation {
   course?: Course;
 }
 
 export function CertificatesSection() {
   const { user } = useAuth();
   const [certificates, setCertificates] = useState<CertificateWithCourse[]>([]);
+  const [lors, setLors] = useState<LorWithCourse[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [selectedCertificate, setSelectedCertificate] = useState<CertificateWithCourse | null>(null);
+  const [selectedLor, setSelectedLor] = useState<LorWithCourse | null>(null);
+  const [activeTab, setActiveTab] = useState('certificates');
 
   useEffect(() => {
     if (user) {
-      fetchCertificates();
+      fetchCredentials();
     }
   }, [user]);
 
-  const fetchCertificates = async () => {
+  const fetchCredentials = async () => {
     try {
-      const { data } = await fromTable('certificates')
-        .select('*, course:courses(*)')
-        .order('issued_at', { ascending: false });
+      const [certsRes, lorsRes] = await Promise.all([
+        fromTable('certificates')
+          .select('*, course:courses(*)')
+          .order('issued_at', { ascending: false }),
+        fromTable('letters_of_recommendation')
+          .select('*, course:courses(*)')
+          .order('issued_at', { ascending: false })
+      ]);
 
-      if (data) {
-        setCertificates(data as CertificateWithCourse[]);
-      }
+      setCertificates((certsRes.data || []) as CertificateWithCourse[]);
+      setLors((lorsRes.data || []) as LorWithCourse[]);
     } catch (error) {
-      console.error('Error fetching certificates:', error);
+      console.error('Error fetching credentials:', error);
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleVerify = (number: string) => {
+    window.open(`/verify/${number}`, '_blank');
   };
 
   if (isLoading) {
@@ -46,7 +67,7 @@ export function CertificatesSection() {
         <CardHeader>
           <CardTitle className="text-lg font-display flex items-center gap-2">
             <Award className="h-5 w-5 text-accent" />
-            Certificates
+            My Credentials
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -60,15 +81,17 @@ export function CertificatesSection() {
     );
   }
 
-  if (certificates.length === 0) {
+  const totalCredentials = certificates.length + lors.length;
+
+  if (totalCredentials === 0) {
     return (
       <Card>
         <CardHeader>
           <CardTitle className="text-lg font-display flex items-center gap-2">
             <Award className="h-5 w-5 text-accent" />
-            Certificates
+            My Credentials
           </CardTitle>
-          <CardDescription>Complete courses to earn certificates</CardDescription>
+          <CardDescription>Your certificates and letters of recommendation</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="text-center py-8">
@@ -76,7 +99,7 @@ export function CertificatesSection() {
               <Award className="h-8 w-8 text-muted-foreground" />
             </div>
             <p className="text-sm text-muted-foreground">
-              No certificates earned yet. Complete a course to receive your first certificate!
+              No credentials earned yet. Complete a course to receive your first certificate!
             </p>
           </div>
         </CardContent>
@@ -85,52 +108,159 @@ export function CertificatesSection() {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="text-lg font-display flex items-center gap-2">
-          <Award className="h-5 w-5 text-accent" />
-          Certificates
-        </CardTitle>
-        <CardDescription>Your earned certifications</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-3">
-          {certificates.map((cert) => (
-            <div 
-              key={cert.id} 
-              className="flex items-center gap-4 p-4 rounded-lg border bg-gradient-to-r from-accent/5 to-transparent"
-            >
-              <div className="h-12 w-12 rounded-lg bg-accent/10 flex items-center justify-center shrink-0">
-                <Award className="h-6 w-6 text-accent" />
+    <>
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg font-display flex items-center gap-2">
+            <Award className="h-5 w-5 text-accent" />
+            My Credentials
+          </CardTitle>
+          <CardDescription>Your earned certifications and letters of recommendation</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Tabs value={activeTab} onValueChange={setActiveTab}>
+            <TabsList className="mb-4">
+              <TabsTrigger value="certificates">
+                Certificates ({certificates.length})
+              </TabsTrigger>
+              <TabsTrigger value="lors">
+                Letters ({lors.length})
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="certificates">
+              <div className="space-y-3">
+                {certificates.map((cert) => (
+                  <div 
+                    key={cert.id} 
+                    className={`flex items-center gap-4 p-4 rounded-lg border ${
+                      cert.is_revoked 
+                        ? 'bg-red-50 border-red-200' 
+                        : 'bg-gradient-to-r from-accent/5 to-transparent'
+                    }`}
+                  >
+                    <div className={`h-12 w-12 rounded-lg flex items-center justify-center shrink-0 ${
+                      cert.is_revoked ? 'bg-red-100' : 'bg-accent/10'
+                    }`}>
+                      <Award className={`h-6 w-6 ${cert.is_revoked ? 'text-red-500' : 'text-accent'}`} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <p className="font-medium truncate">{cert.course?.title || 'Course Certificate'}</p>
+                        {cert.is_revoked && (
+                          <Badge variant="destructive" className="text-xs">Revoked</Badge>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
+                        <span className="flex items-center gap-1">
+                          <Calendar className="h-3 w-3" />
+                          {formatCertificateDate(cert.issued_at)}
+                        </span>
+                        <Badge variant="outline" className="text-[10px] h-5">
+                          {getCertificateTypeLabel(cert.certificate_type || 'course')}
+                        </Badge>
+                      </div>
+                    </div>
+                    <div className="flex gap-2 shrink-0">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => setSelectedCertificate(cert)}
+                        disabled={cert.is_revoked}
+                      >
+                        <Eye className="h-4 w-4" />
+                      </Button>
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => handleVerify(cert.certificate_number)}
+                      >
+                        <ExternalLink className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                ))}
               </div>
-              <div className="flex-1 min-w-0">
-                <p className="font-medium truncate">{cert.course?.title || 'Course Certificate'}</p>
-                <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
-                  <span className="flex items-center gap-1">
-                    <Calendar className="h-3 w-3" />
-                    {format(new Date(cert.issued_at), 'MMM d, yyyy')}
-                  </span>
-                  <Badge variant="outline" className="text-[10px] h-5">
-                    #{cert.certificate_number.slice(0, 8)}
-                  </Badge>
-                </div>
-              </div>
-              <div className="flex gap-2 shrink-0">
-                {cert.pdf_url && (
-                  <Button variant="outline" size="sm" asChild>
-                    <a href={cert.pdf_url} download>
-                      <Download className="h-4 w-4" />
-                    </a>
-                  </Button>
+            </TabsContent>
+
+            <TabsContent value="lors">
+              <div className="space-y-3">
+                {lors.length === 0 ? (
+                  <div className="text-center py-6 text-muted-foreground">
+                    <FileText className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                    <p className="text-sm">No letters of recommendation yet</p>
+                  </div>
+                ) : (
+                  lors.map((lor) => (
+                    <div 
+                      key={lor.id} 
+                      className="flex items-center gap-4 p-4 rounded-lg border bg-gradient-to-r from-primary/5 to-transparent"
+                    >
+                      <div className="h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                        <FileText className="h-6 w-6 text-primary" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium truncate">{lor.title}</p>
+                        <div className="flex items-center gap-3 text-xs text-muted-foreground mt-1">
+                          <span className="flex items-center gap-1">
+                            <Calendar className="h-3 w-3" />
+                            {formatCertificateDate(lor.issued_at)}
+                          </span>
+                          <span>By: {lor.recommender_name}</span>
+                        </div>
+                      </div>
+                      <div className="flex gap-2 shrink-0">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => setSelectedLor(lor)}
+                        >
+                          <Eye className="h-4 w-4" />
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handleVerify(lor.lor_number)}
+                        >
+                          <ExternalLink className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </div>
+                  ))
                 )}
-                <Button variant="outline" size="sm">
-                  <ExternalLink className="h-4 w-4" />
-                </Button>
               </div>
+            </TabsContent>
+          </Tabs>
+        </CardContent>
+      </Card>
+
+      {/* Certificate Preview */}
+      {selectedCertificate && (
+        <Dialog open={!!selectedCertificate} onOpenChange={() => setSelectedCertificate(null)}>
+          <DialogContent className="max-w-[1100px] max-h-[95vh] overflow-auto">
+            <DialogHeader>
+              <DialogTitle>Certificate</DialogTitle>
+            </DialogHeader>
+            <div className="overflow-auto">
+              <CertificateTemplate certificate={selectedCertificate} />
             </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {/* LOR Preview */}
+      {selectedLor && (
+        <Dialog open={!!selectedLor} onOpenChange={() => setSelectedLor(null)}>
+          <DialogContent className="max-w-[900px] max-h-[95vh] overflow-auto">
+            <DialogHeader>
+              <DialogTitle>Letter of Recommendation</DialogTitle>
+            </DialogHeader>
+            <div className="overflow-auto">
+              <LorTemplate lor={selectedLor} />
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+    </>
   );
 }
