@@ -418,39 +418,194 @@ export type Database = {
           },
         ]
       }
+      certificate_templates: {
+        Row: {
+          certificate_type: Database["public"]["Enums"]["certificate_type"]
+          created_at: string
+          created_by: string
+          css_styles: string | null
+          id: string
+          is_active: boolean | null
+          is_default: boolean | null
+          logo_position: string | null
+          name: string
+          org_id: string
+          signature_position: string | null
+          template_html: string
+          updated_at: string
+        }
+        Insert: {
+          certificate_type?: Database["public"]["Enums"]["certificate_type"]
+          created_at?: string
+          created_by: string
+          css_styles?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_default?: boolean | null
+          logo_position?: string | null
+          name: string
+          org_id: string
+          signature_position?: string | null
+          template_html: string
+          updated_at?: string
+        }
+        Update: {
+          certificate_type?: Database["public"]["Enums"]["certificate_type"]
+          created_at?: string
+          created_by?: string
+          css_styles?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_default?: boolean | null
+          logo_position?: string | null
+          name?: string
+          org_id?: string
+          signature_position?: string | null
+          template_html?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "certificate_templates_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      certificate_verification_logs: {
+        Row: {
+          certificate_id: string | null
+          id: string
+          lor_id: string | null
+          verification_method: string
+          verification_result: string
+          verified_at: string
+          verifier_ip: string | null
+          verifier_user_agent: string | null
+        }
+        Insert: {
+          certificate_id?: string | null
+          id?: string
+          lor_id?: string | null
+          verification_method: string
+          verification_result: string
+          verified_at?: string
+          verifier_ip?: string | null
+          verifier_user_agent?: string | null
+        }
+        Update: {
+          certificate_id?: string | null
+          id?: string
+          lor_id?: string | null
+          verification_method?: string
+          verification_result?: string
+          verified_at?: string
+          verifier_ip?: string | null
+          verifier_user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "certificate_verification_logs_certificate_id_fkey"
+            columns: ["certificate_id"]
+            isOneToOne: false
+            referencedRelation: "certificates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "certificate_verification_logs_lor_id_fkey"
+            columns: ["lor_id"]
+            isOneToOne: false
+            referencedRelation: "letters_of_recommendation"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       certificates: {
         Row: {
+          additional_data: Json | null
+          authorized_signature_url: string | null
           certificate_number: string
+          certificate_type:
+            | Database["public"]["Enums"]["certificate_type"]
+            | null
+          course_duration: string | null
           course_id: string
           created_at: string
+          end_date: string | null
           enrollment_id: string | null
           expires_at: string | null
           id: string
+          is_revoked: boolean | null
           issued_at: string
+          issued_by: string | null
           pdf_url: string | null
+          qr_code_data: string | null
+          recipient_email: string | null
+          recipient_name: string | null
+          revoked_at: string | null
+          revoked_reason: string | null
+          start_date: string | null
+          template_id: string | null
           user_id: string
+          verification_url: string | null
         }
         Insert: {
+          additional_data?: Json | null
+          authorized_signature_url?: string | null
           certificate_number: string
+          certificate_type?:
+            | Database["public"]["Enums"]["certificate_type"]
+            | null
+          course_duration?: string | null
           course_id: string
           created_at?: string
+          end_date?: string | null
           enrollment_id?: string | null
           expires_at?: string | null
           id?: string
+          is_revoked?: boolean | null
           issued_at?: string
+          issued_by?: string | null
           pdf_url?: string | null
+          qr_code_data?: string | null
+          recipient_email?: string | null
+          recipient_name?: string | null
+          revoked_at?: string | null
+          revoked_reason?: string | null
+          start_date?: string | null
+          template_id?: string | null
           user_id: string
+          verification_url?: string | null
         }
         Update: {
+          additional_data?: Json | null
+          authorized_signature_url?: string | null
           certificate_number?: string
+          certificate_type?:
+            | Database["public"]["Enums"]["certificate_type"]
+            | null
+          course_duration?: string | null
           course_id?: string
           created_at?: string
+          end_date?: string | null
           enrollment_id?: string | null
           expires_at?: string | null
           id?: string
+          is_revoked?: boolean | null
           issued_at?: string
+          issued_by?: string | null
           pdf_url?: string | null
+          qr_code_data?: string | null
+          recipient_email?: string | null
+          recipient_name?: string | null
+          revoked_at?: string | null
+          revoked_reason?: string | null
+          start_date?: string | null
+          template_id?: string | null
           user_id?: string
+          verification_url?: string | null
         }
         Relationships: [
           {
@@ -465,6 +620,13 @@ export type Database = {
             columns: ["enrollment_id"]
             isOneToOne: false
             referencedRelation: "enrollments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "certificates_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "certificate_templates"
             referencedColumns: ["id"]
           },
         ]
@@ -1216,6 +1378,102 @@ export type Database = {
           },
         ]
       }
+      letters_of_recommendation: {
+        Row: {
+          achievements: string[] | null
+          certificate_id: string | null
+          content: string
+          course_id: string | null
+          created_at: string
+          created_by: string
+          expires_at: string | null
+          id: string
+          is_public: boolean | null
+          issued_at: string
+          lor_number: string
+          pdf_url: string | null
+          performance_rating: number | null
+          recipient_email: string | null
+          recipient_name: string
+          recommendation_type: string
+          recommender_name: string
+          recommender_signature_url: string | null
+          recommender_title: string | null
+          skills_highlighted: string[] | null
+          status: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          achievements?: string[] | null
+          certificate_id?: string | null
+          content: string
+          course_id?: string | null
+          created_at?: string
+          created_by: string
+          expires_at?: string | null
+          id?: string
+          is_public?: boolean | null
+          issued_at?: string
+          lor_number: string
+          pdf_url?: string | null
+          performance_rating?: number | null
+          recipient_email?: string | null
+          recipient_name: string
+          recommendation_type?: string
+          recommender_name: string
+          recommender_signature_url?: string | null
+          recommender_title?: string | null
+          skills_highlighted?: string[] | null
+          status?: string
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          achievements?: string[] | null
+          certificate_id?: string | null
+          content?: string
+          course_id?: string | null
+          created_at?: string
+          created_by?: string
+          expires_at?: string | null
+          id?: string
+          is_public?: boolean | null
+          issued_at?: string
+          lor_number?: string
+          pdf_url?: string | null
+          performance_rating?: number | null
+          recipient_email?: string | null
+          recipient_name?: string
+          recommendation_type?: string
+          recommender_name?: string
+          recommender_signature_url?: string | null
+          recommender_title?: string | null
+          skills_highlighted?: string[] | null
+          status?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "letters_of_recommendation_certificate_id_fkey"
+            columns: ["certificate_id"]
+            isOneToOne: false
+            referencedRelation: "certificates"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "letters_of_recommendation_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       mentor_chat_messages: {
         Row: {
           created_at: string
@@ -1800,6 +2058,7 @@ export type Database = {
         | "affiliate"
         | "corporate_hr"
       assessment_status: "draft" | "published" | "closed" | "archived"
+      certificate_type: "course" | "internship" | "experience" | "lor"
       question_type:
         | "mcq"
         | "descriptive"
@@ -1953,6 +2212,7 @@ export const Constants = {
         "corporate_hr",
       ],
       assessment_status: ["draft", "published", "closed", "archived"],
+      certificate_type: ["course", "internship", "experience", "lor"],
       question_type: [
         "mcq",
         "descriptive",
