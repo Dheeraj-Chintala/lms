@@ -41,6 +41,12 @@ import StudentDashboard from "./pages/student/StudentDashboard";
 
 // Certificate Pages
 import VerifyCertificate from "./pages/VerifyCertificate";
+
+// Instructor Panel Pages
+import InstructorAnalytics from "./pages/instructor/InstructorAnalytics";
+import InstructorStudents from "./pages/instructor/InstructorStudents";
+import InstructorLiveClasses from "./pages/instructor/InstructorLiveClasses";
+import InstructorAssignments from "./pages/instructor/InstructorAssignments";
 import AdminCertificates from "./pages/admin/AdminCertificates";
 
 const queryClient = new QueryClient();
@@ -124,6 +130,36 @@ const App = () => (
             <Route path="/instructor/courses/:id/content" element={
               <ProtectedRoute allowedRoles={['trainer', 'mentor']}>
                 <CourseContentBuilder />
+              </ProtectedRoute>
+            } />
+            <Route path="/instructor/analytics" element={
+              <ProtectedRoute allowedRoles={['trainer', 'mentor']}>
+                <InstructorAnalytics />
+              </ProtectedRoute>
+            } />
+            <Route path="/instructor/students" element={
+              <ProtectedRoute allowedRoles={['trainer', 'mentor']}>
+                <InstructorStudents />
+              </ProtectedRoute>
+            } />
+            <Route path="/instructor/live-classes" element={
+              <ProtectedRoute allowedRoles={['trainer', 'mentor']}>
+                <InstructorLiveClasses />
+              </ProtectedRoute>
+            } />
+            <Route path="/instructor/assignments" element={
+              <ProtectedRoute allowedRoles={['trainer', 'mentor']}>
+                <InstructorAssignments />
+              </ProtectedRoute>
+            } />
+            
+            {/* Public Certificate Verification */}
+            <Route path="/verify/:id" element={<VerifyCertificate />} />
+            
+            {/* Admin Certificate Management */}
+            <Route path="/admin/certificates" element={
+              <ProtectedRoute allowedRoles={['super_admin', 'admin', 'sub_admin', 'trainer']}>
+                <AdminCertificates />
               </ProtectedRoute>
             } />
 
