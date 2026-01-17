@@ -26,6 +26,10 @@ import {
   Building2,
   Library,
   Shield,
+  BarChart3,
+  Video,
+  FileCheck,
+  Award,
 } from 'lucide-react';
 import type { AppRole } from '@/types/database';
 import { ROLE_LABELS } from '@/types/database';
@@ -66,6 +70,12 @@ const getNavItems = (): NavItem[] => [
     allowedRoles: ['trainer', 'mentor'],
   },
   { 
+    label: 'Analytics', 
+    href: '/instructor/analytics', 
+    icon: <BarChart3 className="h-5 w-5" />,
+    allowedRoles: ['trainer', 'mentor'],
+  },
+  { 
     label: 'My Courses', 
     href: '/instructor/courses', 
     icon: <Library className="h-5 w-5" />,
@@ -76,6 +86,24 @@ const getNavItems = (): NavItem[] => [
     href: '/instructor/courses/create', 
     icon: <PlusCircle className="h-5 w-5" />,
     allowedRoles: ['trainer'],
+  },
+  { 
+    label: 'My Students', 
+    href: '/instructor/students', 
+    icon: <Users className="h-5 w-5" />,
+    allowedRoles: ['trainer', 'mentor'],
+  },
+  { 
+    label: 'Live Classes', 
+    href: '/instructor/live-classes', 
+    icon: <Video className="h-5 w-5" />,
+    allowedRoles: ['trainer', 'mentor'],
+  },
+  { 
+    label: 'Assignments', 
+    href: '/instructor/assignments', 
+    icon: <FileCheck className="h-5 w-5" />,
+    allowedRoles: ['trainer', 'mentor'],
   },
   // Admin navigation
   { 
@@ -95,6 +123,12 @@ const getNavItems = (): NavItem[] => [
     href: '/admin/users', 
     icon: <Users className="h-5 w-5" />,
     allowedRoles: ['super_admin', 'admin', 'sub_admin'],
+  },
+  { 
+    label: 'Certificates', 
+    href: '/admin/certificates', 
+    icon: <Award className="h-5 w-5" />,
+    allowedRoles: ['super_admin', 'admin', 'sub_admin', 'trainer'],
   },
   { 
     label: 'Roles & Permissions', 
