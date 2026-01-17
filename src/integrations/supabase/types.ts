@@ -1539,6 +1539,405 @@ export type Database = {
         }
         Relationships: []
       }
+      internship_applications: {
+        Row: {
+          applied_at: string
+          cover_letter: string | null
+          id: string
+          internship_id: string
+          portfolio_url: string | null
+          resume_url: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          reviewer_notes: string | null
+          status:
+            | Database["public"]["Enums"]["internship_application_status"]
+            | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          applied_at?: string
+          cover_letter?: string | null
+          id?: string
+          internship_id: string
+          portfolio_url?: string | null
+          resume_url?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reviewer_notes?: string | null
+          status?:
+            | Database["public"]["Enums"]["internship_application_status"]
+            | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          applied_at?: string
+          cover_letter?: string | null
+          id?: string
+          internship_id?: string
+          portfolio_url?: string | null
+          resume_url?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          reviewer_notes?: string | null
+          status?:
+            | Database["public"]["Enums"]["internship_application_status"]
+            | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "internship_applications_internship_id_fkey"
+            columns: ["internship_id"]
+            isOneToOne: false
+            referencedRelation: "internships"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      internship_enrollments: {
+        Row: {
+          actual_end_date: string | null
+          application_id: string | null
+          completed_at: string | null
+          enrolled_at: string
+          expected_end_date: string | null
+          id: string
+          internship_id: string
+          is_completed: boolean | null
+          progress: number | null
+          start_date: string
+          user_id: string
+        }
+        Insert: {
+          actual_end_date?: string | null
+          application_id?: string | null
+          completed_at?: string | null
+          enrolled_at?: string
+          expected_end_date?: string | null
+          id?: string
+          internship_id: string
+          is_completed?: boolean | null
+          progress?: number | null
+          start_date: string
+          user_id: string
+        }
+        Update: {
+          actual_end_date?: string | null
+          application_id?: string | null
+          completed_at?: string | null
+          enrolled_at?: string
+          expected_end_date?: string | null
+          id?: string
+          internship_id?: string
+          is_completed?: boolean | null
+          progress?: number | null
+          start_date?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "internship_enrollments_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "internship_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "internship_enrollments_internship_id_fkey"
+            columns: ["internship_id"]
+            isOneToOne: false
+            referencedRelation: "internships"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      internship_offer_letters: {
+        Row: {
+          application_id: string
+          content: string
+          created_at: string
+          end_date: string | null
+          expires_at: string | null
+          id: string
+          internship_id: string
+          issued_by: string
+          offer_number: string
+          pdf_url: string | null
+          responded_at: string | null
+          sent_at: string | null
+          start_date: string
+          status: Database["public"]["Enums"]["offer_letter_status"] | null
+          stipend_amount: number | null
+          terms_and_conditions: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          application_id: string
+          content: string
+          created_at?: string
+          end_date?: string | null
+          expires_at?: string | null
+          id?: string
+          internship_id: string
+          issued_by: string
+          offer_number: string
+          pdf_url?: string | null
+          responded_at?: string | null
+          sent_at?: string | null
+          start_date: string
+          status?: Database["public"]["Enums"]["offer_letter_status"] | null
+          stipend_amount?: number | null
+          terms_and_conditions?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          application_id?: string
+          content?: string
+          created_at?: string
+          end_date?: string | null
+          expires_at?: string | null
+          id?: string
+          internship_id?: string
+          issued_by?: string
+          offer_number?: string
+          pdf_url?: string | null
+          responded_at?: string | null
+          sent_at?: string | null
+          start_date?: string
+          status?: Database["public"]["Enums"]["offer_letter_status"] | null
+          stipend_amount?: number | null
+          terms_and_conditions?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "internship_offer_letters_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "internship_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "internship_offer_letters_internship_id_fkey"
+            columns: ["internship_id"]
+            isOneToOne: false
+            referencedRelation: "internships"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      internship_task_submissions: {
+        Row: {
+          attachment_url: string | null
+          enrollment_id: string
+          graded_at: string | null
+          graded_by: string | null
+          id: string
+          marks_obtained: number | null
+          mentor_feedback: string | null
+          status: Database["public"]["Enums"]["internship_task_status"] | null
+          submission_text: string | null
+          submitted_at: string
+          task_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          attachment_url?: string | null
+          enrollment_id: string
+          graded_at?: string | null
+          graded_by?: string | null
+          id?: string
+          marks_obtained?: number | null
+          mentor_feedback?: string | null
+          status?: Database["public"]["Enums"]["internship_task_status"] | null
+          submission_text?: string | null
+          submitted_at?: string
+          task_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          attachment_url?: string | null
+          enrollment_id?: string
+          graded_at?: string | null
+          graded_by?: string | null
+          id?: string
+          marks_obtained?: number | null
+          mentor_feedback?: string | null
+          status?: Database["public"]["Enums"]["internship_task_status"] | null
+          submission_text?: string | null
+          submitted_at?: string
+          task_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "internship_task_submissions_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "internship_enrollments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "internship_task_submissions_task_id_fkey"
+            columns: ["task_id"]
+            isOneToOne: false
+            referencedRelation: "internship_tasks"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      internship_tasks: {
+        Row: {
+          attachment_url: string | null
+          created_at: string
+          created_by: string
+          description: string | null
+          due_date: string | null
+          id: string
+          instructions: string | null
+          internship_id: string
+          is_mandatory: boolean | null
+          max_marks: number | null
+          passing_marks: number | null
+          sort_order: number | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          attachment_url?: string | null
+          created_at?: string
+          created_by: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          instructions?: string | null
+          internship_id: string
+          is_mandatory?: boolean | null
+          max_marks?: number | null
+          passing_marks?: number | null
+          sort_order?: number | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          attachment_url?: string | null
+          created_at?: string
+          created_by?: string
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          instructions?: string | null
+          internship_id?: string
+          is_mandatory?: boolean | null
+          max_marks?: number | null
+          passing_marks?: number | null
+          sort_order?: number | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "internship_tasks_internship_id_fkey"
+            columns: ["internship_id"]
+            isOneToOne: false
+            referencedRelation: "internships"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      internships: {
+        Row: {
+          application_deadline: string | null
+          created_at: string
+          created_by: string
+          department: string | null
+          description: string | null
+          duration_weeks: number | null
+          eligibility: string | null
+          end_date: string | null
+          id: string
+          is_remote: boolean | null
+          location: string | null
+          max_positions: number | null
+          mentor_id: string | null
+          org_id: string
+          responsibilities: string | null
+          skills_required: string[] | null
+          start_date: string | null
+          status: Database["public"]["Enums"]["internship_status"] | null
+          stipend_amount: number | null
+          stipend_currency: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          application_deadline?: string | null
+          created_at?: string
+          created_by: string
+          department?: string | null
+          description?: string | null
+          duration_weeks?: number | null
+          eligibility?: string | null
+          end_date?: string | null
+          id?: string
+          is_remote?: boolean | null
+          location?: string | null
+          max_positions?: number | null
+          mentor_id?: string | null
+          org_id: string
+          responsibilities?: string | null
+          skills_required?: string[] | null
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["internship_status"] | null
+          stipend_amount?: number | null
+          stipend_currency?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          application_deadline?: string | null
+          created_at?: string
+          created_by?: string
+          department?: string | null
+          description?: string | null
+          duration_weeks?: number | null
+          eligibility?: string | null
+          end_date?: string | null
+          id?: string
+          is_remote?: boolean | null
+          location?: string | null
+          max_positions?: number | null
+          mentor_id?: string | null
+          org_id?: string
+          responsibilities?: string | null
+          skills_required?: string[] | null
+          start_date?: string | null
+          status?: Database["public"]["Enums"]["internship_status"] | null
+          stipend_amount?: number | null
+          stipend_currency?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "internships_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lesson_progress: {
         Row: {
           completed: boolean
@@ -2421,6 +2820,24 @@ export type Database = {
         | "corporate_hr"
       assessment_status: "draft" | "published" | "closed" | "archived"
       certificate_type: "course" | "internship" | "experience" | "lor"
+      internship_application_status:
+        | "pending"
+        | "accepted"
+        | "rejected"
+        | "withdrawn"
+      internship_status: "draft" | "active" | "closed" | "completed"
+      internship_task_status:
+        | "pending"
+        | "in_progress"
+        | "submitted"
+        | "approved"
+        | "revision_needed"
+      offer_letter_status:
+        | "draft"
+        | "sent"
+        | "accepted"
+        | "declined"
+        | "expired"
       question_type:
         | "mcq"
         | "descriptive"
@@ -2575,6 +2992,21 @@ export const Constants = {
       ],
       assessment_status: ["draft", "published", "closed", "archived"],
       certificate_type: ["course", "internship", "experience", "lor"],
+      internship_application_status: [
+        "pending",
+        "accepted",
+        "rejected",
+        "withdrawn",
+      ],
+      internship_status: ["draft", "active", "closed", "completed"],
+      internship_task_status: [
+        "pending",
+        "in_progress",
+        "submitted",
+        "approved",
+        "revision_needed",
+      ],
+      offer_letter_status: ["draft", "sent", "accepted", "declined", "expired"],
       question_type: [
         "mcq",
         "descriptive",
