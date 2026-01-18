@@ -88,6 +88,7 @@ import InstructorStudents from "./pages/instructor/InstructorStudents";
 import InstructorLiveClasses from "./pages/instructor/InstructorLiveClasses";
 import InstructorAssignments from "./pages/instructor/InstructorAssignments";
 import AdminCertificates from "./pages/admin/AdminCertificates";
+import AdminRolesPage from "./pages/admin/AdminRolesPage";
 
 // Advanced Features Pages
 import CareerToolsPage from "./pages/CareerToolsPage";
@@ -304,6 +305,11 @@ const App = () => (
             <Route path="/admin/legal" element={
               <ProtectedRoute allowedRoles={['super_admin', 'admin']}>
                 <AdminLegalPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/roles" element={
+              <ProtectedRoute allowedRoles={['super_admin']}>
+                <AdminRolesPage />
               </ProtectedRoute>
             } />
             
