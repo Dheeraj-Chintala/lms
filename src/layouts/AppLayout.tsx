@@ -31,6 +31,8 @@ import {
   FileCheck,
   Award,
   Briefcase,
+  Handshake,
+  Network,
   ClipboardList,
 } from 'lucide-react';
 import type { AppRole } from '@/types/database';
@@ -205,11 +207,11 @@ const getNavItems = (): NavItem[] => [
     icon: <GraduationCap className="h-5 w-5" />,
     allowedRoles: ['corporate_hr'],
   },
-  // Distribution network navigation
+  // Distribution network / Franchise navigation
   { 
-    label: 'Dashboard', 
-    href: '/dashboard', 
-    icon: <LayoutDashboard className="h-5 w-5" />,
+    label: 'Partner Dashboard', 
+    href: '/franchise/dashboard', 
+    icon: <Handshake className="h-5 w-5" />,
     allowedRoles: ['franchise', 'distributor', 'super_distributor', 'affiliate'],
   },
   { 
@@ -217,6 +219,13 @@ const getNavItems = (): NavItem[] => [
     href: '/courses', 
     icon: <BookOpen className="h-5 w-5" />,
     allowedRoles: ['franchise', 'distributor', 'super_distributor', 'affiliate'],
+  },
+  // Admin - Partner Management
+  { 
+    label: 'Partner Management', 
+    href: '/admin/partners', 
+    icon: <Network className="h-5 w-5" />,
+    allowedRoles: ['super_admin', 'admin'],
   },
 ];
 
