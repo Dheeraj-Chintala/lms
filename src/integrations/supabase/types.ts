@@ -14,6 +14,59 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_activity_logs: {
+        Row: {
+          action_type: string
+          admin_id: string
+          created_at: string
+          id: string
+          ip_address: string | null
+          new_value: Json | null
+          notes: string | null
+          org_id: string | null
+          previous_value: Json | null
+          target_id: string | null
+          target_type: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          action_type: string
+          admin_id: string
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          new_value?: Json | null
+          notes?: string | null
+          org_id?: string | null
+          previous_value?: Json | null
+          target_id?: string | null
+          target_type?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          action_type?: string
+          admin_id?: string
+          created_at?: string
+          id?: string
+          ip_address?: string | null
+          new_value?: Json | null
+          notes?: string | null
+          org_id?: string | null
+          previous_value?: Json | null
+          target_id?: string | null
+          target_type?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_activity_logs_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       announcements: {
         Row: {
           content: string
@@ -1093,6 +1146,68 @@ export type Database = {
             columns: ["lesson_id"]
             isOneToOne: false
             referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      content_moderation_queue: {
+        Row: {
+          content_id: string
+          content_title: string | null
+          content_type: string
+          created_at: string
+          flagged_reason: string | null
+          id: string
+          moderation_notes: string | null
+          moderator_id: string | null
+          org_id: string | null
+          priority: string | null
+          reviewed_at: string | null
+          status: Database["public"]["Enums"]["moderation_status"]
+          submitted_at: string
+          submitted_by: string
+          updated_at: string
+        }
+        Insert: {
+          content_id: string
+          content_title?: string | null
+          content_type: string
+          created_at?: string
+          flagged_reason?: string | null
+          id?: string
+          moderation_notes?: string | null
+          moderator_id?: string | null
+          org_id?: string | null
+          priority?: string | null
+          reviewed_at?: string | null
+          status?: Database["public"]["Enums"]["moderation_status"]
+          submitted_at?: string
+          submitted_by: string
+          updated_at?: string
+        }
+        Update: {
+          content_id?: string
+          content_title?: string | null
+          content_type?: string
+          created_at?: string
+          flagged_reason?: string | null
+          id?: string
+          moderation_notes?: string | null
+          moderator_id?: string | null
+          org_id?: string | null
+          priority?: string | null
+          reviewed_at?: string | null
+          status?: Database["public"]["Enums"]["moderation_status"]
+          submitted_at?: string
+          submitted_by?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_moderation_queue_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
@@ -4486,6 +4601,77 @@ export type Database = {
           },
         ]
       }
+      pricing_rules: {
+        Row: {
+          applies_to: string
+          conditions: Json | null
+          created_at: string
+          created_by: string | null
+          end_date: string | null
+          id: string
+          is_active: boolean | null
+          max_amount: number | null
+          min_amount: number | null
+          org_id: string
+          priority: number | null
+          rule_name: string
+          rule_type: string
+          start_date: string | null
+          target_id: string | null
+          updated_at: string
+          value: number
+          value_type: string
+        }
+        Insert: {
+          applies_to: string
+          conditions?: Json | null
+          created_at?: string
+          created_by?: string | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_amount?: number | null
+          min_amount?: number | null
+          org_id: string
+          priority?: number | null
+          rule_name: string
+          rule_type: string
+          start_date?: string | null
+          target_id?: string | null
+          updated_at?: string
+          value: number
+          value_type: string
+        }
+        Update: {
+          applies_to?: string
+          conditions?: Json | null
+          created_at?: string
+          created_by?: string | null
+          end_date?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_amount?: number | null
+          min_amount?: number | null
+          org_id?: string
+          priority?: number | null
+          rule_name?: string
+          rule_type?: string
+          start_date?: string | null
+          target_id?: string | null
+          updated_at?: string
+          value?: number
+          value_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pricing_rules_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -5149,6 +5335,121 @@ export type Database = {
           },
         ]
       }
+      system_backups: {
+        Row: {
+          backup_type: string
+          completed_at: string | null
+          created_at: string
+          error_message: string | null
+          file_size_bytes: number | null
+          file_url: string | null
+          id: string
+          initiated_by: string | null
+          notes: string | null
+          org_id: string | null
+          retention_days: number | null
+          started_at: string | null
+          status: Database["public"]["Enums"]["backup_status"]
+          tables_included: string[] | null
+        }
+        Insert: {
+          backup_type: string
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          file_size_bytes?: number | null
+          file_url?: string | null
+          id?: string
+          initiated_by?: string | null
+          notes?: string | null
+          org_id?: string | null
+          retention_days?: number | null
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["backup_status"]
+          tables_included?: string[] | null
+        }
+        Update: {
+          backup_type?: string
+          completed_at?: string | null
+          created_at?: string
+          error_message?: string | null
+          file_size_bytes?: number | null
+          file_url?: string | null
+          id?: string
+          initiated_by?: string | null
+          notes?: string | null
+          org_id?: string | null
+          retention_days?: number | null
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["backup_status"]
+          tables_included?: string[] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "system_backups_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      system_configuration: {
+        Row: {
+          category: string
+          config_key: string
+          config_value: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_editable: boolean | null
+          is_sensitive: boolean | null
+          org_id: string | null
+          updated_at: string
+          updated_by: string | null
+          value_type: Database["public"]["Enums"]["config_value_type"]
+        }
+        Insert: {
+          category: string
+          config_key: string
+          config_value?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_editable?: boolean | null
+          is_sensitive?: boolean | null
+          org_id?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          value_type?: Database["public"]["Enums"]["config_value_type"]
+        }
+        Update: {
+          category?: string
+          config_key?: string
+          config_value?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_editable?: boolean | null
+          is_sensitive?: boolean | null
+          org_id?: string | null
+          updated_at?: string
+          updated_by?: string | null
+          value_type?: Database["public"]["Enums"]["config_value_type"]
+        }
+        Relationships: [
+          {
+            foreignKeyName: "system_configuration_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_2fa_settings: {
         Row: {
           backup_codes: string[] | null
@@ -5187,6 +5488,62 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      user_approval_requests: {
+        Row: {
+          created_at: string
+          id: string
+          metadata: Json | null
+          notes: string | null
+          org_id: string | null
+          rejection_reason: string | null
+          requested_at: string
+          requested_role: Database["public"]["Enums"]["app_role"]
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["approval_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          notes?: string | null
+          org_id?: string | null
+          rejection_reason?: string | null
+          requested_at?: string
+          requested_role: Database["public"]["Enums"]["app_role"]
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["approval_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          metadata?: Json | null
+          notes?: string | null
+          org_id?: string | null
+          rejection_reason?: string | null
+          requested_at?: string
+          requested_role?: Database["public"]["Enums"]["app_role"]
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["approval_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_approval_requests_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_custom_roles: {
         Row: {
@@ -5669,9 +6026,12 @@ export type Database = {
         | "super_distributor"
         | "affiliate"
         | "corporate_hr"
+      approval_status: "pending" | "approved" | "rejected" | "suspended"
       assessment_status: "draft" | "published" | "closed" | "archived"
+      backup_status: "pending" | "in_progress" | "completed" | "failed"
       campaign_status: "draft" | "active" | "paused" | "completed" | "cancelled"
       certificate_type: "course" | "internship" | "experience" | "lor"
+      config_value_type: "string" | "number" | "boolean" | "json" | "array"
       emi_status: "pending" | "paid" | "overdue" | "defaulted"
       employment_type:
         | "full_time"
@@ -5709,6 +6069,7 @@ export type Database = {
         | "withdrawn"
       job_status: "draft" | "open" | "closed" | "filled"
       lead_status: "new" | "contacted" | "qualified" | "converted" | "lost"
+      moderation_status: "pending" | "approved" | "rejected" | "flagged"
       notification_channel: "email" | "sms" | "whatsapp" | "in_app" | "push"
       notification_status: "pending" | "sent" | "delivered" | "failed" | "read"
       offer_letter_status:
@@ -5897,9 +6258,12 @@ export const Constants = {
         "affiliate",
         "corporate_hr",
       ],
+      approval_status: ["pending", "approved", "rejected", "suspended"],
       assessment_status: ["draft", "published", "closed", "archived"],
+      backup_status: ["pending", "in_progress", "completed", "failed"],
       campaign_status: ["draft", "active", "paused", "completed", "cancelled"],
       certificate_type: ["course", "internship", "experience", "lor"],
+      config_value_type: ["string", "number", "boolean", "json", "array"],
       emi_status: ["pending", "paid", "overdue", "defaulted"],
       employment_type: [
         "full_time",
@@ -5942,6 +6306,7 @@ export const Constants = {
       ],
       job_status: ["draft", "open", "closed", "filled"],
       lead_status: ["new", "contacted", "qualified", "converted", "lost"],
+      moderation_status: ["pending", "approved", "rejected", "flagged"],
       notification_channel: ["email", "sms", "whatsapp", "in_app", "push"],
       notification_status: ["pending", "sent", "delivered", "failed", "read"],
       offer_letter_status: ["draft", "sent", "accepted", "declined", "expired"],
