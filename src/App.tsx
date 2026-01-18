@@ -48,6 +48,12 @@ import CreateInternship from "./pages/internships/CreateInternship";
 import InternshipDetail from "./pages/internships/InternshipDetail";
 import MyInternships from "./pages/internships/MyInternships";
 
+// Job & Placement Pages
+import JobListPage from "./pages/jobs/JobListPage";
+import MyApplications from "./pages/jobs/MyApplications";
+import EmployerDashboardPage from "./pages/jobs/EmployerDashboardPage";
+import PlacementReportsPage from "./pages/jobs/PlacementReportsPage";
+
 // Instructor Panel Pages
 import InstructorAnalytics from "./pages/instructor/InstructorAnalytics";
 import InstructorStudents from "./pages/instructor/InstructorStudents";
@@ -178,6 +184,28 @@ const App = () => (
             <Route path="/my-internships" element={
               <ProtectedRoute allowedRoles={['student']}>
                 <MyInternships />
+              </ProtectedRoute>
+            } />
+
+            {/* Job & Placement Routes */}
+            <Route path="/jobs" element={
+              <ProtectedRoute>
+                <JobListPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/my-applications" element={
+              <ProtectedRoute allowedRoles={['student']}>
+                <MyApplications />
+              </ProtectedRoute>
+            } />
+            <Route path="/employer/dashboard" element={
+              <ProtectedRoute>
+                <EmployerDashboardPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/placements" element={
+              <ProtectedRoute allowedRoles={['super_admin', 'admin', 'sub_admin']}>
+                <PlacementReportsPage />
               </ProtectedRoute>
             } />
             
