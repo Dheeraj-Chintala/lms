@@ -72,7 +72,7 @@ export default function TrainerPerformance({ timeRange }: TrainerPerformanceProp
       // Get instructor revenue
       const { data: revenue } = await supabase
         .from('instructor_revenue')
-        .select('instructor_id, net_amount')
+        .select('instructor_id, instructor_amount')
         .in('instructor_id', trainerIds);
 
       // Process trainer stats
@@ -88,7 +88,7 @@ export default function TrainerPerformance({ timeRange }: TrainerPerformanceProp
         const avgRating = trainerRatings.length > 0
           ? trainerRatings.reduce((sum, r) => sum + r.rating, 0) / trainerRatings.length
           : 0;
-        const totalRevenue = trainerRevenue.reduce((sum, r) => sum + (r.net_amount || 0), 0);
+        const totalRevenue = trainerRevenue.reduce((sum, r) => sum + (r.instructor_amount || 0), 0);
 
         return {
           trainerId,
