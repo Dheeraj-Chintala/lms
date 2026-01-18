@@ -216,6 +216,12 @@ const getNavItems = (): NavItem[] => [
     icon: <Bell className="h-5 w-5" />,
     allowedRoles: ['super_admin', 'admin'],
   },
+  { 
+    label: 'Reports & Analytics', 
+    href: '/admin/analytics', 
+    icon: <BarChart3 className="h-5 w-5" />,
+    allowedRoles: ['super_admin', 'admin', 'sub_admin'],
+  },
   // Corporate HR / Manager navigation
   { 
     label: 'Dashboard', 

@@ -67,6 +67,9 @@ import AdminPaymentsPage from "./pages/admin/AdminPaymentsPage";
 import NotificationsPage from "./pages/NotificationsPage";
 import AdminCommunicationsPage from "./pages/admin/AdminCommunicationsPage";
 
+// Analytics Pages
+import AdminAnalyticsPage from "./pages/admin/AdminAnalyticsPage";
+
 // Instructor Panel Pages
 import InstructorAnalytics from "./pages/instructor/InstructorAnalytics";
 import InstructorStudents from "./pages/instructor/InstructorStudents";
@@ -260,6 +263,11 @@ const App = () => (
             <Route path="/admin/communications" element={
               <ProtectedRoute allowedRoles={['super_admin', 'admin']}>
                 <AdminCommunicationsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/analytics" element={
+              <ProtectedRoute allowedRoles={['super_admin', 'admin', 'sub_admin']}>
+                <AdminAnalyticsPage />
               </ProtectedRoute>
             } />
             
