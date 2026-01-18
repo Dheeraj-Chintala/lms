@@ -58,6 +58,11 @@ import PlacementReportsPage from "./pages/jobs/PlacementReportsPage";
 import FranchiseDashboardPage from "./pages/franchise/FranchiseDashboardPage";
 import FranchiseAdminPage from "./pages/franchise/FranchiseAdminPage";
 
+// Payment Pages
+import PaymentsPage from "./pages/payments/PaymentsPage";
+import SubscriptionPlansPage from "./pages/payments/SubscriptionPlansPage";
+import AdminPaymentsPage from "./pages/admin/AdminPaymentsPage";
+
 // Instructor Panel Pages
 import InstructorAnalytics from "./pages/instructor/InstructorAnalytics";
 import InstructorStudents from "./pages/instructor/InstructorStudents";
@@ -222,6 +227,23 @@ const App = () => (
             <Route path="/admin/partners" element={
               <ProtectedRoute allowedRoles={['super_admin', 'admin']}>
                 <FranchiseAdminPage />
+              </ProtectedRoute>
+            } />
+
+            {/* Payment Routes */}
+            <Route path="/payments" element={
+              <ProtectedRoute>
+                <PaymentsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/subscriptions" element={
+              <ProtectedRoute>
+                <SubscriptionPlansPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/payments" element={
+              <ProtectedRoute allowedRoles={['super_admin', 'admin', 'sub_admin']}>
+                <AdminPaymentsPage />
               </ProtectedRoute>
             } />
             
