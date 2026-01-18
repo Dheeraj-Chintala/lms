@@ -151,7 +151,7 @@ export default function PricingControls() {
         target_type: 'pricing_rule',
         target_id: editingRule?.id,
         new_value: ruleData as any
-      });
+      }]);
 
       setShowDialog(false);
       fetchPricingRules();
@@ -174,13 +174,13 @@ export default function PricingControls() {
 
       if (error) throw error;
 
-      await supabase.from('admin_activity_logs').insert({
+      await supabase.from('admin_activity_logs').insert([{
         admin_id: user?.id,
         action_type: 'delete_pricing_rule',
         target_type: 'pricing_rule',
         target_id: rule.id,
-        previous_value: rule
-      });
+        previous_value: rule as any
+      }]);
 
       toast.success('Pricing rule deleted');
       fetchPricingRules();
