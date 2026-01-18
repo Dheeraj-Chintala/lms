@@ -76,6 +76,12 @@ import AdminSecurityPage from "./pages/admin/AdminSecurityPage";
 // Admin Controls Pages
 import AdminControlsPage from "./pages/admin/AdminControlsPage";
 
+// Legal Pages
+import TermsPage from "./pages/legal/TermsPage";
+import PrivacyPage from "./pages/legal/PrivacyPage";
+import RefundPage from "./pages/legal/RefundPage";
+import AdminLegalPage from "./pages/admin/AdminLegalPage";
+
 // Instructor Panel Pages
 import InstructorAnalytics from "./pages/instructor/InstructorAnalytics";
 import InstructorStudents from "./pages/instructor/InstructorStudents";
@@ -286,6 +292,16 @@ const App = () => (
                 <AdminControlsPage />
               </ProtectedRoute>
             } />
+            <Route path="/admin/legal" element={
+              <ProtectedRoute allowedRoles={['super_admin', 'admin']}>
+                <AdminLegalPage />
+              </ProtectedRoute>
+            } />
+            
+            {/* Public Legal Pages */}
+            <Route path="/terms" element={<TermsPage />} />
+            <Route path="/privacy" element={<PrivacyPage />} />
+            <Route path="/refund" element={<RefundPage />} />
             
             {/* Public Certificate Verification */}
             <Route path="/verify/:id" element={<VerifyCertificate />} />
