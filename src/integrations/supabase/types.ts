@@ -1389,6 +1389,57 @@ export type Database = {
           },
         ]
       }
+      employers: {
+        Row: {
+          company_description: string | null
+          company_logo_url: string | null
+          company_name: string
+          company_size: string | null
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string
+          id: string
+          industry: string | null
+          is_verified: boolean | null
+          location: string | null
+          updated_at: string
+          user_id: string
+          website_url: string | null
+        }
+        Insert: {
+          company_description?: string | null
+          company_logo_url?: string | null
+          company_name: string
+          company_size?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          industry?: string | null
+          is_verified?: boolean | null
+          location?: string | null
+          updated_at?: string
+          user_id: string
+          website_url?: string | null
+        }
+        Update: {
+          company_description?: string | null
+          company_logo_url?: string | null
+          company_name?: string
+          company_size?: string | null
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          industry?: string | null
+          is_verified?: boolean | null
+          location?: string | null
+          updated_at?: string
+          user_id?: string
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       enrollments: {
         Row: {
           access_revoked: boolean | null
@@ -1938,6 +1989,232 @@ export type Database = {
           },
         ]
       }
+      interviews: {
+        Row: {
+          application_id: string
+          created_at: string
+          duration_minutes: number | null
+          feedback: string | null
+          id: string
+          interview_type: string | null
+          interviewer_name: string | null
+          job_id: string
+          location: string | null
+          meeting_url: string | null
+          notes: string | null
+          rating: number | null
+          scheduled_at: string
+          status: Database["public"]["Enums"]["interview_status"] | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          application_id: string
+          created_at?: string
+          duration_minutes?: number | null
+          feedback?: string | null
+          id?: string
+          interview_type?: string | null
+          interviewer_name?: string | null
+          job_id: string
+          location?: string | null
+          meeting_url?: string | null
+          notes?: string | null
+          rating?: number | null
+          scheduled_at: string
+          status?: Database["public"]["Enums"]["interview_status"] | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          application_id?: string
+          created_at?: string
+          duration_minutes?: number | null
+          feedback?: string | null
+          id?: string
+          interview_type?: string | null
+          interviewer_name?: string | null
+          job_id?: string
+          location?: string | null
+          meeting_url?: string | null
+          notes?: string | null
+          rating?: number | null
+          scheduled_at?: string
+          status?: Database["public"]["Enums"]["interview_status"] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "interviews_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "job_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "interviews_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "job_postings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      job_applications: {
+        Row: {
+          applied_at: string
+          cover_letter: string | null
+          employer_notes: string | null
+          id: string
+          job_id: string
+          resume_id: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          status: Database["public"]["Enums"]["job_application_status"] | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          applied_at?: string
+          cover_letter?: string | null
+          employer_notes?: string | null
+          id?: string
+          job_id: string
+          resume_id?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["job_application_status"] | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          applied_at?: string
+          cover_letter?: string | null
+          employer_notes?: string | null
+          id?: string
+          job_id?: string
+          resume_id?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          status?: Database["public"]["Enums"]["job_application_status"] | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_applications_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "job_postings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_applications_resume_id_fkey"
+            columns: ["resume_id"]
+            isOneToOne: false
+            referencedRelation: "student_resumes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      job_postings: {
+        Row: {
+          application_deadline: string | null
+          created_at: string
+          description: string | null
+          eligibility_criteria: string | null
+          employer_id: string
+          employment_type: Database["public"]["Enums"]["employment_type"] | null
+          experience_max_years: number | null
+          experience_min_years: number | null
+          id: string
+          is_remote: boolean | null
+          location: string | null
+          max_applications: number | null
+          org_id: string
+          posted_at: string | null
+          requirements: string | null
+          responsibilities: string | null
+          salary_currency: string | null
+          salary_max: number | null
+          salary_min: number | null
+          skills_required: string[] | null
+          status: Database["public"]["Enums"]["job_status"] | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          application_deadline?: string | null
+          created_at?: string
+          description?: string | null
+          eligibility_criteria?: string | null
+          employer_id: string
+          employment_type?:
+            | Database["public"]["Enums"]["employment_type"]
+            | null
+          experience_max_years?: number | null
+          experience_min_years?: number | null
+          id?: string
+          is_remote?: boolean | null
+          location?: string | null
+          max_applications?: number | null
+          org_id: string
+          posted_at?: string | null
+          requirements?: string | null
+          responsibilities?: string | null
+          salary_currency?: string | null
+          salary_max?: number | null
+          salary_min?: number | null
+          skills_required?: string[] | null
+          status?: Database["public"]["Enums"]["job_status"] | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          application_deadline?: string | null
+          created_at?: string
+          description?: string | null
+          eligibility_criteria?: string | null
+          employer_id?: string
+          employment_type?:
+            | Database["public"]["Enums"]["employment_type"]
+            | null
+          experience_max_years?: number | null
+          experience_min_years?: number | null
+          id?: string
+          is_remote?: boolean | null
+          location?: string | null
+          max_applications?: number | null
+          org_id?: string
+          posted_at?: string | null
+          requirements?: string | null
+          responsibilities?: string | null
+          salary_currency?: string | null
+          salary_max?: number | null
+          salary_min?: number | null
+          skills_required?: string[] | null
+          status?: Database["public"]["Enums"]["job_status"] | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "job_postings_employer_id_fkey"
+            columns: ["employer_id"]
+            isOneToOne: false
+            referencedRelation: "employers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "job_postings_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       lesson_progress: {
         Row: {
           completed: boolean
@@ -2392,6 +2669,82 @@ export type Database = {
         }
         Relationships: []
       }
+      placements: {
+        Row: {
+          accepted_at: string | null
+          application_id: string
+          created_at: string
+          employer_id: string
+          id: string
+          job_id: string
+          joined_at: string | null
+          joining_date: string | null
+          offer_letter_url: string | null
+          offered_salary: number | null
+          remarks: string | null
+          salary_currency: string | null
+          status: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          application_id: string
+          created_at?: string
+          employer_id: string
+          id?: string
+          job_id: string
+          joined_at?: string | null
+          joining_date?: string | null
+          offer_letter_url?: string | null
+          offered_salary?: number | null
+          remarks?: string | null
+          salary_currency?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          accepted_at?: string | null
+          application_id?: string
+          created_at?: string
+          employer_id?: string
+          id?: string
+          job_id?: string
+          joined_at?: string | null
+          joining_date?: string | null
+          offer_letter_url?: string | null
+          offered_salary?: number | null
+          remarks?: string | null
+          salary_currency?: string | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "placements_application_id_fkey"
+            columns: ["application_id"]
+            isOneToOne: false
+            referencedRelation: "job_applications"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "placements_employer_id_fkey"
+            columns: ["employer_id"]
+            isOneToOne: false
+            referencedRelation: "employers"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "placements_job_id_fkey"
+            columns: ["job_id"]
+            isOneToOne: false
+            referencedRelation: "job_postings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       poll_options: {
         Row: {
           id: string
@@ -2710,6 +3063,75 @@ export type Database = {
           },
         ]
       }
+      student_resumes: {
+        Row: {
+          certifications: Json | null
+          created_at: string
+          education: Json | null
+          email: string | null
+          experience: Json | null
+          full_name: string | null
+          headline: string | null
+          id: string
+          is_public: boolean | null
+          languages: string[] | null
+          linkedin_url: string | null
+          phone: string | null
+          portfolio_url: string | null
+          projects: Json | null
+          resume_data: Json | null
+          resume_url: string | null
+          skills: string[] | null
+          summary: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          certifications?: Json | null
+          created_at?: string
+          education?: Json | null
+          email?: string | null
+          experience?: Json | null
+          full_name?: string | null
+          headline?: string | null
+          id?: string
+          is_public?: boolean | null
+          languages?: string[] | null
+          linkedin_url?: string | null
+          phone?: string | null
+          portfolio_url?: string | null
+          projects?: Json | null
+          resume_data?: Json | null
+          resume_url?: string | null
+          skills?: string[] | null
+          summary?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          certifications?: Json | null
+          created_at?: string
+          education?: Json | null
+          email?: string | null
+          experience?: Json | null
+          full_name?: string | null
+          headline?: string | null
+          id?: string
+          is_public?: boolean | null
+          languages?: string[] | null
+          linkedin_url?: string | null
+          phone?: string | null
+          portfolio_url?: string | null
+          projects?: Json | null
+          resume_data?: Json | null
+          resume_url?: string | null
+          skills?: string[] | null
+          summary?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_custom_roles: {
         Row: {
           created_at: string
@@ -2820,6 +3242,12 @@ export type Database = {
         | "corporate_hr"
       assessment_status: "draft" | "published" | "closed" | "archived"
       certificate_type: "course" | "internship" | "experience" | "lor"
+      employment_type:
+        | "full_time"
+        | "part_time"
+        | "contract"
+        | "internship"
+        | "freelance"
       internship_application_status:
         | "pending"
         | "accepted"
@@ -2832,6 +3260,15 @@ export type Database = {
         | "submitted"
         | "approved"
         | "revision_needed"
+      interview_status: "scheduled" | "completed" | "cancelled" | "no_show"
+      job_application_status:
+        | "pending"
+        | "shortlisted"
+        | "interview_scheduled"
+        | "selected"
+        | "rejected"
+        | "withdrawn"
+      job_status: "draft" | "open" | "closed" | "filled"
       offer_letter_status:
         | "draft"
         | "sent"
@@ -2992,6 +3429,13 @@ export const Constants = {
       ],
       assessment_status: ["draft", "published", "closed", "archived"],
       certificate_type: ["course", "internship", "experience", "lor"],
+      employment_type: [
+        "full_time",
+        "part_time",
+        "contract",
+        "internship",
+        "freelance",
+      ],
       internship_application_status: [
         "pending",
         "accepted",
@@ -3006,6 +3450,16 @@ export const Constants = {
         "approved",
         "revision_needed",
       ],
+      interview_status: ["scheduled", "completed", "cancelled", "no_show"],
+      job_application_status: [
+        "pending",
+        "shortlisted",
+        "interview_scheduled",
+        "selected",
+        "rejected",
+        "withdrawn",
+      ],
+      job_status: ["draft", "open", "closed", "filled"],
       offer_letter_status: ["draft", "sent", "accepted", "declined", "expired"],
       question_type: [
         "mcq",
