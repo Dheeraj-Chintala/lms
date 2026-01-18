@@ -90,21 +90,22 @@ export default function UserApprovals() {
       // Add the role to user_roles
       const { error: roleError } = await supabase
         .from('user_roles')
-        .insert({
+        .insert([{
           user_id: request.user_id,
-          role: request.requested_role as any
-        });
+          role: request.requested_role as any,
+          org_id: request.org_id || ''
+        }] as any);
 
       if (roleError && roleError.code !== '23505') throw roleError; // Ignore duplicate key
 
       // Log activity
-      await supabase.from('admin_activity_logs').insert({
+      await supabase.from('admin_activity_logs').insert([{
         admin_id: user?.id,
         action_type: 'approve_user',
         target_type: 'user',
         target_id: request.user_id,
-        new_value: { role: request.requested_role }
-      });
+        new_value: { role: request.requested_role } as any
+      }]);
 
       toast.success('User approved successfully');
       fetchApprovalRequests();

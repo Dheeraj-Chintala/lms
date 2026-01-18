@@ -38,6 +38,8 @@ import {
   Crown,
   Wallet,
   Bell,
+  Cog,
+  Database,
 } from 'lucide-react';
 import type { AppRole } from '@/types/database';
 import { ROLE_LABELS } from '@/types/database';
@@ -226,6 +228,12 @@ const getNavItems = (): NavItem[] => [
     label: 'Security', 
     href: '/admin/security', 
     icon: <Shield className="h-5 w-5" />,
+    allowedRoles: ['super_admin', 'admin'],
+  },
+  { 
+    label: 'Admin Controls', 
+    href: '/admin/controls', 
+    icon: <Cog className="h-5 w-5" />,
     allowedRoles: ['super_admin', 'admin'],
   },
   // Corporate HR / Manager navigation
