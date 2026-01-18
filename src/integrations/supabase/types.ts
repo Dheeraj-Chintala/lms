@@ -14,6 +14,68 @@ export type Database = {
   }
   public: {
     Tables: {
+      announcements: {
+        Row: {
+          content: string
+          created_at: string
+          created_by: string | null
+          display_type: string | null
+          ends_at: string | null
+          id: string
+          is_active: boolean | null
+          is_dismissible: boolean | null
+          org_id: string
+          priority: string | null
+          starts_at: string | null
+          target_courses: string[] | null
+          target_roles: string[] | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          created_by?: string | null
+          display_type?: string | null
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_dismissible?: boolean | null
+          org_id: string
+          priority?: string | null
+          starts_at?: string | null
+          target_courses?: string[] | null
+          target_roles?: string[] | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          display_type?: string | null
+          ends_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_dismissible?: boolean | null
+          org_id?: string
+          priority?: string | null
+          starts_at?: string | null
+          target_courses?: string[] | null
+          target_roles?: string[] | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "announcements_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       assessment_answers: {
         Row: {
           answered_at: string | null
@@ -564,6 +626,59 @@ export type Database = {
             columns: ["bundle_id"]
             isOneToOne: false
             referencedRelation: "course_bundles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      campaign_enrollments: {
+        Row: {
+          campaign_id: string
+          completed_at: string | null
+          created_at: string
+          current_step: number | null
+          enrolled_at: string
+          id: string
+          metadata: Json | null
+          next_step_scheduled_at: string | null
+          status: string | null
+          unsubscribed_at: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          campaign_id: string
+          completed_at?: string | null
+          created_at?: string
+          current_step?: number | null
+          enrolled_at?: string
+          id?: string
+          metadata?: Json | null
+          next_step_scheduled_at?: string | null
+          status?: string | null
+          unsubscribed_at?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          campaign_id?: string
+          completed_at?: string | null
+          created_at?: string
+          current_step?: number | null
+          enrolled_at?: string
+          id?: string
+          metadata?: Json | null
+          next_step_scheduled_at?: string | null
+          status?: string | null
+          unsubscribed_at?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "campaign_enrollments_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "drip_campaigns"
             referencedColumns: ["id"]
           },
         ]
@@ -1607,6 +1722,140 @@ export type Database = {
             columns: ["lesson_id"]
             isOneToOne: false
             referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      drip_campaign_steps: {
+        Row: {
+          body: string | null
+          campaign_id: string
+          channel: Database["public"]["Enums"]["notification_channel"]
+          created_at: string
+          delay_days: number | null
+          delay_hours: number | null
+          id: string
+          is_active: boolean | null
+          name: string
+          skip_conditions: Json | null
+          step_number: number
+          subject: string | null
+          template_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          body?: string | null
+          campaign_id: string
+          channel: Database["public"]["Enums"]["notification_channel"]
+          created_at?: string
+          delay_days?: number | null
+          delay_hours?: number | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          skip_conditions?: Json | null
+          step_number: number
+          subject?: string | null
+          template_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          body?: string | null
+          campaign_id?: string
+          channel?: Database["public"]["Enums"]["notification_channel"]
+          created_at?: string
+          delay_days?: number | null
+          delay_hours?: number | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          skip_conditions?: Json | null
+          step_number?: number
+          subject?: string | null
+          template_id?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "drip_campaign_steps_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "drip_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "drip_campaign_steps_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "notification_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      drip_campaigns: {
+        Row: {
+          campaign_type: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          ended_at: string | null
+          id: string
+          name: string
+          org_id: string
+          started_at: string | null
+          status: Database["public"]["Enums"]["campaign_status"] | null
+          target_courses: string[] | null
+          target_roles: string[] | null
+          total_completed: number | null
+          total_enrolled: number | null
+          trigger_conditions: Json | null
+          trigger_event: string | null
+          updated_at: string
+        }
+        Insert: {
+          campaign_type: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          ended_at?: string | null
+          id?: string
+          name: string
+          org_id: string
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["campaign_status"] | null
+          target_courses?: string[] | null
+          target_roles?: string[] | null
+          total_completed?: number | null
+          total_enrolled?: number | null
+          trigger_conditions?: Json | null
+          trigger_event?: string | null
+          updated_at?: string
+        }
+        Update: {
+          campaign_type?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          ended_at?: string | null
+          id?: string
+          name?: string
+          org_id?: string
+          started_at?: string | null
+          status?: Database["public"]["Enums"]["campaign_status"] | null
+          target_courses?: string[] | null
+          target_roles?: string[] | null
+          total_completed?: number | null
+          total_enrolled?: number | null
+          trigger_conditions?: Json | null
+          trigger_event?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "drip_campaigns_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
@@ -3407,6 +3656,223 @@ export type Database = {
           },
         ]
       }
+      message_logs: {
+        Row: {
+          body: string
+          campaign_id: string | null
+          channel: Database["public"]["Enums"]["notification_channel"]
+          created_at: string
+          delivered_at: string | null
+          error_message: string | null
+          id: string
+          org_id: string
+          provider: string | null
+          provider_message_id: string | null
+          provider_response: Json | null
+          read_at: string | null
+          recipient: string
+          reminder_id: string | null
+          retry_count: number | null
+          sent_at: string | null
+          status: Database["public"]["Enums"]["notification_status"] | null
+          subject: string | null
+          template_id: string | null
+          user_id: string
+        }
+        Insert: {
+          body: string
+          campaign_id?: string | null
+          channel: Database["public"]["Enums"]["notification_channel"]
+          created_at?: string
+          delivered_at?: string | null
+          error_message?: string | null
+          id?: string
+          org_id: string
+          provider?: string | null
+          provider_message_id?: string | null
+          provider_response?: Json | null
+          read_at?: string | null
+          recipient: string
+          reminder_id?: string | null
+          retry_count?: number | null
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["notification_status"] | null
+          subject?: string | null
+          template_id?: string | null
+          user_id: string
+        }
+        Update: {
+          body?: string
+          campaign_id?: string | null
+          channel?: Database["public"]["Enums"]["notification_channel"]
+          created_at?: string
+          delivered_at?: string | null
+          error_message?: string | null
+          id?: string
+          org_id?: string
+          provider?: string | null
+          provider_message_id?: string | null
+          provider_response?: Json | null
+          read_at?: string | null
+          recipient?: string
+          reminder_id?: string | null
+          retry_count?: number | null
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["notification_status"] | null
+          subject?: string | null
+          template_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_logs_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "drip_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "message_logs_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "message_logs_reminder_id_fkey"
+            columns: ["reminder_id"]
+            isOneToOne: false
+            referencedRelation: "scheduled_reminders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "message_logs_template_id_fkey"
+            columns: ["template_id"]
+            isOneToOne: false
+            referencedRelation: "notification_templates"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_preferences: {
+        Row: {
+          category_preferences: Json | null
+          created_at: string
+          email_digest_enabled: boolean | null
+          email_digest_frequency: string | null
+          email_enabled: boolean | null
+          id: string
+          in_app_enabled: boolean | null
+          push_enabled: boolean | null
+          quiet_hours_enabled: boolean | null
+          quiet_hours_end: string | null
+          quiet_hours_start: string | null
+          sms_enabled: boolean | null
+          updated_at: string
+          user_id: string
+          whatsapp_enabled: boolean | null
+        }
+        Insert: {
+          category_preferences?: Json | null
+          created_at?: string
+          email_digest_enabled?: boolean | null
+          email_digest_frequency?: string | null
+          email_enabled?: boolean | null
+          id?: string
+          in_app_enabled?: boolean | null
+          push_enabled?: boolean | null
+          quiet_hours_enabled?: boolean | null
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
+          sms_enabled?: boolean | null
+          updated_at?: string
+          user_id: string
+          whatsapp_enabled?: boolean | null
+        }
+        Update: {
+          category_preferences?: Json | null
+          created_at?: string
+          email_digest_enabled?: boolean | null
+          email_digest_frequency?: string | null
+          email_enabled?: boolean | null
+          id?: string
+          in_app_enabled?: boolean | null
+          push_enabled?: boolean | null
+          quiet_hours_enabled?: boolean | null
+          quiet_hours_end?: string | null
+          quiet_hours_start?: string | null
+          sms_enabled?: boolean | null
+          updated_at?: string
+          user_id?: string
+          whatsapp_enabled?: boolean | null
+        }
+        Relationships: []
+      }
+      notification_templates: {
+        Row: {
+          available_variables: string[] | null
+          body: string
+          category: string | null
+          channel: Database["public"]["Enums"]["notification_channel"]
+          created_at: string
+          created_by: string | null
+          description: string | null
+          event_trigger: string | null
+          html_body: string | null
+          id: string
+          is_active: boolean | null
+          is_system: boolean | null
+          name: string
+          org_id: string
+          subject: string | null
+          updated_at: string
+        }
+        Insert: {
+          available_variables?: string[] | null
+          body: string
+          category?: string | null
+          channel: Database["public"]["Enums"]["notification_channel"]
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          event_trigger?: string | null
+          html_body?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_system?: boolean | null
+          name: string
+          org_id: string
+          subject?: string | null
+          updated_at?: string
+        }
+        Update: {
+          available_variables?: string[] | null
+          body?: string
+          category?: string | null
+          channel?: Database["public"]["Enums"]["notification_channel"]
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          event_trigger?: string | null
+          html_body?: string | null
+          id?: string
+          is_active?: boolean | null
+          is_system?: boolean | null
+          name?: string
+          org_id?: string
+          subject?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "notification_templates_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       notifications: {
         Row: {
           created_at: string
@@ -4212,6 +4678,78 @@ export type Database = {
           },
         ]
       }
+      scheduled_reminders: {
+        Row: {
+          channels: Database["public"]["Enums"]["notification_channel"][] | null
+          created_at: string
+          id: string
+          is_recurring: boolean | null
+          message: string
+          org_id: string
+          recurrence_end_date: string | null
+          recurrence_pattern: string | null
+          related_id: string | null
+          related_type: string | null
+          reminder_type: Database["public"]["Enums"]["reminder_type"]
+          scheduled_for: string
+          sent_at: string | null
+          status: string | null
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          channels?:
+            | Database["public"]["Enums"]["notification_channel"][]
+            | null
+          created_at?: string
+          id?: string
+          is_recurring?: boolean | null
+          message: string
+          org_id: string
+          recurrence_end_date?: string | null
+          recurrence_pattern?: string | null
+          related_id?: string | null
+          related_type?: string | null
+          reminder_type: Database["public"]["Enums"]["reminder_type"]
+          scheduled_for: string
+          sent_at?: string | null
+          status?: string | null
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          channels?:
+            | Database["public"]["Enums"]["notification_channel"][]
+            | null
+          created_at?: string
+          id?: string
+          is_recurring?: boolean | null
+          message?: string
+          org_id?: string
+          recurrence_end_date?: string | null
+          recurrence_pattern?: string | null
+          related_id?: string | null
+          related_type?: string | null
+          reminder_type?: Database["public"]["Enums"]["reminder_type"]
+          scheduled_for?: string
+          sent_at?: string | null
+          status?: string | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scheduled_reminders_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       student_resumes: {
         Row: {
           certifications: Json | null
@@ -4454,6 +4992,68 @@ export type Database = {
           },
           {
             foreignKeyName: "user_emi_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_notifications: {
+        Row: {
+          action_label: string | null
+          action_url: string | null
+          created_at: string
+          expires_at: string | null
+          id: string
+          is_read: boolean | null
+          message: string
+          notification_type: string | null
+          org_id: string
+          priority: string | null
+          read_at: string | null
+          related_id: string | null
+          related_type: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          action_label?: string | null
+          action_url?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message: string
+          notification_type?: string | null
+          org_id: string
+          priority?: string | null
+          read_at?: string | null
+          related_id?: string | null
+          related_type?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          action_label?: string | null
+          action_url?: string | null
+          created_at?: string
+          expires_at?: string | null
+          id?: string
+          is_read?: boolean | null
+          message?: string
+          notification_type?: string | null
+          org_id?: string
+          priority?: string | null
+          read_at?: string | null
+          related_id?: string | null
+          related_type?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_notifications_org_id_fkey"
             columns: ["org_id"]
             isOneToOne: false
             referencedRelation: "organizations"
@@ -4718,6 +5318,7 @@ export type Database = {
         | "affiliate"
         | "corporate_hr"
       assessment_status: "draft" | "published" | "closed" | "archived"
+      campaign_status: "draft" | "active" | "paused" | "completed" | "cancelled"
       certificate_type: "course" | "internship" | "experience" | "lor"
       emi_status: "pending" | "paid" | "overdue" | "defaulted"
       employment_type:
@@ -4756,6 +5357,8 @@ export type Database = {
         | "withdrawn"
       job_status: "draft" | "open" | "closed" | "filled"
       lead_status: "new" | "contacted" | "qualified" | "converted" | "lost"
+      notification_channel: "email" | "sms" | "whatsapp" | "in_app" | "push"
+      notification_status: "pending" | "sent" | "delivered" | "failed" | "read"
       offer_letter_status:
         | "draft"
         | "sent"
@@ -4783,6 +5386,7 @@ export type Database = {
         | "approved"
         | "rejected"
         | "completed"
+      reminder_type: "class" | "assignment" | "payment" | "deadline" | "custom"
       submission_status:
         | "in_progress"
         | "submitted"
@@ -4942,6 +5546,7 @@ export const Constants = {
         "corporate_hr",
       ],
       assessment_status: ["draft", "published", "closed", "archived"],
+      campaign_status: ["draft", "active", "paused", "completed", "cancelled"],
       certificate_type: ["course", "internship", "experience", "lor"],
       emi_status: ["pending", "paid", "overdue", "defaulted"],
       employment_type: [
@@ -4985,6 +5590,8 @@ export const Constants = {
       ],
       job_status: ["draft", "open", "closed", "filled"],
       lead_status: ["new", "contacted", "qualified", "converted", "lost"],
+      notification_channel: ["email", "sms", "whatsapp", "in_app", "push"],
+      notification_status: ["pending", "sent", "delivered", "failed", "read"],
       offer_letter_status: ["draft", "sent", "accepted", "declined", "expired"],
       payment_status: [
         "pending",
@@ -5010,6 +5617,7 @@ export const Constants = {
         "rejected",
         "completed",
       ],
+      reminder_type: ["class", "assignment", "payment", "deadline", "custom"],
       submission_status: [
         "in_progress",
         "submitted",
