@@ -42,6 +42,12 @@ import StudentDashboard from "./pages/student/StudentDashboard";
 // Certificate Pages
 import VerifyCertificate from "./pages/VerifyCertificate";
 
+// Internship Pages
+import InternshipListPage from "./pages/internships/InternshipListPage";
+import CreateInternship from "./pages/internships/CreateInternship";
+import InternshipDetail from "./pages/internships/InternshipDetail";
+import MyInternships from "./pages/internships/MyInternships";
+
 // Instructor Panel Pages
 import InstructorAnalytics from "./pages/instructor/InstructorAnalytics";
 import InstructorStudents from "./pages/instructor/InstructorStudents";
@@ -150,6 +156,28 @@ const App = () => (
             <Route path="/instructor/assignments" element={
               <ProtectedRoute allowedRoles={['trainer', 'mentor']}>
                 <InstructorAssignments />
+              </ProtectedRoute>
+            } />
+            
+            {/* Internship Routes */}
+            <Route path="/internships" element={
+              <ProtectedRoute>
+                <InternshipListPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/internships/create" element={
+              <ProtectedRoute allowedRoles={['super_admin', 'admin', 'trainer', 'mentor']}>
+                <CreateInternship />
+              </ProtectedRoute>
+            } />
+            <Route path="/internships/:id" element={
+              <ProtectedRoute>
+                <InternshipDetail />
+              </ProtectedRoute>
+            } />
+            <Route path="/my-internships" element={
+              <ProtectedRoute allowedRoles={['student']}>
+                <MyInternships />
               </ProtectedRoute>
             } />
             
