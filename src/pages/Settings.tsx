@@ -12,6 +12,8 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, User, Bell, Shield } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Switch } from '@/components/ui/switch';
+import SessionManager from '@/components/security/SessionManager';
+import TwoFactorSetup from '@/components/security/TwoFactorSetup';
 
 export default function Settings() {
   const { profile } = useAuth();
@@ -220,31 +222,10 @@ export default function Settings() {
           </TabsContent>
 
           <TabsContent value="security">
-            <Card>
-              <CardHeader>
-                <CardTitle className="font-display">Security Settings</CardTitle>
-                <CardDescription>
-                  Manage your account security and password
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-2">
-                  <h3 className="font-medium">Password</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Contact your administrator to reset your password.
-                  </p>
-                </div>
-                <div className="space-y-2">
-                  <h3 className="font-medium">Sessions</h3>
-                  <p className="text-sm text-muted-foreground mb-4">
-                    You're currently signed in on this device.
-                  </p>
-                  <Button variant="outline">
-                    Sign out all devices
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+            <div className="space-y-6">
+              <TwoFactorSetup />
+              <SessionManager />
+            </div>
           </TabsContent>
         </Tabs>
       </div>

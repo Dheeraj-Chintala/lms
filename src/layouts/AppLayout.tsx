@@ -222,6 +222,12 @@ const getNavItems = (): NavItem[] => [
     icon: <BarChart3 className="h-5 w-5" />,
     allowedRoles: ['super_admin', 'admin', 'sub_admin'],
   },
+  { 
+    label: 'Security', 
+    href: '/admin/security', 
+    icon: <Shield className="h-5 w-5" />,
+    allowedRoles: ['super_admin', 'admin'],
+  },
   // Corporate HR / Manager navigation
   { 
     label: 'Dashboard', 
