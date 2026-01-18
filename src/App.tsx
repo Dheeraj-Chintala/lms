@@ -151,7 +151,7 @@ const App = () => (
               </ProtectedRoute>
             } />
 
-            {/* Trainer/Mentor Routes */}
+            {/* Instructor Routes (Trainers & Mentors) */}
             <Route path="/my-courses" element={
               <ProtectedRoute allowedRoles={['trainer', 'mentor']}>
                 <MyCourses />

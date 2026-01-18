@@ -117,7 +117,7 @@ const getNavItems = (): NavItem[] => [
     icon: <Sparkles className="h-5 w-5" />,
     allowedRoles: ['student'],
   },
-  // Trainer/Mentor navigation
+  // Instructor navigation (Trainers & Mentors)
   { 
     label: 'Dashboard', 
     href: '/instructor/dashboard', 
