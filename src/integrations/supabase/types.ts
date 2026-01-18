@@ -1212,6 +1212,45 @@ export type Database = {
           },
         ]
       }
+      cookie_preferences: {
+        Row: {
+          analytics: boolean
+          created_at: string
+          essential: boolean
+          functional: boolean
+          id: string
+          ip_address: string | null
+          marketing: boolean
+          session_id: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          analytics?: boolean
+          created_at?: string
+          essential?: boolean
+          functional?: boolean
+          id?: string
+          ip_address?: string | null
+          marketing?: boolean
+          session_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          analytics?: boolean
+          created_at?: string
+          essential?: boolean
+          functional?: boolean
+          id?: string
+          ip_address?: string | null
+          marketing?: boolean
+          session_id?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       coupons: {
         Row: {
           applicable_courses: string[] | null
@@ -2653,6 +2692,48 @@ export type Database = {
           },
         ]
       }
+      gdpr_data_requests: {
+        Row: {
+          created_at: string
+          data_export_url: string | null
+          id: string
+          notes: string | null
+          processed_at: string | null
+          processed_by: string | null
+          request_type: string
+          requested_at: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          data_export_url?: string | null
+          id?: string
+          notes?: string | null
+          processed_at?: string | null
+          processed_by?: string | null
+          request_type: string
+          requested_at?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          data_export_url?: string | null
+          id?: string
+          notes?: string | null
+          processed_at?: string | null
+          processed_by?: string | null
+          request_type?: string
+          requested_at?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       instructor_revenue: {
         Row: {
           course_id: string | null
@@ -3546,6 +3627,56 @@ export type Database = {
           },
           {
             foreignKeyName: "job_postings_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      legal_documents: {
+        Row: {
+          content: string
+          created_at: string
+          created_by: string | null
+          document_type: string
+          effective_date: string
+          id: string
+          is_active: boolean | null
+          org_id: string | null
+          title: string
+          updated_at: string
+          version: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          created_by?: string | null
+          document_type: string
+          effective_date?: string
+          id?: string
+          is_active?: boolean | null
+          org_id?: string | null
+          title: string
+          updated_at?: string
+          version?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          document_type?: string
+          effective_date?: string
+          id?: string
+          is_active?: boolean | null
+          org_id?: string | null
+          title?: string
+          updated_at?: string
+          version?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "legal_documents_org_id_fkey"
             columns: ["org_id"]
             isOneToOne: false
             referencedRelation: "organizations"
@@ -5541,6 +5672,59 @@ export type Database = {
             columns: ["org_id"]
             isOneToOne: false
             referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_consent_records: {
+        Row: {
+          consent_given: boolean
+          consent_method: string
+          consented_at: string
+          document_id: string
+          document_type: string
+          document_version: string
+          id: string
+          ip_address: string | null
+          user_agent: string | null
+          user_id: string
+          withdrawal_reason: string | null
+          withdrawn_at: string | null
+        }
+        Insert: {
+          consent_given?: boolean
+          consent_method?: string
+          consented_at?: string
+          document_id: string
+          document_type: string
+          document_version: string
+          id?: string
+          ip_address?: string | null
+          user_agent?: string | null
+          user_id: string
+          withdrawal_reason?: string | null
+          withdrawn_at?: string | null
+        }
+        Update: {
+          consent_given?: boolean
+          consent_method?: string
+          consented_at?: string
+          document_id?: string
+          document_type?: string
+          document_version?: string
+          id?: string
+          ip_address?: string | null
+          user_agent?: string | null
+          user_id?: string
+          withdrawal_reason?: string | null
+          withdrawn_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_consent_records_document_id_fkey"
+            columns: ["document_id"]
+            isOneToOne: false
+            referencedRelation: "legal_documents"
             referencedColumns: ["id"]
           },
         ]

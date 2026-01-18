@@ -236,6 +236,12 @@ const getNavItems = (): NavItem[] => [
     icon: <Cog className="h-5 w-5" />,
     allowedRoles: ['super_admin', 'admin'],
   },
+  { 
+    label: 'Legal & Compliance', 
+    href: '/admin/legal', 
+    icon: <Shield className="h-5 w-5" />,
+    allowedRoles: ['super_admin', 'admin'],
+  },
   // Corporate HR / Manager navigation
   { 
     label: 'Dashboard', 
