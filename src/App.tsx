@@ -89,6 +89,10 @@ import InstructorLiveClasses from "./pages/instructor/InstructorLiveClasses";
 import InstructorAssignments from "./pages/instructor/InstructorAssignments";
 import AdminCertificates from "./pages/admin/AdminCertificates";
 
+// Advanced Features Pages
+import CareerToolsPage from "./pages/CareerToolsPage";
+import CorporateDashboardPage from "./pages/corporate/CorporateDashboardPage";
+
 const queryClient = new QueryClient();
 
 const App = () => (
@@ -138,6 +142,11 @@ const App = () => (
             <Route path="/my-learning" element={
               <ProtectedRoute allowedRoles={['student', 'corporate_hr']}>
                 <MyLearning />
+              </ProtectedRoute>
+            } />
+            <Route path="/career-tools" element={
+              <ProtectedRoute allowedRoles={['student']}>
+                <CareerToolsPage />
               </ProtectedRoute>
             } />
 
@@ -334,6 +343,11 @@ const App = () => (
             <Route path="/manager/dashboard" element={
               <ProtectedRoute allowedRoles={['corporate_hr']}>
                 <ManagerDashboard />
+              </ProtectedRoute>
+            } />
+            <Route path="/corporate/dashboard" element={
+              <ProtectedRoute allowedRoles={['corporate_hr', 'super_admin', 'admin']}>
+                <CorporateDashboardPage />
               </ProtectedRoute>
             } />
 

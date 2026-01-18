@@ -39,7 +39,8 @@ import {
   Wallet,
   Bell,
   Cog,
-  Database,
+  Sparkles,
+  Trophy,
 } from 'lucide-react';
 import type { AppRole } from '@/types/database';
 import { ROLE_LABELS } from '@/types/database';
@@ -106,6 +107,12 @@ const getNavItems = (): NavItem[] => [
     label: 'Subscriptions', 
     href: '/subscriptions', 
     icon: <Crown className="h-5 w-5" />,
+    allowedRoles: ['student'],
+  },
+  { 
+    label: 'AI Career Tools', 
+    href: '/career-tools', 
+    icon: <Sparkles className="h-5 w-5" />,
     allowedRoles: ['student'],
   },
   // Trainer/Mentor navigation
@@ -260,6 +267,12 @@ const getNavItems = (): NavItem[] => [
     href: '/my-learning', 
     icon: <GraduationCap className="h-5 w-5" />,
     allowedRoles: ['corporate_hr'],
+  },
+  { 
+    label: 'Corporate LMS', 
+    href: '/corporate/dashboard', 
+    icon: <Building2 className="h-5 w-5" />,
+    allowedRoles: ['corporate_hr', 'super_admin', 'admin'],
   },
   // Distribution network / Franchise navigation
   { 
