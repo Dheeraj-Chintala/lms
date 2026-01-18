@@ -34,6 +34,9 @@ import {
   Handshake,
   Network,
   ClipboardList,
+  CreditCard,
+  Crown,
+  Wallet,
 } from 'lucide-react';
 import type { AppRole } from '@/types/database';
 import { ROLE_LABELS } from '@/types/database';
@@ -88,6 +91,18 @@ const getNavItems = (): NavItem[] => [
     label: 'My Applications', 
     href: '/my-applications', 
     icon: <ClipboardList className="h-5 w-5" />,
+    allowedRoles: ['student'],
+  },
+  { 
+    label: 'Payments', 
+    href: '/payments', 
+    icon: <CreditCard className="h-5 w-5" />,
+    allowedRoles: ['student'],
+  },
+  { 
+    label: 'Subscriptions', 
+    href: '/subscriptions', 
+    icon: <Crown className="h-5 w-5" />,
     allowedRoles: ['student'],
   },
   // Trainer/Mentor navigation
@@ -187,6 +202,12 @@ const getNavItems = (): NavItem[] => [
     href: '/employer/dashboard', 
     icon: <Building2 className="h-5 w-5" />,
     allowedRoles: ['super_admin', 'admin'],
+  },
+  { 
+    label: 'Payments', 
+    href: '/admin/payments', 
+    icon: <Wallet className="h-5 w-5" />,
+    allowedRoles: ['super_admin', 'admin', 'sub_admin'],
   },
   // Corporate HR / Manager navigation
   { 
