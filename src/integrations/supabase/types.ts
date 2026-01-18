@@ -1611,6 +1611,122 @@ export type Database = {
           },
         ]
       }
+      emi_installments: {
+        Row: {
+          amount: number
+          created_at: string
+          due_date: string
+          id: string
+          installment_number: number
+          late_fee: number | null
+          paid_at: string | null
+          payment_id: string | null
+          status: Database["public"]["Enums"]["emi_status"] | null
+          updated_at: string
+          user_emi_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          due_date: string
+          id?: string
+          installment_number: number
+          late_fee?: number | null
+          paid_at?: string | null
+          payment_id?: string | null
+          status?: Database["public"]["Enums"]["emi_status"] | null
+          updated_at?: string
+          user_emi_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          due_date?: string
+          id?: string
+          installment_number?: number
+          late_fee?: number | null
+          paid_at?: string | null
+          payment_id?: string | null
+          status?: Database["public"]["Enums"]["emi_status"] | null
+          updated_at?: string
+          user_emi_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emi_installments_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payment_transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "emi_installments_user_emi_id_fkey"
+            columns: ["user_emi_id"]
+            isOneToOne: false
+            referencedRelation: "user_emi"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      emi_plans: {
+        Row: {
+          applicable_bundles: string[] | null
+          applicable_courses: string[] | null
+          created_at: string
+          description: string | null
+          id: string
+          interest_rate: number | null
+          is_active: boolean | null
+          max_amount: number | null
+          min_amount: number
+          name: string
+          org_id: string
+          processing_fee: number | null
+          tenure_months: number
+          updated_at: string
+        }
+        Insert: {
+          applicable_bundles?: string[] | null
+          applicable_courses?: string[] | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          interest_rate?: number | null
+          is_active?: boolean | null
+          max_amount?: number | null
+          min_amount?: number
+          name: string
+          org_id: string
+          processing_fee?: number | null
+          tenure_months: number
+          updated_at?: string
+        }
+        Update: {
+          applicable_bundles?: string[] | null
+          applicable_courses?: string[] | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          interest_rate?: number | null
+          is_active?: boolean | null
+          max_amount?: number | null
+          min_amount?: number
+          name?: string
+          org_id?: string
+          processing_fee?: number | null
+          tenure_months?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "emi_plans_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       employers: {
         Row: {
           company_description: string | null
@@ -2641,6 +2757,132 @@ export type Database = {
           },
         ]
       }
+      invoices: {
+        Row: {
+          billing_address: string | null
+          billing_city: string | null
+          billing_country: string | null
+          billing_email: string | null
+          billing_gstin: string | null
+          billing_name: string | null
+          billing_phone: string | null
+          billing_pincode: string | null
+          billing_state: string | null
+          cgst_amount: number | null
+          cgst_rate: number | null
+          created_at: string
+          discount_amount: number | null
+          due_date: string | null
+          id: string
+          igst_amount: number | null
+          igst_rate: number | null
+          invoice_number: string
+          issued_at: string | null
+          line_items: Json | null
+          notes: string | null
+          org_id: string
+          paid_at: string | null
+          payment_id: string | null
+          pdf_url: string | null
+          sgst_amount: number | null
+          sgst_rate: number | null
+          status: Database["public"]["Enums"]["invoice_status"] | null
+          subtotal: number
+          taxable_amount: number
+          total_amount: number
+          total_tax: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          billing_address?: string | null
+          billing_city?: string | null
+          billing_country?: string | null
+          billing_email?: string | null
+          billing_gstin?: string | null
+          billing_name?: string | null
+          billing_phone?: string | null
+          billing_pincode?: string | null
+          billing_state?: string | null
+          cgst_amount?: number | null
+          cgst_rate?: number | null
+          created_at?: string
+          discount_amount?: number | null
+          due_date?: string | null
+          id?: string
+          igst_amount?: number | null
+          igst_rate?: number | null
+          invoice_number: string
+          issued_at?: string | null
+          line_items?: Json | null
+          notes?: string | null
+          org_id: string
+          paid_at?: string | null
+          payment_id?: string | null
+          pdf_url?: string | null
+          sgst_amount?: number | null
+          sgst_rate?: number | null
+          status?: Database["public"]["Enums"]["invoice_status"] | null
+          subtotal: number
+          taxable_amount: number
+          total_amount: number
+          total_tax?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          billing_address?: string | null
+          billing_city?: string | null
+          billing_country?: string | null
+          billing_email?: string | null
+          billing_gstin?: string | null
+          billing_name?: string | null
+          billing_phone?: string | null
+          billing_pincode?: string | null
+          billing_state?: string | null
+          cgst_amount?: number | null
+          cgst_rate?: number | null
+          created_at?: string
+          discount_amount?: number | null
+          due_date?: string | null
+          id?: string
+          igst_amount?: number | null
+          igst_rate?: number | null
+          invoice_number?: string
+          issued_at?: string | null
+          line_items?: Json | null
+          notes?: string | null
+          org_id?: string
+          paid_at?: string | null
+          payment_id?: string | null
+          pdf_url?: string | null
+          sgst_amount?: number | null
+          sgst_rate?: number | null
+          status?: Database["public"]["Enums"]["invoice_status"] | null
+          subtotal?: number
+          taxable_amount?: number
+          total_amount?: number
+          total_tax?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payment_transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       job_applications: {
         Row: {
           applied_at: string
@@ -3225,6 +3467,195 @@ export type Database = {
         }
         Relationships: []
       }
+      payment_gateways: {
+        Row: {
+          config: Json | null
+          created_at: string
+          gateway_name: string
+          gateway_type: string
+          id: string
+          is_active: boolean | null
+          is_default: boolean | null
+          org_id: string
+          supported_currencies: string[] | null
+          transaction_fee_percent: number | null
+          updated_at: string
+        }
+        Insert: {
+          config?: Json | null
+          created_at?: string
+          gateway_name: string
+          gateway_type: string
+          id?: string
+          is_active?: boolean | null
+          is_default?: boolean | null
+          org_id: string
+          supported_currencies?: string[] | null
+          transaction_fee_percent?: number | null
+          updated_at?: string
+        }
+        Update: {
+          config?: Json | null
+          created_at?: string
+          gateway_name?: string
+          gateway_type?: string
+          id?: string
+          is_active?: boolean | null
+          is_default?: boolean | null
+          org_id?: string
+          supported_currencies?: string[] | null
+          transaction_fee_percent?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_gateways_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_transactions: {
+        Row: {
+          amount: number
+          bundle_id: string | null
+          commission_amount: number | null
+          completed_at: string | null
+          coupon_id: string | null
+          course_id: string | null
+          created_at: string
+          currency: string | null
+          discount_amount: number | null
+          franchise_id: string | null
+          gateway_id: string | null
+          gateway_order_id: string | null
+          gateway_response: Json | null
+          gateway_transaction_id: string | null
+          id: string
+          ip_address: string | null
+          notes: string | null
+          org_id: string
+          payment_method: string | null
+          purchase_type: string
+          referral_code: string | null
+          status: Database["public"]["Enums"]["payment_status"] | null
+          subscription_id: string | null
+          subtotal: number | null
+          tax_amount: number | null
+          tax_rate: number | null
+          updated_at: string
+          user_agent: string | null
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          bundle_id?: string | null
+          commission_amount?: number | null
+          completed_at?: string | null
+          coupon_id?: string | null
+          course_id?: string | null
+          created_at?: string
+          currency?: string | null
+          discount_amount?: number | null
+          franchise_id?: string | null
+          gateway_id?: string | null
+          gateway_order_id?: string | null
+          gateway_response?: Json | null
+          gateway_transaction_id?: string | null
+          id?: string
+          ip_address?: string | null
+          notes?: string | null
+          org_id: string
+          payment_method?: string | null
+          purchase_type: string
+          referral_code?: string | null
+          status?: Database["public"]["Enums"]["payment_status"] | null
+          subscription_id?: string | null
+          subtotal?: number | null
+          tax_amount?: number | null
+          tax_rate?: number | null
+          updated_at?: string
+          user_agent?: string | null
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          bundle_id?: string | null
+          commission_amount?: number | null
+          completed_at?: string | null
+          coupon_id?: string | null
+          course_id?: string | null
+          created_at?: string
+          currency?: string | null
+          discount_amount?: number | null
+          franchise_id?: string | null
+          gateway_id?: string | null
+          gateway_order_id?: string | null
+          gateway_response?: Json | null
+          gateway_transaction_id?: string | null
+          id?: string
+          ip_address?: string | null
+          notes?: string | null
+          org_id?: string
+          payment_method?: string | null
+          purchase_type?: string
+          referral_code?: string | null
+          status?: Database["public"]["Enums"]["payment_status"] | null
+          subscription_id?: string | null
+          subtotal?: number | null
+          tax_amount?: number | null
+          tax_rate?: number | null
+          updated_at?: string
+          user_agent?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_transactions_bundle_id_fkey"
+            columns: ["bundle_id"]
+            isOneToOne: false
+            referencedRelation: "course_bundles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_transactions_coupon_id_fkey"
+            columns: ["coupon_id"]
+            isOneToOne: false
+            referencedRelation: "coupons"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_transactions_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_transactions_franchise_id_fkey"
+            columns: ["franchise_id"]
+            isOneToOne: false
+            referencedRelation: "franchises"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_transactions_gateway_id_fkey"
+            columns: ["gateway_id"]
+            isOneToOne: false
+            referencedRelation: "payment_gateways"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_transactions_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       permissions: {
         Row: {
           category: string
@@ -3673,6 +4104,85 @@ export type Database = {
           },
         ]
       }
+      refunds: {
+        Row: {
+          admin_notes: string | null
+          amount: number
+          created_at: string
+          gateway_refund_id: string | null
+          id: string
+          org_id: string
+          payment_id: string
+          processed_at: string | null
+          processed_by: string | null
+          reason: string
+          refund_method: string | null
+          rejection_reason: string | null
+          status: Database["public"]["Enums"]["refund_status"] | null
+          updated_at: string
+          user_id: string
+          wallet_transaction_id: string | null
+        }
+        Insert: {
+          admin_notes?: string | null
+          amount: number
+          created_at?: string
+          gateway_refund_id?: string | null
+          id?: string
+          org_id: string
+          payment_id: string
+          processed_at?: string | null
+          processed_by?: string | null
+          reason: string
+          refund_method?: string | null
+          rejection_reason?: string | null
+          status?: Database["public"]["Enums"]["refund_status"] | null
+          updated_at?: string
+          user_id: string
+          wallet_transaction_id?: string | null
+        }
+        Update: {
+          admin_notes?: string | null
+          amount?: number
+          created_at?: string
+          gateway_refund_id?: string | null
+          id?: string
+          org_id?: string
+          payment_id?: string
+          processed_at?: string | null
+          processed_by?: string | null
+          reason?: string
+          refund_method?: string | null
+          rejection_reason?: string | null
+          status?: Database["public"]["Enums"]["refund_status"] | null
+          updated_at?: string
+          user_id?: string
+          wallet_transaction_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "refunds_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "refunds_payment_id_fkey"
+            columns: ["payment_id"]
+            isOneToOne: false
+            referencedRelation: "payment_transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "refunds_wallet_transaction_id_fkey"
+            columns: ["wallet_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "wallet_transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       role_permissions: {
         Row: {
           created_at: string
@@ -3771,6 +4281,74 @@ export type Database = {
         }
         Relationships: []
       }
+      subscription_plans: {
+        Row: {
+          billing_interval: string
+          billing_interval_count: number | null
+          created_at: string
+          currency: string | null
+          description: string | null
+          features: Json | null
+          id: string
+          included_course_ids: string[] | null
+          includes_all_courses: boolean | null
+          is_active: boolean | null
+          max_courses: number | null
+          name: string
+          org_id: string
+          price: number
+          sort_order: number | null
+          trial_days: number | null
+          updated_at: string
+        }
+        Insert: {
+          billing_interval: string
+          billing_interval_count?: number | null
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          features?: Json | null
+          id?: string
+          included_course_ids?: string[] | null
+          includes_all_courses?: boolean | null
+          is_active?: boolean | null
+          max_courses?: number | null
+          name: string
+          org_id: string
+          price: number
+          sort_order?: number | null
+          trial_days?: number | null
+          updated_at?: string
+        }
+        Update: {
+          billing_interval?: string
+          billing_interval_count?: number | null
+          created_at?: string
+          currency?: string | null
+          description?: string | null
+          features?: Json | null
+          id?: string
+          included_course_ids?: string[] | null
+          includes_all_courses?: boolean | null
+          is_active?: boolean | null
+          max_courses?: number | null
+          name?: string
+          org_id?: string
+          price?: number
+          sort_order?: number | null
+          trial_days?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscription_plans_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_custom_roles: {
         Row: {
           created_at: string
@@ -3796,6 +4374,89 @@ export type Database = {
             columns: ["custom_role_id"]
             isOneToOne: false
             referencedRelation: "custom_roles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_emi: {
+        Row: {
+          bundle_id: string | null
+          course_id: string | null
+          created_at: string
+          emi_amount: number
+          emi_plan_id: string
+          id: string
+          next_due_date: string | null
+          org_id: string
+          paid_installments: number | null
+          remaining_amount: number
+          status: string | null
+          total_amount: number
+          total_installments: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          bundle_id?: string | null
+          course_id?: string | null
+          created_at?: string
+          emi_amount: number
+          emi_plan_id: string
+          id?: string
+          next_due_date?: string | null
+          org_id: string
+          paid_installments?: number | null
+          remaining_amount: number
+          status?: string | null
+          total_amount: number
+          total_installments: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          bundle_id?: string | null
+          course_id?: string | null
+          created_at?: string
+          emi_amount?: number
+          emi_plan_id?: string
+          id?: string
+          next_due_date?: string | null
+          org_id?: string
+          paid_installments?: number | null
+          remaining_amount?: number
+          status?: string | null
+          total_amount?: number
+          total_installments?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_emi_bundle_id_fkey"
+            columns: ["bundle_id"]
+            isOneToOne: false
+            referencedRelation: "course_bundles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_emi_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_emi_emi_plan_id_fkey"
+            columns: ["emi_plan_id"]
+            isOneToOne: false
+            referencedRelation: "emi_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_emi_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
@@ -3832,6 +4493,182 @@ export type Database = {
           },
         ]
       }
+      user_subscriptions: {
+        Row: {
+          auto_renew: boolean | null
+          cancellation_reason: string | null
+          cancelled_at: string | null
+          created_at: string
+          current_period_end: string
+          current_period_start: string
+          ended_at: string | null
+          gateway_customer_id: string | null
+          gateway_subscription_id: string | null
+          id: string
+          last_payment_id: string | null
+          next_billing_date: string | null
+          org_id: string
+          plan_id: string
+          started_at: string
+          status: Database["public"]["Enums"]["subscription_status"] | null
+          trial_end: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          auto_renew?: boolean | null
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          created_at?: string
+          current_period_end: string
+          current_period_start?: string
+          ended_at?: string | null
+          gateway_customer_id?: string | null
+          gateway_subscription_id?: string | null
+          id?: string
+          last_payment_id?: string | null
+          next_billing_date?: string | null
+          org_id: string
+          plan_id: string
+          started_at?: string
+          status?: Database["public"]["Enums"]["subscription_status"] | null
+          trial_end?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          auto_renew?: boolean | null
+          cancellation_reason?: string | null
+          cancelled_at?: string | null
+          created_at?: string
+          current_period_end?: string
+          current_period_start?: string
+          ended_at?: string | null
+          gateway_customer_id?: string | null
+          gateway_subscription_id?: string | null
+          id?: string
+          last_payment_id?: string | null
+          next_billing_date?: string | null
+          org_id?: string
+          plan_id?: string
+          started_at?: string
+          status?: Database["public"]["Enums"]["subscription_status"] | null
+          trial_end?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_subscriptions_last_payment_id_fkey"
+            columns: ["last_payment_id"]
+            isOneToOne: false
+            referencedRelation: "payment_transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_subscriptions_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_wallets: {
+        Row: {
+          balance: number | null
+          created_at: string
+          currency: string | null
+          id: string
+          is_active: boolean | null
+          org_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number | null
+          created_at?: string
+          currency?: string | null
+          id?: string
+          is_active?: boolean | null
+          org_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number | null
+          created_at?: string
+          currency?: string | null
+          id?: string
+          is_active?: boolean | null
+          org_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_wallets_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wallet_transactions: {
+        Row: {
+          amount: number
+          balance_after: number
+          created_at: string
+          description: string | null
+          id: string
+          reference_id: string | null
+          reference_type: string | null
+          transaction_type: Database["public"]["Enums"]["wallet_transaction_type"]
+          user_id: string
+          wallet_id: string
+        }
+        Insert: {
+          amount: number
+          balance_after: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          reference_id?: string | null
+          reference_type?: string | null
+          transaction_type: Database["public"]["Enums"]["wallet_transaction_type"]
+          user_id: string
+          wallet_id: string
+        }
+        Update: {
+          amount?: number
+          balance_after?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          reference_id?: string | null
+          reference_type?: string | null
+          transaction_type?: Database["public"]["Enums"]["wallet_transaction_type"]
+          user_id?: string
+          wallet_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wallet_transactions_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "user_wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -3849,6 +4686,7 @@ export type Database = {
         Args: { _course_id: string; _user_id: string }
         Returns: boolean
       }
+      generate_invoice_number: { Args: never; Returns: string }
       get_user_org_id: { Args: { _user_id: string }; Returns: string }
       has_any_permission: {
         Args: { _permissions: string[]; _user_id: string }
@@ -3881,6 +4719,7 @@ export type Database = {
         | "corporate_hr"
       assessment_status: "draft" | "published" | "closed" | "archived"
       certificate_type: "course" | "internship" | "experience" | "lor"
+      emi_status: "pending" | "paid" | "overdue" | "defaulted"
       employment_type:
         | "full_time"
         | "part_time"
@@ -3907,6 +4746,7 @@ export type Database = {
         | "approved"
         | "revision_needed"
       interview_status: "scheduled" | "completed" | "cancelled" | "no_show"
+      invoice_status: "draft" | "sent" | "paid" | "cancelled" | "overdue"
       job_application_status:
         | "pending"
         | "shortlisted"
@@ -3922,6 +4762,13 @@ export type Database = {
         | "accepted"
         | "declined"
         | "expired"
+      payment_status:
+        | "pending"
+        | "processing"
+        | "completed"
+        | "failed"
+        | "refunded"
+        | "partially_refunded"
       payout_status: "pending" | "processing" | "completed" | "failed"
       question_type:
         | "mcq"
@@ -3930,11 +4777,30 @@ export type Database = {
         | "file_upload"
         | "true_false"
         | "fill_blank"
+      refund_status:
+        | "requested"
+        | "processing"
+        | "approved"
+        | "rejected"
+        | "completed"
       submission_status:
         | "in_progress"
         | "submitted"
         | "graded"
         | "retake_allowed"
+      subscription_status:
+        | "active"
+        | "paused"
+        | "cancelled"
+        | "expired"
+        | "past_due"
+      wallet_transaction_type:
+        | "credit"
+        | "debit"
+        | "refund"
+        | "reward"
+        | "referral"
+        | "purchase"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -4077,6 +4943,7 @@ export const Constants = {
       ],
       assessment_status: ["draft", "published", "closed", "archived"],
       certificate_type: ["course", "internship", "experience", "lor"],
+      emi_status: ["pending", "paid", "overdue", "defaulted"],
       employment_type: [
         "full_time",
         "part_time",
@@ -4107,6 +4974,7 @@ export const Constants = {
         "revision_needed",
       ],
       interview_status: ["scheduled", "completed", "cancelled", "no_show"],
+      invoice_status: ["draft", "sent", "paid", "cancelled", "overdue"],
       job_application_status: [
         "pending",
         "shortlisted",
@@ -4118,6 +4986,14 @@ export const Constants = {
       job_status: ["draft", "open", "closed", "filled"],
       lead_status: ["new", "contacted", "qualified", "converted", "lost"],
       offer_letter_status: ["draft", "sent", "accepted", "declined", "expired"],
+      payment_status: [
+        "pending",
+        "processing",
+        "completed",
+        "failed",
+        "refunded",
+        "partially_refunded",
+      ],
       payout_status: ["pending", "processing", "completed", "failed"],
       question_type: [
         "mcq",
@@ -4127,11 +5003,33 @@ export const Constants = {
         "true_false",
         "fill_blank",
       ],
+      refund_status: [
+        "requested",
+        "processing",
+        "approved",
+        "rejected",
+        "completed",
+      ],
       submission_status: [
         "in_progress",
         "submitted",
         "graded",
         "retake_allowed",
+      ],
+      subscription_status: [
+        "active",
+        "paused",
+        "cancelled",
+        "expired",
+        "past_due",
+      ],
+      wallet_transaction_type: [
+        "credit",
+        "debit",
+        "refund",
+        "reward",
+        "referral",
+        "purchase",
       ],
     },
   },
