@@ -76,6 +76,18 @@ const getNavItems = (): NavItem[] => [
     icon: <ClipboardList className="h-5 w-5" />,
     allowedRoles: ['student'],
   },
+  { 
+    label: 'Jobs', 
+    href: '/jobs', 
+    icon: <Briefcase className="h-5 w-5" />,
+    allowedRoles: ['student'],
+  },
+  { 
+    label: 'My Applications', 
+    href: '/my-applications', 
+    icon: <ClipboardList className="h-5 w-5" />,
+    allowedRoles: ['student'],
+  },
   // Trainer/Mentor navigation
   { 
     label: 'Dashboard', 
@@ -161,6 +173,18 @@ const getNavItems = (): NavItem[] => [
     href: '/internships', 
     icon: <Briefcase className="h-5 w-5" />,
     allowedRoles: ['super_admin', 'admin', 'sub_admin'],
+  },
+  { 
+    label: 'Placements', 
+    href: '/admin/placements', 
+    icon: <BarChart3 className="h-5 w-5" />,
+    allowedRoles: ['super_admin', 'admin', 'sub_admin'],
+  },
+  { 
+    label: 'Employer Portal', 
+    href: '/employer/dashboard', 
+    icon: <Building2 className="h-5 w-5" />,
+    allowedRoles: ['super_admin', 'admin'],
   },
   // Corporate HR / Manager navigation
   { 
