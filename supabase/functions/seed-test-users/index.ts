@@ -12,36 +12,73 @@ interface TestUser {
   role: string;
 }
 
+// Test users with all valid app_role enum values
 const testUsers: TestUser[] = [
   {
-    email: 'instructor@demo.com',
-    password: 'instructor123',
-    fullName: 'Jane Instructor',
-    role: 'instructor',
-  },
-  {
-    email: 'learner@demo.com',
-    password: 'learner123',
-    fullName: 'John Learner',
-    role: 'learner',
+    email: 'superadmin@demo.com',
+    password: 'superadmin123',
+    fullName: 'Super Admin',
+    role: 'super_admin',
   },
   {
     email: 'admin@demo.com',
     password: 'admin123',
     fullName: 'Alice Admin',
-    role: 'org_admin',
+    role: 'admin',
   },
   {
-    email: 'manager@demo.com',
-    password: 'manager123',
-    fullName: 'Bob Manager',
-    role: 'manager',
+    email: 'subadmin@demo.com',
+    password: 'subadmin123',
+    fullName: 'Sam SubAdmin',
+    role: 'sub_admin',
   },
   {
-    email: 'tester@demo.com',
-    password: 'tester123',
-    fullName: 'rica tester',
-    role: 'tester'
+    email: 'trainer@demo.com',
+    password: 'trainer123',
+    fullName: 'Tom Trainer',
+    role: 'trainer',
+  },
+  {
+    email: 'mentor@demo.com',
+    password: 'mentor123',
+    fullName: 'Maria Mentor',
+    role: 'mentor',
+  },
+  {
+    email: 'student@demo.com',
+    password: 'student123',
+    fullName: 'Steve Student',
+    role: 'student',
+  },
+  {
+    email: 'franchise@demo.com',
+    password: 'franchise123',
+    fullName: 'Frank Franchise',
+    role: 'franchise',
+  },
+  {
+    email: 'distributor@demo.com',
+    password: 'distributor123',
+    fullName: 'Diana Distributor',
+    role: 'distributor',
+  },
+  {
+    email: 'superdistributor@demo.com',
+    password: 'superdist123',
+    fullName: 'Susan SuperDistributor',
+    role: 'super_distributor',
+  },
+  {
+    email: 'affiliate@demo.com',
+    password: 'affiliate123',
+    fullName: 'Andy Affiliate',
+    role: 'affiliate',
+  },
+  {
+    email: 'corporatehr@demo.com',
+    password: 'corporatehr123',
+    fullName: 'Carol HR',
+    role: 'corporate_hr',
   },
 ]
 
@@ -142,20 +179,32 @@ Deno.serve(async (req) => {
           throw new Error(`Failed to create profile: ${profileError.message}`)
         }
 
-        // Upsert role
-        console.log(`Upserting role for ${testUser.email}: ${testUser.role}`)
-        const { error: roleError } = await supabaseAdmin
+        // Check if role already exists for this user
+        console.log(`Checking existing role for ${testUser.email}`)
+        const { data: existingRole } = await supabaseAdmin
           .from('user_roles')
-          .upsert({
-            user_id: userId,
-            org_id: orgId,
-            role: testUser.role,
-          }, {
-            onConflict: 'user_id,org_id,role',
-          })
+          .select('id')
+          .eq('user_id', userId)
+          .eq('org_id', orgId)
+          .eq('role', testUser.role)
+          .maybeSingle()
 
-        if (roleError) {
-          throw new Error(`Failed to create role: ${roleError.message}`)
+        if (!existingRole) {
+          // Insert new role
+          console.log(`Inserting role for ${testUser.email}: ${testUser.role}`)
+          const { error: roleError } = await supabaseAdmin
+            .from('user_roles')
+            .insert({
+              user_id: userId,
+              org_id: orgId,
+              role: testUser.role,
+            })
+
+          if (roleError) {
+            throw new Error(`Failed to create role: ${roleError.message}`)
+          }
+        } else {
+          console.log(`Role already exists for ${testUser.email}`)
         }
 
         results.push({
