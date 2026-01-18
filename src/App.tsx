@@ -212,6 +212,18 @@ const App = () => (
                 <PlacementReportsPage />
               </ProtectedRoute>
             } />
+
+            {/* Franchise Routes */}
+            <Route path="/franchise/dashboard" element={
+              <ProtectedRoute allowedRoles={['franchise', 'distributor', 'super_distributor', 'affiliate']}>
+                <FranchiseDashboardPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/partners" element={
+              <ProtectedRoute allowedRoles={['super_admin', 'admin']}>
+                <FranchiseAdminPage />
+              </ProtectedRoute>
+            } />
             
             {/* Public Certificate Verification */}
             <Route path="/verify/:id" element={<VerifyCertificate />} />
