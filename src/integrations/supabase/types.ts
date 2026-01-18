@@ -67,6 +67,77 @@ export type Database = {
           },
         ]
       }
+      ai_chatbot_sessions: {
+        Row: {
+          course_id: string | null
+          created_at: string
+          id: string
+          messages: Json
+          session_type: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          course_id?: string | null
+          created_at?: string
+          id?: string
+          messages?: Json
+          session_type?: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          course_id?: string | null
+          created_at?: string
+          id?: string
+          messages?: Json
+          session_type?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_chatbot_sessions_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ai_recommendations: {
+        Row: {
+          created_at: string
+          id: string
+          reasoning: string | null
+          recommendation_type: string
+          recommended_items: Json
+          user_id: string
+          was_helpful: boolean | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          reasoning?: string | null
+          recommendation_type: string
+          recommended_items?: Json
+          user_id: string
+          was_helpful?: boolean | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          reasoning?: string | null
+          recommendation_type?: string
+          recommended_items?: Json
+          user_id?: string
+          was_helpful?: boolean | null
+        }
+        Relationships: []
+      }
       announcements: {
         Row: {
           content: string
@@ -608,6 +679,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      badges: {
+        Row: {
+          badge_type: string
+          created_at: string
+          criteria: Json | null
+          description: string | null
+          icon_url: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          points_required: number | null
+        }
+        Insert: {
+          badge_type?: string
+          created_at?: string
+          criteria?: Json | null
+          description?: string | null
+          icon_url?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          points_required?: number | null
+        }
+        Update: {
+          badge_type?: string
+          created_at?: string
+          criteria?: Json | null
+          description?: string | null
+          icon_url?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          points_required?: number | null
+        }
+        Relationships: []
       }
       bundle_courses: {
         Row: {
@@ -1250,6 +1357,97 @@ export type Database = {
           user_id?: string | null
         }
         Relationships: []
+      }
+      corporate_training_enrollments: {
+        Row: {
+          completed_at: string | null
+          enrolled_at: string
+          id: string
+          program_id: string
+          progress: number | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          enrolled_at?: string
+          id?: string
+          program_id: string
+          progress?: number | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          enrolled_at?: string
+          id?: string
+          program_id?: string
+          progress?: number | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "corporate_training_enrollments_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "corporate_training_programs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      corporate_training_programs: {
+        Row: {
+          course_ids: string[] | null
+          created_at: string
+          created_by: string
+          deadline: string | null
+          description: string | null
+          id: string
+          mandatory: boolean | null
+          name: string
+          org_id: string
+          status: string
+          target_departments: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          course_ids?: string[] | null
+          created_at?: string
+          created_by: string
+          deadline?: string | null
+          description?: string | null
+          id?: string
+          mandatory?: boolean | null
+          name: string
+          org_id: string
+          status?: string
+          target_departments?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          course_ids?: string[] | null
+          created_at?: string
+          created_by?: string
+          deadline?: string | null
+          description?: string | null
+          id?: string
+          mandatory?: boolean | null
+          name?: string
+          org_id?: string
+          status?: string
+          target_departments?: string[] | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "corporate_training_programs_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       coupons: {
         Row: {
@@ -3634,6 +3832,36 @@ export type Database = {
           },
         ]
       }
+      leaderboard_cache: {
+        Row: {
+          id: string
+          org_id: string | null
+          period: string
+          points: number
+          rank: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          org_id?: string | null
+          period?: string
+          points: number
+          rank: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          id?: string
+          org_id?: string | null
+          period?: string
+          points?: number
+          rank?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       legal_documents: {
         Row: {
           content: string
@@ -4152,6 +4380,54 @@ export type Database = {
           },
         ]
       }
+      mock_interviews: {
+        Row: {
+          ai_feedback: Json | null
+          completed_at: string | null
+          created_at: string
+          difficulty: string
+          id: string
+          interview_type: string
+          job_role: string
+          overall_score: number | null
+          questions: Json
+          responses: Json | null
+          started_at: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          ai_feedback?: Json | null
+          completed_at?: string | null
+          created_at?: string
+          difficulty?: string
+          id?: string
+          interview_type?: string
+          job_role: string
+          overall_score?: number | null
+          questions?: Json
+          responses?: Json | null
+          started_at?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          ai_feedback?: Json | null
+          completed_at?: string | null
+          created_at?: string
+          difficulty?: string
+          id?: string
+          interview_type?: string
+          job_role?: string
+          overall_score?: number | null
+          questions?: Json
+          responses?: Json | null
+          started_at?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       notification_preferences: {
         Row: {
           category_preferences: Json | null
@@ -4303,6 +4579,44 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      org_feature_settings: {
+        Row: {
+          created_at: string
+          feature_name: string
+          id: string
+          is_enabled: boolean | null
+          org_id: string
+          settings: Json | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          feature_name: string
+          id?: string
+          is_enabled?: boolean | null
+          org_id: string
+          settings?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          feature_name?: string
+          id?: string
+          is_enabled?: boolean | null
+          org_id?: string
+          settings?: Json | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "org_feature_settings_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       organizations: {
         Row: {
@@ -4619,6 +4933,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      point_transactions: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          points: number
+          reference_id: string | null
+          reference_type: string | null
+          transaction_type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          points: number
+          reference_id?: string | null
+          reference_type?: string | null
+          transaction_type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          points?: number
+          reference_id?: string | null
+          reference_type?: string | null
+          transaction_type?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       poll_options: {
         Row: {
@@ -5118,6 +5465,56 @@ export type Database = {
           },
         ]
       }
+      resume_ats_scores: {
+        Row: {
+          ai_analysis: string | null
+          ats_score: number | null
+          created_at: string
+          format_issues: Json | null
+          id: string
+          improvement_suggestions: Json | null
+          job_description: string | null
+          keyword_matches: Json | null
+          missing_keywords: Json | null
+          resume_id: string | null
+          user_id: string
+        }
+        Insert: {
+          ai_analysis?: string | null
+          ats_score?: number | null
+          created_at?: string
+          format_issues?: Json | null
+          id?: string
+          improvement_suggestions?: Json | null
+          job_description?: string | null
+          keyword_matches?: Json | null
+          missing_keywords?: Json | null
+          resume_id?: string | null
+          user_id: string
+        }
+        Update: {
+          ai_analysis?: string | null
+          ats_score?: number | null
+          created_at?: string
+          format_issues?: Json | null
+          id?: string
+          improvement_suggestions?: Json | null
+          job_description?: string | null
+          keyword_matches?: Json | null
+          missing_keywords?: Json | null
+          resume_id?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "resume_ats_scores_resume_id_fkey"
+            columns: ["resume_id"]
+            isOneToOne: false
+            referencedRelation: "student_resumes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       role_permissions: {
         Row: {
           created_at: string
@@ -5328,6 +5725,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      skill_assessments: {
+        Row: {
+          ai_analysis: string | null
+          assessed_skills: Json
+          created_at: string
+          id: string
+          recommendations: Json | null
+          skill_gaps: Json | null
+          target_role: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          ai_analysis?: string | null
+          assessed_skills?: Json
+          created_at?: string
+          id?: string
+          recommendations?: Json | null
+          skill_gaps?: Json | null
+          target_role?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          ai_analysis?: string | null
+          assessed_skills?: Json
+          created_at?: string
+          id?: string
+          recommendations?: Json | null
+          skill_gaps?: Json | null
+          target_role?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       student_resumes: {
         Row: {
@@ -5676,6 +6109,35 @@ export type Database = {
           },
         ]
       }
+      user_badges: {
+        Row: {
+          badge_id: string
+          earned_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          badge_id: string
+          earned_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          badge_id?: string
+          earned_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_badges_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "badges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_consent_records: {
         Row: {
           consent_given: boolean
@@ -5902,6 +6364,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_points: {
+        Row: {
+          created_at: string
+          id: string
+          last_activity_date: string | null
+          level: number
+          streak_days: number
+          total_points: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          last_activity_date?: string | null
+          level?: number
+          streak_days?: number
+          total_points?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          last_activity_date?: string | null
+          level?: number
+          streak_days?: number
+          total_points?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
