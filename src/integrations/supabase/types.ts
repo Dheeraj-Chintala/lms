@@ -1037,6 +1037,66 @@ export type Database = {
           },
         ]
       }
+      content_access_logs: {
+        Row: {
+          access_type: string
+          content_id: string
+          content_type: string
+          course_id: string | null
+          created_at: string
+          device_fingerprint: string | null
+          duration_seconds: number | null
+          id: string
+          ip_address: string | null
+          lesson_id: string | null
+          user_id: string
+          watermark_applied: boolean | null
+        }
+        Insert: {
+          access_type: string
+          content_id: string
+          content_type: string
+          course_id?: string | null
+          created_at?: string
+          device_fingerprint?: string | null
+          duration_seconds?: number | null
+          id?: string
+          ip_address?: string | null
+          lesson_id?: string | null
+          user_id: string
+          watermark_applied?: boolean | null
+        }
+        Update: {
+          access_type?: string
+          content_id?: string
+          content_type?: string
+          course_id?: string | null
+          created_at?: string
+          device_fingerprint?: string | null
+          duration_seconds?: number | null
+          id?: string
+          ip_address?: string | null
+          lesson_id?: string | null
+          user_id?: string
+          watermark_applied?: boolean | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "content_access_logs_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_access_logs_lesson_id_fkey"
+            columns: ["lesson_id"]
+            isOneToOne: false
+            referencedRelation: "lessons"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       coupons: {
         Row: {
           applicable_courses: string[] | null
@@ -1542,6 +1602,48 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      device_restrictions: {
+        Row: {
+          blocked_at: string | null
+          blocked_by: string | null
+          blocked_reason: string | null
+          device_fingerprint: string
+          device_name: string | null
+          first_seen_at: string | null
+          id: string
+          is_blocked: boolean | null
+          is_trusted: boolean | null
+          last_seen_at: string | null
+          user_id: string
+        }
+        Insert: {
+          blocked_at?: string | null
+          blocked_by?: string | null
+          blocked_reason?: string | null
+          device_fingerprint: string
+          device_name?: string | null
+          first_seen_at?: string | null
+          id?: string
+          is_blocked?: boolean | null
+          is_trusted?: boolean | null
+          last_seen_at?: string | null
+          user_id: string
+        }
+        Update: {
+          blocked_at?: string | null
+          blocked_by?: string | null
+          blocked_reason?: string | null
+          device_fingerprint?: string
+          device_name?: string | null
+          first_seen_at?: string | null
+          id?: string
+          is_blocked?: boolean | null
+          is_trusted?: boolean | null
+          last_seen_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
       }
       discussion_replies: {
         Row: {
@@ -3128,6 +3230,56 @@ export type Database = {
             columns: ["payment_id"]
             isOneToOne: false
             referencedRelation: "payment_transactions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ip_restrictions: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          expires_at: string | null
+          id: string
+          ip_address: string
+          ip_range_end: string | null
+          ip_range_start: string | null
+          org_id: string | null
+          reason: string | null
+          restriction_type: string
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          ip_address: string
+          ip_range_end?: string | null
+          ip_range_start?: string | null
+          org_id?: string | null
+          reason?: string | null
+          restriction_type: string
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          expires_at?: string | null
+          id?: string
+          ip_address?: string
+          ip_range_end?: string | null
+          ip_range_start?: string | null
+          org_id?: string | null
+          reason?: string | null
+          restriction_type?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ip_restrictions_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
@@ -4750,6 +4902,116 @@ export type Database = {
           },
         ]
       }
+      security_audit_logs: {
+        Row: {
+          created_at: string
+          description: string | null
+          device_fingerprint: string | null
+          event_category: string
+          event_type: string
+          id: string
+          ip_address: string | null
+          metadata: Json | null
+          severity: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          device_fingerprint?: string | null
+          event_category: string
+          event_type: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          severity: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          device_fingerprint?: string | null
+          event_category?: string
+          event_type?: string
+          id?: string
+          ip_address?: string | null
+          metadata?: Json | null
+          severity?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
+      security_settings: {
+        Row: {
+          created_at: string
+          download_restriction_roles: string[] | null
+          enable_2fa: boolean | null
+          enable_device_restriction: boolean | null
+          enable_ip_restriction: boolean | null
+          enable_right_click_prevention: boolean | null
+          enable_screen_capture_prevention: boolean | null
+          enable_watermark: boolean | null
+          id: string
+          max_concurrent_sessions: number | null
+          max_devices_per_user: number | null
+          org_id: string | null
+          require_2fa_for_roles: string[] | null
+          session_timeout_minutes: number | null
+          updated_at: string
+          video_protection_level: string | null
+          watermark_text_template: string | null
+        }
+        Insert: {
+          created_at?: string
+          download_restriction_roles?: string[] | null
+          enable_2fa?: boolean | null
+          enable_device_restriction?: boolean | null
+          enable_ip_restriction?: boolean | null
+          enable_right_click_prevention?: boolean | null
+          enable_screen_capture_prevention?: boolean | null
+          enable_watermark?: boolean | null
+          id?: string
+          max_concurrent_sessions?: number | null
+          max_devices_per_user?: number | null
+          org_id?: string | null
+          require_2fa_for_roles?: string[] | null
+          session_timeout_minutes?: number | null
+          updated_at?: string
+          video_protection_level?: string | null
+          watermark_text_template?: string | null
+        }
+        Update: {
+          created_at?: string
+          download_restriction_roles?: string[] | null
+          enable_2fa?: boolean | null
+          enable_device_restriction?: boolean | null
+          enable_ip_restriction?: boolean | null
+          enable_right_click_prevention?: boolean | null
+          enable_screen_capture_prevention?: boolean | null
+          enable_watermark?: boolean | null
+          id?: string
+          max_concurrent_sessions?: number | null
+          max_devices_per_user?: number | null
+          org_id?: string | null
+          require_2fa_for_roles?: string[] | null
+          session_timeout_minutes?: number | null
+          updated_at?: string
+          video_protection_level?: string | null
+          watermark_text_template?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "security_settings_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       student_resumes: {
         Row: {
           certifications: Json | null
@@ -4886,6 +5148,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_2fa_settings: {
+        Row: {
+          backup_codes: string[] | null
+          created_at: string
+          id: string
+          is_enabled: boolean | null
+          last_verified_at: string | null
+          method: string | null
+          phone_number: string | null
+          totp_secret: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          backup_codes?: string[] | null
+          created_at?: string
+          id?: string
+          is_enabled?: boolean | null
+          last_verified_at?: string | null
+          method?: string | null
+          phone_number?: string | null
+          totp_secret?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          backup_codes?: string[] | null
+          created_at?: string
+          id?: string
+          is_enabled?: boolean | null
+          last_verified_at?: string | null
+          method?: string | null
+          phone_number?: string | null
+          totp_secret?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_custom_roles: {
         Row: {
@@ -5092,6 +5393,57 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_sessions: {
+        Row: {
+          browser: string | null
+          created_at: string
+          device_fingerprint: string | null
+          device_name: string | null
+          device_type: string | null
+          expires_at: string | null
+          id: string
+          ip_address: string | null
+          is_active: boolean | null
+          last_active_at: string | null
+          location: string | null
+          os: string | null
+          session_token: string
+          user_id: string
+        }
+        Insert: {
+          browser?: string | null
+          created_at?: string
+          device_fingerprint?: string | null
+          device_name?: string | null
+          device_type?: string | null
+          expires_at?: string | null
+          id?: string
+          ip_address?: string | null
+          is_active?: boolean | null
+          last_active_at?: string | null
+          location?: string | null
+          os?: string | null
+          session_token: string
+          user_id: string
+        }
+        Update: {
+          browser?: string | null
+          created_at?: string
+          device_fingerprint?: string | null
+          device_name?: string | null
+          device_type?: string | null
+          expires_at?: string | null
+          id?: string
+          ip_address?: string | null
+          is_active?: boolean | null
+          last_active_at?: string | null
+          location?: string | null
+          os?: string | null
+          session_token?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_subscriptions: {
         Row: {

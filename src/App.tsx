@@ -70,6 +70,9 @@ import AdminCommunicationsPage from "./pages/admin/AdminCommunicationsPage";
 // Analytics Pages
 import AdminAnalyticsPage from "./pages/admin/AdminAnalyticsPage";
 
+// Security Pages
+import AdminSecurityPage from "./pages/admin/AdminSecurityPage";
+
 // Instructor Panel Pages
 import InstructorAnalytics from "./pages/instructor/InstructorAnalytics";
 import InstructorStudents from "./pages/instructor/InstructorStudents";
@@ -268,6 +271,11 @@ const App = () => (
             <Route path="/admin/analytics" element={
               <ProtectedRoute allowedRoles={['super_admin', 'admin', 'sub_admin']}>
                 <AdminAnalyticsPage />
+              </ProtectedRoute>
+            } />
+            <Route path="/admin/security" element={
+              <ProtectedRoute allowedRoles={['super_admin', 'admin']}>
+                <AdminSecurityPage />
               </ProtectedRoute>
             } />
             
