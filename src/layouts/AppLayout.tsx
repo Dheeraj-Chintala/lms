@@ -44,6 +44,8 @@ import {
 } from 'lucide-react';
 import type { AppRole } from '@/types/database';
 import { ROLE_LABELS } from '@/types/database';
+import { GlobalSearch } from '@/components/search/GlobalSearch';
+import { SkipLink } from '@/components/ui/skip-link';
 
 interface NavItem {
   label: string;
@@ -323,19 +325,24 @@ export default function AppLayout({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen bg-background">
+      {/* Skip Link for Accessibility */}
+      <SkipLink href="#main-content" />
+      
       {/* Mobile Header */}
-      <header className="lg:hidden sticky top-0 z-50 bg-card border-b border-border px-4 py-3">
+      <header className="lg:hidden sticky top-0 z-50 bg-card border-b border-border px-4 py-3" role="banner">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+              aria-label={isSidebarOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isSidebarOpen}
             >
-              {isSidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {isSidebarOpen ? <X className="h-5 w-5" aria-hidden="true" /> : <Menu className="h-5 w-5" aria-hidden="true" />}
             </Button>
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-gradient-primary flex items-center justify-center" aria-hidden="true">
                 <GraduationCap className="h-4 w-4 text-primary-foreground" />
               </div>
               <span className="font-display font-semibold">LMS</span>
@@ -354,24 +361,30 @@ export default function AppLayout({ children }: { children: ReactNode }) {
         {/* Sidebar */}
         <aside
           className={cn(
-            "fixed lg:sticky top-0 left-0 z-40 h-screen w-64 bg-card border-r border-border transition-transform duration-300 lg:translate-x-0",
+            "fixed lg:sticky top-0 left-0 z-40 h-screen w-64 bg-card border-r border-border transition-transform duration-300 lg:translate-x-0 will-change-transform",
             isSidebarOpen ? "translate-x-0" : "-translate-x-full"
           )}
+          role="navigation"
+          aria-label="Main navigation"
         >
           <div className="flex flex-col h-full">
-            {/* Logo */}
-            <div className="hidden lg:flex items-center gap-3 px-6 py-5 border-b border-border">
-              <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-glow">
-                <GraduationCap className="h-5 w-5 text-primary-foreground" />
+            {/* Logo and Global Search */}
+            <div className="hidden lg:flex flex-col gap-4 px-4 py-5 border-b border-border">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-gradient-primary flex items-center justify-center shadow-glow" aria-hidden="true">
+                  <GraduationCap className="h-5 w-5 text-primary-foreground" />
+                </div>
+                <div>
+                  <h1 className="font-display font-bold text-lg">LMS Platform</h1>
+                  <p className="text-xs text-muted-foreground">{getRoleBadge()}</p>
+                </div>
               </div>
-              <div>
-                <h1 className="font-display font-bold text-lg">LMS Platform</h1>
-                <p className="text-xs text-muted-foreground">{getRoleBadge()}</p>
-              </div>
+              {/* Global Search */}
+              <GlobalSearch />
             </div>
 
             {/* Navigation */}
-            <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+            <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto" aria-label="Sidebar navigation">
               {filteredNavItems.map((item) => {
                 const isActive = location.pathname === item.href || 
                   (item.href !== '/dashboard' && location.pathname.startsWith(item.href));
@@ -382,15 +395,16 @@ export default function AppLayout({ children }: { children: ReactNode }) {
                     to={item.href}
                     onClick={() => setIsSidebarOpen(false)}
                     className={cn(
-                      "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all",
+                      "flex items-center gap-3 px-4 py-3 rounded-lg text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
                       isActive
                         ? "bg-primary text-primary-foreground shadow-md"
                         : "text-muted-foreground hover:bg-secondary hover:text-foreground"
                     )}
+                    aria-current={isActive ? "page" : undefined}
                   >
-                    {item.icon}
+                    <span aria-hidden="true">{item.icon}</span>
                     <span>{item.label}</span>
-                    {isActive && <ChevronRight className="h-4 w-4 ml-auto" />}
+                    {isActive && <ChevronRight className="h-4 w-4 ml-auto" aria-hidden="true" />}
                   </Link>
                 );
               })}
@@ -414,11 +428,12 @@ export default function AppLayout({ children }: { children: ReactNode }) {
           <div
             className="fixed inset-0 z-30 bg-foreground/20 backdrop-blur-sm lg:hidden"
             onClick={() => setIsSidebarOpen(false)}
+            aria-hidden="true"
           />
         )}
 
         {/* Main Content */}
-        <main className="flex-1 min-w-0">
+        <main id="main-content" className="flex-1 min-w-0" role="main" tabIndex={-1}>
           <div className="p-4 lg:p-8">
             {children}
           </div>
