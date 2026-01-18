@@ -781,6 +781,228 @@ export type Database = {
           },
         ]
       }
+      commission_payouts: {
+        Row: {
+          created_at: string
+          currency: string | null
+          deductions: number | null
+          franchise_id: string
+          id: string
+          net_payout: number | null
+          notes: string | null
+          paid_at: string | null
+          payment_method: string | null
+          payment_reference: string | null
+          payout_period_end: string
+          payout_period_start: string
+          processed_by: string | null
+          status: Database["public"]["Enums"]["payout_status"] | null
+          total_commission: number | null
+          total_sales: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string | null
+          deductions?: number | null
+          franchise_id: string
+          id?: string
+          net_payout?: number | null
+          notes?: string | null
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_reference?: string | null
+          payout_period_end: string
+          payout_period_start: string
+          processed_by?: string | null
+          status?: Database["public"]["Enums"]["payout_status"] | null
+          total_commission?: number | null
+          total_sales?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string | null
+          deductions?: number | null
+          franchise_id?: string
+          id?: string
+          net_payout?: number | null
+          notes?: string | null
+          paid_at?: string | null
+          payment_method?: string | null
+          payment_reference?: string | null
+          payout_period_end?: string
+          payout_period_start?: string
+          processed_by?: string | null
+          status?: Database["public"]["Enums"]["payout_status"] | null
+          total_commission?: number | null
+          total_sales?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "commission_payouts_franchise_id_fkey"
+            columns: ["franchise_id"]
+            isOneToOne: false
+            referencedRelation: "franchises"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      commission_rules: {
+        Row: {
+          bonus_amount: number | null
+          bonus_threshold: number | null
+          commission_type: string | null
+          commission_value: number
+          course_id: string | null
+          created_at: string
+          franchise_id: string | null
+          franchise_type: Database["public"]["Enums"]["franchise_type"] | null
+          id: string
+          is_active: boolean | null
+          min_sale_amount: number | null
+          org_id: string
+          priority: number | null
+          updated_at: string
+        }
+        Insert: {
+          bonus_amount?: number | null
+          bonus_threshold?: number | null
+          commission_type?: string | null
+          commission_value?: number
+          course_id?: string | null
+          created_at?: string
+          franchise_id?: string | null
+          franchise_type?: Database["public"]["Enums"]["franchise_type"] | null
+          id?: string
+          is_active?: boolean | null
+          min_sale_amount?: number | null
+          org_id: string
+          priority?: number | null
+          updated_at?: string
+        }
+        Update: {
+          bonus_amount?: number | null
+          bonus_threshold?: number | null
+          commission_type?: string | null
+          commission_value?: number
+          course_id?: string | null
+          created_at?: string
+          franchise_id?: string | null
+          franchise_type?: Database["public"]["Enums"]["franchise_type"] | null
+          id?: string
+          is_active?: boolean | null
+          min_sale_amount?: number | null
+          org_id?: string
+          priority?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "commission_rules_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commission_rules_franchise_id_fkey"
+            columns: ["franchise_id"]
+            isOneToOne: false
+            referencedRelation: "franchises"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commission_rules_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      coupons: {
+        Row: {
+          applicable_courses: string[] | null
+          code: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          discount_type: string | null
+          discount_value: number
+          franchise_id: string | null
+          id: string
+          is_active: boolean | null
+          max_discount_amount: number | null
+          min_purchase_amount: number | null
+          org_id: string
+          per_user_limit: number | null
+          updated_at: string
+          usage_count: number | null
+          usage_limit: number | null
+          valid_from: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          applicable_courses?: string[] | null
+          code: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          discount_type?: string | null
+          discount_value: number
+          franchise_id?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_discount_amount?: number | null
+          min_purchase_amount?: number | null
+          org_id: string
+          per_user_limit?: number | null
+          updated_at?: string
+          usage_count?: number | null
+          usage_limit?: number | null
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          applicable_courses?: string[] | null
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          discount_type?: string | null
+          discount_value?: number
+          franchise_id?: string | null
+          id?: string
+          is_active?: boolean | null
+          max_discount_amount?: number | null
+          min_purchase_amount?: number | null
+          org_id?: string
+          per_user_limit?: number | null
+          updated_at?: string
+          usage_count?: number | null
+          usage_limit?: number | null
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "coupons_franchise_id_fkey"
+            columns: ["franchise_id"]
+            isOneToOne: false
+            referencedRelation: "franchises"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "coupons_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       course_access_rules: {
         Row: {
           course_id: string
@@ -1487,6 +1709,364 @@ export type Database = {
             columns: ["course_id"]
             isOneToOne: false
             referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      franchise_branding: {
+        Row: {
+          accent_color: string | null
+          created_at: string
+          custom_domain: string | null
+          favicon_url: string | null
+          footer_text: string | null
+          franchise_id: string
+          id: string
+          is_active: boolean | null
+          logo_url: string | null
+          primary_color: string | null
+          secondary_color: string | null
+          social_facebook: string | null
+          social_instagram: string | null
+          social_linkedin: string | null
+          social_twitter: string | null
+          support_email: string | null
+          support_phone: string | null
+          tagline: string | null
+          updated_at: string
+        }
+        Insert: {
+          accent_color?: string | null
+          created_at?: string
+          custom_domain?: string | null
+          favicon_url?: string | null
+          footer_text?: string | null
+          franchise_id: string
+          id?: string
+          is_active?: boolean | null
+          logo_url?: string | null
+          primary_color?: string | null
+          secondary_color?: string | null
+          social_facebook?: string | null
+          social_instagram?: string | null
+          social_linkedin?: string | null
+          social_twitter?: string | null
+          support_email?: string | null
+          support_phone?: string | null
+          tagline?: string | null
+          updated_at?: string
+        }
+        Update: {
+          accent_color?: string | null
+          created_at?: string
+          custom_domain?: string | null
+          favicon_url?: string | null
+          footer_text?: string | null
+          franchise_id?: string
+          id?: string
+          is_active?: boolean | null
+          logo_url?: string | null
+          primary_color?: string | null
+          secondary_color?: string | null
+          social_facebook?: string | null
+          social_instagram?: string | null
+          social_linkedin?: string | null
+          social_twitter?: string | null
+          support_email?: string | null
+          support_phone?: string | null
+          tagline?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "franchise_branding_franchise_id_fkey"
+            columns: ["franchise_id"]
+            isOneToOne: true
+            referencedRelation: "franchises"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      franchise_leads: {
+        Row: {
+          assigned_to: string | null
+          converted_at: string | null
+          converted_user_id: string | null
+          course_interest: string | null
+          created_at: string
+          email: string | null
+          follow_up_date: string | null
+          franchise_id: string
+          id: string
+          name: string
+          notes: string | null
+          phone: string | null
+          source: string | null
+          status: Database["public"]["Enums"]["lead_status"] | null
+          updated_at: string
+        }
+        Insert: {
+          assigned_to?: string | null
+          converted_at?: string | null
+          converted_user_id?: string | null
+          course_interest?: string | null
+          created_at?: string
+          email?: string | null
+          follow_up_date?: string | null
+          franchise_id: string
+          id?: string
+          name: string
+          notes?: string | null
+          phone?: string | null
+          source?: string | null
+          status?: Database["public"]["Enums"]["lead_status"] | null
+          updated_at?: string
+        }
+        Update: {
+          assigned_to?: string | null
+          converted_at?: string | null
+          converted_user_id?: string | null
+          course_interest?: string | null
+          created_at?: string
+          email?: string | null
+          follow_up_date?: string | null
+          franchise_id?: string
+          id?: string
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          source?: string | null
+          status?: Database["public"]["Enums"]["lead_status"] | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "franchise_leads_franchise_id_fkey"
+            columns: ["franchise_id"]
+            isOneToOne: false
+            referencedRelation: "franchises"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      franchise_sales: {
+        Row: {
+          commission_amount: number | null
+          commission_rate: number | null
+          coupon_code: string | null
+          course_id: string | null
+          created_at: string
+          currency: string | null
+          enrollment_id: string | null
+          franchise_id: string
+          id: string
+          notes: string | null
+          payment_status: string | null
+          referral_code: string | null
+          sale_amount: number
+          sale_date: string
+          student_user_id: string
+        }
+        Insert: {
+          commission_amount?: number | null
+          commission_rate?: number | null
+          coupon_code?: string | null
+          course_id?: string | null
+          created_at?: string
+          currency?: string | null
+          enrollment_id?: string | null
+          franchise_id: string
+          id?: string
+          notes?: string | null
+          payment_status?: string | null
+          referral_code?: string | null
+          sale_amount?: number
+          sale_date?: string
+          student_user_id: string
+        }
+        Update: {
+          commission_amount?: number | null
+          commission_rate?: number | null
+          coupon_code?: string | null
+          course_id?: string | null
+          created_at?: string
+          currency?: string | null
+          enrollment_id?: string | null
+          franchise_id?: string
+          id?: string
+          notes?: string | null
+          payment_status?: string | null
+          referral_code?: string | null
+          sale_amount?: number
+          sale_date?: string
+          student_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "franchise_sales_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "franchise_sales_enrollment_id_fkey"
+            columns: ["enrollment_id"]
+            isOneToOne: false
+            referencedRelation: "enrollments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "franchise_sales_franchise_id_fkey"
+            columns: ["franchise_id"]
+            isOneToOne: false
+            referencedRelation: "franchises"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      franchise_students: {
+        Row: {
+          created_at: string
+          enrolled_at: string
+          franchise_id: string
+          id: string
+          notes: string | null
+          referred_by_code: string | null
+          student_user_id: string
+        }
+        Insert: {
+          created_at?: string
+          enrolled_at?: string
+          franchise_id: string
+          id?: string
+          notes?: string | null
+          referred_by_code?: string | null
+          student_user_id: string
+        }
+        Update: {
+          created_at?: string
+          enrolled_at?: string
+          franchise_id?: string
+          id?: string
+          notes?: string | null
+          referred_by_code?: string | null
+          student_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "franchise_students_franchise_id_fkey"
+            columns: ["franchise_id"]
+            isOneToOne: false
+            referencedRelation: "franchises"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      franchises: {
+        Row: {
+          address: string | null
+          approved_at: string | null
+          approved_by: string | null
+          bank_account_number: string | null
+          bank_ifsc: string | null
+          bank_name: string | null
+          business_name: string
+          city: string | null
+          country: string | null
+          created_at: string
+          email: string
+          franchise_code: string
+          franchise_type: Database["public"]["Enums"]["franchise_type"]
+          gst_number: string | null
+          id: string
+          notes: string | null
+          org_id: string
+          owner_name: string
+          pan_number: string | null
+          parent_franchise_id: string | null
+          phone: string | null
+          pincode: string | null
+          state: string | null
+          status: Database["public"]["Enums"]["franchise_status"] | null
+          suspended_at: string | null
+          suspension_reason: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          address?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          bank_account_number?: string | null
+          bank_ifsc?: string | null
+          bank_name?: string | null
+          business_name: string
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          email: string
+          franchise_code: string
+          franchise_type?: Database["public"]["Enums"]["franchise_type"]
+          gst_number?: string | null
+          id?: string
+          notes?: string | null
+          org_id: string
+          owner_name: string
+          pan_number?: string | null
+          parent_franchise_id?: string | null
+          phone?: string | null
+          pincode?: string | null
+          state?: string | null
+          status?: Database["public"]["Enums"]["franchise_status"] | null
+          suspended_at?: string | null
+          suspension_reason?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          address?: string | null
+          approved_at?: string | null
+          approved_by?: string | null
+          bank_account_number?: string | null
+          bank_ifsc?: string | null
+          bank_name?: string | null
+          business_name?: string
+          city?: string | null
+          country?: string | null
+          created_at?: string
+          email?: string
+          franchise_code?: string
+          franchise_type?: Database["public"]["Enums"]["franchise_type"]
+          gst_number?: string | null
+          id?: string
+          notes?: string | null
+          org_id?: string
+          owner_name?: string
+          pan_number?: string | null
+          parent_franchise_id?: string | null
+          phone?: string | null
+          pincode?: string | null
+          state?: string | null
+          status?: Database["public"]["Enums"]["franchise_status"] | null
+          suspended_at?: string | null
+          suspension_reason?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "franchises_org_id_fkey"
+            columns: ["org_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "franchises_parent_franchise_id_fkey"
+            columns: ["parent_franchise_id"]
+            isOneToOne: false
+            referencedRelation: "franchises"
             referencedColumns: ["id"]
           },
         ]
@@ -3034,6 +3614,65 @@ export type Database = {
           },
         ]
       }
+      referral_codes: {
+        Row: {
+          code: string
+          commission_bonus: number | null
+          created_at: string
+          description: string | null
+          discount_type: string | null
+          discount_value: number | null
+          franchise_id: string
+          id: string
+          is_active: boolean | null
+          updated_at: string
+          usage_count: number | null
+          usage_limit: number | null
+          valid_from: string | null
+          valid_until: string | null
+        }
+        Insert: {
+          code: string
+          commission_bonus?: number | null
+          created_at?: string
+          description?: string | null
+          discount_type?: string | null
+          discount_value?: number | null
+          franchise_id: string
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string
+          usage_count?: number | null
+          usage_limit?: number | null
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Update: {
+          code?: string
+          commission_bonus?: number | null
+          created_at?: string
+          description?: string | null
+          discount_type?: string | null
+          discount_value?: number | null
+          franchise_id?: string
+          id?: string
+          is_active?: boolean | null
+          updated_at?: string
+          usage_count?: number | null
+          usage_limit?: number | null
+          valid_from?: string | null
+          valid_until?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "referral_codes_franchise_id_fkey"
+            columns: ["franchise_id"]
+            isOneToOne: false
+            referencedRelation: "franchises"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       role_permissions: {
         Row: {
           created_at: string
@@ -3248,6 +3887,13 @@ export type Database = {
         | "contract"
         | "internship"
         | "freelance"
+      franchise_status: "pending" | "approved" | "suspended" | "rejected"
+      franchise_type:
+        | "franchise"
+        | "affiliate"
+        | "reseller"
+        | "super_distributor"
+        | "distributor"
       internship_application_status:
         | "pending"
         | "accepted"
@@ -3269,12 +3915,14 @@ export type Database = {
         | "rejected"
         | "withdrawn"
       job_status: "draft" | "open" | "closed" | "filled"
+      lead_status: "new" | "contacted" | "qualified" | "converted" | "lost"
       offer_letter_status:
         | "draft"
         | "sent"
         | "accepted"
         | "declined"
         | "expired"
+      payout_status: "pending" | "processing" | "completed" | "failed"
       question_type:
         | "mcq"
         | "descriptive"
@@ -3436,6 +4084,14 @@ export const Constants = {
         "internship",
         "freelance",
       ],
+      franchise_status: ["pending", "approved", "suspended", "rejected"],
+      franchise_type: [
+        "franchise",
+        "affiliate",
+        "reseller",
+        "super_distributor",
+        "distributor",
+      ],
       internship_application_status: [
         "pending",
         "accepted",
@@ -3460,7 +4116,9 @@ export const Constants = {
         "withdrawn",
       ],
       job_status: ["draft", "open", "closed", "filled"],
+      lead_status: ["new", "contacted", "qualified", "converted", "lost"],
       offer_letter_status: ["draft", "sent", "accepted", "declined", "expired"],
+      payout_status: ["pending", "processing", "completed", "failed"],
       question_type: [
         "mcq",
         "descriptive",

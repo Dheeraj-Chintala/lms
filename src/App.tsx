@@ -54,6 +54,10 @@ import MyApplications from "./pages/jobs/MyApplications";
 import EmployerDashboardPage from "./pages/jobs/EmployerDashboardPage";
 import PlacementReportsPage from "./pages/jobs/PlacementReportsPage";
 
+// Franchise Pages
+import FranchiseDashboardPage from "./pages/franchise/FranchiseDashboardPage";
+import FranchiseAdminPage from "./pages/franchise/FranchiseAdminPage";
+
 // Instructor Panel Pages
 import InstructorAnalytics from "./pages/instructor/InstructorAnalytics";
 import InstructorStudents from "./pages/instructor/InstructorStudents";
