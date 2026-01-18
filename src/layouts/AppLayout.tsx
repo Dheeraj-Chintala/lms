@@ -30,6 +30,8 @@ import {
   Video,
   FileCheck,
   Award,
+  Briefcase,
+  ClipboardList,
 } from 'lucide-react';
 import type { AppRole } from '@/types/database';
 import { ROLE_LABELS } from '@/types/database';
@@ -60,6 +62,18 @@ const getNavItems = (): NavItem[] => [
     label: 'Browse Courses', 
     href: '/courses', 
     icon: <BookOpen className="h-5 w-5" />,
+    allowedRoles: ['student'],
+  },
+  { 
+    label: 'Internships', 
+    href: '/internships', 
+    icon: <Briefcase className="h-5 w-5" />,
+    allowedRoles: ['student'],
+  },
+  { 
+    label: 'My Internships', 
+    href: '/my-internships', 
+    icon: <ClipboardList className="h-5 w-5" />,
     allowedRoles: ['student'],
   },
   // Trainer/Mentor navigation
@@ -105,6 +119,12 @@ const getNavItems = (): NavItem[] => [
     icon: <FileCheck className="h-5 w-5" />,
     allowedRoles: ['trainer', 'mentor'],
   },
+  { 
+    label: 'Internships', 
+    href: '/internships', 
+    icon: <Briefcase className="h-5 w-5" />,
+    allowedRoles: ['trainer', 'mentor'],
+  },
   // Admin navigation
   { 
     label: 'Dashboard', 
@@ -135,6 +155,12 @@ const getNavItems = (): NavItem[] => [
     href: '/admin/roles', 
     icon: <Shield className="h-5 w-5" />,
     allowedRoles: ['super_admin'],
+  },
+  { 
+    label: 'Internships', 
+    href: '/internships', 
+    icon: <Briefcase className="h-5 w-5" />,
+    allowedRoles: ['super_admin', 'admin', 'sub_admin'],
   },
   // Corporate HR / Manager navigation
   { 
