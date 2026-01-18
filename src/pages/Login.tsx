@@ -1,5 +1,4 @@
-
-import { useState, useEffect } from 'react';
+import { useState, useEffect, forwardRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
@@ -21,7 +20,7 @@ const loginSchema = z.object({
   password: z.string().min(1),
 });
 
-export default function Login() {
+const Login = forwardRef<HTMLDivElement>(function Login(_, ref) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -85,9 +84,9 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex">
+    <div ref={ref} className="min-h-screen flex">
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-hero items-center justify-center p-12">
-        <GraduationCap className="w-16 h-16 text-primary-foreground" />
+        <GraduationCap className="w-16 h-16 text-primary-foreground" aria-hidden="true" />
       </div>
 
       <div className="flex-1 flex items-center justify-center p-8">
@@ -99,24 +98,31 @@ export default function Login() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4" aria-label="Login form">
               <div>
-                <Label>Email</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
+                  id="email"
+                  type="email"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   disabled={isSubmitting}
+                  autoComplete="email"
+                  aria-required="true"
                 />
               </div>
               <div>
-                <Label>Password</Label>
+                <Label htmlFor="password">Password</Label>
                 <div className="relative">
                   <Input
+                    id="password"
                     type={showPassword ? 'text' : 'password'}
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     disabled={isSubmitting}
                     className="pr-10"
+                    autoComplete="current-password"
+                    aria-required="true"
                   />
                   <button
                     type="button"
@@ -125,18 +131,18 @@ export default function Login() {
                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                   >
                     {showPassword ? (
-                      <EyeOff className="h-4 w-4" />
+                      <EyeOff className="h-4 w-4" aria-hidden="true" />
                     ) : (
-                      <Eye className="h-4 w-4" />
+                      <Eye className="h-4 w-4" aria-hidden="true" />
                     )}
                   </button>
                 </div>
               </div>
 
-              <Button className="w-full" disabled={isSubmitting}>
+              <Button className="w-full" disabled={isSubmitting} aria-busy={isSubmitting}>
                 {isSubmitting ? (
                   <>
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
                     Signing in...
                   </>
                 ) : (
@@ -149,4 +155,6 @@ export default function Login() {
       </div>
     </div>
   );
-}
+});
+
+export default Login;
