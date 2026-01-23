@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { fromTable } from '@/lib/supabase-helpers';
+import { sanitizeHTML } from '@/lib/sanitize-html';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -555,7 +556,7 @@ function LessonViewer({ lesson, progress, onUpdateProgress, onMarkComplete }: Le
           {textContent ? (
             <div 
               className="prose prose-neutral dark:prose-invert max-w-none"
-              dangerouslySetInnerHTML={{ __html: textContent }}
+              dangerouslySetInnerHTML={{ __html: sanitizeHTML(textContent) }}
             />
           ) : (
             <div className="py-12 text-center text-muted-foreground">

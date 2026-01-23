@@ -8,6 +8,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
 import { useToast } from '@/hooks/use-toast';
+import { sanitizeHTML } from '@/lib/sanitize-html';
 import type { Lesson } from '@/types/database';
 
 interface ContentViewerProps {
@@ -419,7 +420,7 @@ function TextViewer({ lesson, onComplete, isCompleted }: Omit<ContentViewerProps
   return (
     <div className="space-y-4">
       <div className="prose prose-slate dark:prose-invert max-w-none p-6 bg-card rounded-lg border">
-        <div dangerouslySetInnerHTML={{ __html: content }} />
+        <div dangerouslySetInnerHTML={{ __html: sanitizeHTML(content) }} />
       </div>
 
       <CompletionButton isCompleted={isCompleted} onComplete={onComplete} />
