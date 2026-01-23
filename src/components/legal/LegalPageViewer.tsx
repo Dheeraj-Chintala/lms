@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent } from '@/components/ui/card';
@@ -9,6 +9,7 @@ import { Separator } from '@/components/ui/separator';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
 import { ArrowLeft, FileText, CheckCircle, Calendar } from 'lucide-react';
+import { sanitizeHTML } from '@/lib/sanitize-html';
 import type { LegalDocument } from '@/types/legal';
 import { DOCUMENT_TYPE_LABELS } from '@/types/legal';
 
@@ -170,7 +171,7 @@ export default function LegalPageViewer({ documentType }: LegalPageViewerProps) 
           <CardContent className="py-8">
             <div 
               className="prose prose-sm max-w-none dark:prose-invert"
-              dangerouslySetInnerHTML={{ __html: document.content }}
+              dangerouslySetInnerHTML={{ __html: sanitizeHTML(document.content) }}
             />
           </CardContent>
         </Card>
